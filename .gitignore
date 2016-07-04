@@ -3,3 +3,4 @@ logs/
 *.pyc
 .idea/
 keys/
+opsplatform.conf

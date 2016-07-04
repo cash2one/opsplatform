@@ -11,7 +11,7 @@ import MySQLdb
 
 def update_dashboard_graph():
     #连接
-    dashboard_db = MySQLdb.connect(host="172.16.60.23", user="root", passwd="", db="dashboard", charset="utf8")
+    dashboard_db = MySQLdb.connect(host="127.0.0.1", user="root", passwd="", db="dashboard", charset="utf8")
     cursor = dashboard_db.cursor()
     ops_db = MySQLdb.connect(host='127.0.0.1', user='root', passwd='', db='opsplatform', charset="utf8")
     cur_ops = ops_db.cursor()
@@ -32,7 +32,7 @@ def update_dashboard_graph():
 
 def update_dashboard_screen():
     #连接
-    dashboard_db = MySQLdb.connect(host="172.16.60.23", user="root", passwd="", db="dashboard", charset="utf8")
+    dashboard_db = MySQLdb.connect(host="127.0.0.1", user="root", passwd="", db="dashboard", charset="utf8")
     cursor = dashboard_db.cursor()
     ops_db = MySQLdb.connect(host='127.0.0.1', user='root', passwd='', db='opsplatform', charset="utf8")
     cur_ops = ops_db.cursor()
