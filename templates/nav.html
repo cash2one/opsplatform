@@ -1,0 +1,93 @@
+<nav class="navbar-default navbar-static-side" role="navigation">
+    <div class="sidebar-collapse">
+        <ul class="nav" id="side-menu">
+            {% include 'nav_li_profile.html' %}
+            <li id="index">
+               <a href="{% url 'index' %}"><i class="fa fa-dashboard"></i> <span class="nav-label">仪表盘</span><span class="label label-info pull-right"></span></a>
+            </li>
+            {% if perms.account.perm_can_view_account %}
+            <li id="account">
+                <a href="#"><i class="fa fa-group"></i> <span class="nav-label">用户管理</span><span class="fa arrow"></span></a>
+                <ul class="nav nav-second-level">
+                    {% if perms.account.perm_can_view_group %}
+                    <li class="group"><a href="{% url 'user_group_list' %}">查看用户组</a></li>
+                    {% endif %}
+                    {% if perms.account.perm_can_view_user %}
+                    <li class="user"><a href="{% url 'user_list' %}">查看用户<span class="label {% ifequal user_active_num user_total_num %}label-primary {% else %}label-warning {% endifequal %}pull-right">{{ user_active_num }}/{{ user_total_num }}</span></a></li>
+                    {% endif %}
+                </ul>
+            </li>
+            {% endif %}
+            {% if perms.account.perm_can_view_assets %}
+            <li id="asset">
+                <a><i class="fa fa-inbox"></i> <span class="nav-label">资产管理</span><span class="fa arrow"></span></a>
+                <ul class="nav nav-second-level">
+                    {% if perms.account.perm_can_view_assetgroup %}
+                    <li class="group"><a href="{% url 'asset_group_list' %}">查看资产组</a></li>
+                    {% endif %}
+                    {% if perms.account.perm_can_view_asset %}
+                    <li class="asset"> <a href="{% url 'asset_list' %}">查看资产<span class="label label-info pull-right">{{ host_active_num }}/{{ host_total_num}}</span></a></li>
+                    {% endif %}
+                    {% if perms.account.perm_can_view_idc %}
+                    <li class="idc"> <a href="{% url 'idc_list' %}">查看机房</a></li>
+                    {% endif %}
+                </ul>
+            </li>
+            {% endif %}
+            {% if perms.account.perm_can_view_perm %}
+            <li id="perm">
+                <a href="#"><i class="fa fa-edit"></i> <span class="nav-label">授权管理</span><span class="fa arrow"></span></a>
+                <ul class="nav nav-second-level">
+                    {% if perms.account.perm_can_view_permsudo %}
+                    <li class="sudo">
+                        <a class="sudo" href="{% url 'sudo_list' %}">Sudo</a>
+                    </li>
+                    {% endif %}
+                    {% if perms.account.perm_can_view_permrole %}
+                    <li class="role">
+                        <a href="{% url 'role_list' %}">系统用户</a>
+                    </li>
+                    {% endif %}
+                    {% if perms.account.perm_can_view_permrule %}
+                    <li class="rule">
+                        <a href="{% url 'rule_list' %}">授权规则</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </li>
+            {% endif %}
+            {% if perms.account.perm_can_view_monitor %}
+            <li id="monitor">
+                <a href="#"><i class="fa fa-area-chart"></i> <span class="nav-label">监控服务</span><span class="fa arrow"></span></a>
+                <ul class="nav nav-second-level">
+                    {% if perms.account.perm_can_view_screen %}
+                    <li class="charts"><a href="{% url 'monitor_index' %}">监控趋势图</a></li>
+                    <li class="screens"><a href="{% url 'dash_screens' %}">监控看板</a></li>
+                    {% endif %}
+                    {% if perms.account.perm_can_view_portal %}
+                    <li class="portal"><a href="{{ portal_url }}" target="_blank">报警规则设置</a></li>
+                    {% endif %}
+                    {% if perms.perm_can_view_alarm %}
+                    <li class="alarm"><a href="{{ alarm_url }}" target="_blank">未恢复的报警</a></li>
+                    {% endif %}
+                </ul>
+            </li>
+            {% endif %}
+            {% if perms.account.perm_can_view_log %}
+            <li id="jlog">
+                <a href="{% url 'log_list' 'online' %}"><i class="fa fa-files-o"></i>
+                   <span class="nav-label">日志审计</span><span class="label label-info pull-right"></span></a>
+            </li>
+            {% endif %}
+            {% if perms.account.perm_can_upload_download_file %}
+            <li id="file">
+                <a href="#"><i class="fa fa-download"></i> <span class="nav-label">上传下载</span><span class="fa arrow"></span></a>
+                <ul class="nav nav-second-level">
+                    <li class="upload"><a href="{% url 'file_upload' %}">文件上传</a></li>
+                    <li class="download"><a href="{% url 'file_download' %}">文件下载</a></li>
+                </ul>
+            </li>
+            {% endif %}
+        </ul>
+    </div>
+</nav>

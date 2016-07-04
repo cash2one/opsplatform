@@ -1,0 +1,60 @@
+{% extends "monitor/screen/base.html" %}
+
+{% block content %}
+<div class="row-fluid">
+    <a href="#container"></a>
+    <div class="col-md-12" style="padding-left:0px;">
+        <ul class="breadcrumb">
+            <li>
+                <div class="btn-group">
+                      <button class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
+                        {%if current_top_screen%}
+                            {{current_top_screen.name}}
+                        {%else%}
+                            screen首页
+                        {%endif%}
+                        <span class="caret"></span>
+                      </button>
+                      <ul class="dropdown-menu" role="menu">
+                        <li><a href="{% url 'dash_screen_add' %}"> <small>+ 导航</small></a></li>
+                        <li>
+                            <div class="form-group search-area">
+                                <input class="form-control" id="searchinput" type="search" placeholder="搜索..">
+                            </div>
+                        </li>
+                        {%for c in top_screens%}
+                        <li class="screen" role="presentation">
+                            <a role="menuitem" href="/monitor/screen/{{c.id}}"><small>{{c.name}}</small></a>
+                        </li>
+                        {%endfor%}
+                      </ul>
+                </div>
+            </li>
+            <li>
+                <div class="btn-group">
+                    <button class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
+                        {%if current_sub_screen %}
+                            {{current_sub_screen.name}}
+                        {%else%}
+                            选择
+                        {%endif%}
+                        <span class="caret"></span>
+                    </button>
+
+                    <ul class="dropdown-menu" role="menu">
+                        {%if current_top_screen %}
+                            <li><a href="{% url 'dash_screen_add' %}?pid={{current_top_screen.id}}"> + screen</a></li>
+                        {%endif%}
+
+                        {%for c in sub_screens%}
+                            <li class="screen" role="presentation">
+                                <a role="menuitem" href="/monitor/screen/{{c.id}}"><small>{{c.name}}</small></a>
+                            </li>
+                        {%endfor%}
+                    </ul>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
+{%endblock%}

@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block self_head_css_js%}
+    <script src="/static/js/jquery.flot.js?_v=0.0.3"></script>
+    <script src="/static/js/jquery.flot.time.js"></script>
+    <script src="/static/js/jquery.flot.selection.js"></script>
+    <script src="/static/js/underscore.js"></script>
+    <script src="/static/js/screen-edit.js"></script>
+    <!-- for embed iframe auto height; see http://davidjbradshaw.github.io/iframe-resizer/  -->
+    <script src="/static/js/iframeResizer.contentWindow.js"></script>
+    <script src="/static/js/screen.js?_v=0.0.3"></script>
+    <link href="/static/css/base.css" rel="stylesheet">
+    <script>
+    function fn_query(kvs) {
+        var href = $.query;
+        for (var k in kvs){
+            href = href.set(k, kvs[k]);
+        }
+        window.location.href = href.toString();
+        return false;
+    }
+    </script>
+    <script>
+        function readablizeBytes(size) {
+            if (size <= 100000){
+                return '' + size;
+            }
+
+            var SizePrefixes = ' KMGTPEZYXWVU';
+            if(size <= 0) return '0';
+            var t2 = Math.min(Math.round(Math.log(size)/Math.log(1000)), 12);
+            return (Math.round(size * 100 / Math.pow(1000, t2)) / 100) +
+                  SizePrefixes.charAt(t2).replace(' ', '') + '';
+        }
+
+        function formatSize(size1, standard) {
+            var size = parseFloat(size1);
+            if (standard) {
+                standard = standard.toLowerCase();
+            }
+            if(size<=1){
+                return size.toFixed(3);
+            }
+
+            var n = 0,
+                base = standard == 'si' ? 1000 : 1024,
+                prefixes = ' KMGTPEZY';
+
+            if (size >= base) {
+                n = Math.floor( Math.log(size) / Math.log(base) );
+
+                if (n >= prefixes.length) {
+                    return 'N/A';
+                }
+
+                size = ( size / Math.pow(base, n) ).toFixed(3) * 1 + '';
+            }else{
+                size = size.toFixed(3)
+            }
+
+            return size + prefixes[n] + ( n && standard == 'iec' ? 'i' : '' ) + '';
+        }
+    </script>
+    <style>
+        body {
+            font-size:12px;
+            font-family: 'verdana', 'Microsoft YaHei', 'Consolas', 'Deja Vu Sans Mono', 'Bitstream Vera Sans Mono';
+        }
+        select {font-size:12px;}
+        input {font-size:12px;}
+    </style>
+{% endblock %}
+
+{% block self_content %}
+    <div id="tooltip" style="position: absolute; border: 1px solid rgb(215, 234, 252);z-index: 999; padding: 2px; opacity: 0.8; top: 511px; left: 362px; display: none; background-color: rgb(215, 234, 252);font-family:sans-serif;color:rgb(26,26,26);"></div>
+{% endblock %}

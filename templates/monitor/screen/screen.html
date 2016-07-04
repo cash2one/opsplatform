@@ -1,0 +1,260 @@
+{% extends "monitor/screen/base.html" %}
+{% load mytags %}
+
+{% block content %}
+    {% block screen_nav %}
+    <div class="row">
+        <div class="col-md-12">
+            <ul class="breadcrumb">
+                <li>
+                    <div class="btn-group">
+                          <button class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
+                            {%if current_top_screen%}
+                                {{current_top_screen.name}}
+                            {%else%}
+                                screen首页
+                            {%endif%}
+                            <span class="caret"></span>
+                          </button>
+                          <ul class="dropdown-menu" role="menu">
+                            <li><a href="{% url 'dash_screen_add' %}"> <small>+ 导航</small></a></li>
+                            <li>
+                                <div class="form-group search-area">
+                                    <input class="form-control" id="searchinput" type="search" placeholder="搜索..">
+                                </div>
+                            </li>
+                            {%for c in top_screens%}
+                            <li class="screen" role="presentation">
+                                <a role="menuitem" href="/monitor/screen/{{c.id}}"><small>{{c.name}}</small></a>
+                            </li>
+                            {%endfor%}
+                          </ul>
+                    </div>
+                </li>
+                <li>
+                    <div class="btn-group">
+                        <button class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
+                            {%if current_sub_screen %}
+                                {{current_sub_screen.name}}
+                            {%else%}
+                                选择
+                            {%endif%}
+                            <span class="caret"></span>
+                        </button>
+
+                        <ul class="dropdown-menu" role="menu">
+                            {%if current_top_screen %}
+                                <li><a href="{% url 'dash_screen_add' %}?pid={{current_top_screen.id}}"> + screen</a></li>
+                            {%endif%}
+
+                            {%for c in sub_screens%}
+                                <li class="screen" role="presentation">
+                                    <a role="menuitem" href="/monitor/screen/{{c.id}}"><small>{{c.name}}</small></a>
+                                </li>
+                            {%endfor%}
+                        </ul>
+                    </div>
+                </li>
+
+                {%if screen%}
+                    <li><a href="/monitor/screen/{{screen.id}}/edit"><i class="icon-edit"></i>编辑</a></li>
+                    <li><a href="/monitor/screen/{{screen.id}}/delete" onclick="return confirm('确定要删除这个screen?');"><i class="icon-trash"></i>删除</a></li>
+                    <li><a href="/monitor/screen/{{screen.id}}/clone" onclick="return confirm('确定要复制出来一个新的screen吗?');">克隆</a></li>
+                    <li><a href="/monitor/screen/{{screen.id}}/graph"><i class="icon-plus"></i>+graph</a></li>
+                    {%if legend == "on"%}
+                    <li><a href="#" onclick="fn_query({legend: 'off'})"><i class="icon-plus"></i>隐藏legend</a></li>
+                    {%else%}
+                    <li><a href="#" onclick="fn_query({legend: 'on'})"><i class="icon-plus"></i>显示legend</a></li>
+                    {%endif%}
+
+                    <li>
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
+                                布局 <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a href="#" onclick="fn_query({cols: '1'})"><small>1列</small></a></li>
+                                <li><a href="#" onclick="fn_query({cols: '2'})"><small>2列</small></a></li>
+                                <li><a href="#" onclick="fn_query({cols: '3'})"><small>3列</small></a></li>
+                                <li><a href="#" onclick="fn_query({cols: '4'})"><small>4列</small></a></li>
+                            </ul>
+                        </div>
+                    </li>
+
+                    <li>
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
+                                时间段 <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a href="#" onclick="fn_query({start: -3600})"><small>1h</small></a></li>
+                                <li><a href="#" onclick="fn_query({start: -10800})"><small>3h</small></a></li>
+                                <li><a href="#" onclick="fn_query({start: -21600})"><small>6h</small></a></li>
+                                <li><a href="#" onclick="fn_query({ start: -43200})"><small>12h</small></a></li>
+                                <li><a href="#" onclick="fn_query({start: -86400})"><small>1d</small></a></li>
+                                <li><a href="#" onclick="fn_query({start: -259200})"><small>3d</small></a></li>
+                                <li><a href="#" onclick="fn_query({start: -604800})"><small>7d</small></a></li>
+                                <li><a href="#" onclick="fn_query({start: -2592000})"><small>1m</small></a></li>
+                                <li><a href="#" onclick="fn_query({start: -31536000})"><small>1y</small></a></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
+                                刷新时间间隔<span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a href="#" onclick="fn_query({flash: -1})"><small>off</small></a></li>
+                                <li><a href="#" onclick="fn_query({flash: 5})"><small>5s</small></a></li>
+                                <li><a href="#" onclick="fn_query({flash: 10})"><small>10s</small></a></li>
+                                <li><a href="#" onclick="fn_query({flash: 30})"><small>20s</small></a></li>
+                                <li><a href="#" onclick="fn_query({flash: 60})"><small>1m</small></a></li>
+                                <li><a href="#" onclick="fn_query({flash: 300})"><small>5m</small></a></li>
+                                <li><a href="#" onclick="fn_query({flash: 600})"><small>10m</small></a></li>
+                                <li><a href="#" onclick="fn_query({flash: 1800})"><small>30m</small></a></li>
+                                <li><a href="#" onclick="fn_query({flash: 3600})"><small>1h</small></a></li>
+                                <li><a href="#" onclick="fn_query({flash: 7200})"><small>2h</small></a></li>
+                            </ul>
+                        </div>
+                    </li>
+                    {% if heart == 'on' %}
+                        <li>
+                            <a href="#" onclick="fn_query({heart: 'off'})"><span class="glyphicon glyphicon-heart" aria-hidden="true"></span></a>
+                        </li>
+                    {% else %}
+                        <li>
+                            <a href="#" onclick="fn_query({heart: 'on'})"><span class="glyphicon glyphicon-heart-empty" aria-hidden="true"></span></a>
+                        </li>
+                    {% endif %}
+                {%endif%}
+            </ul>
+        </div>
+    </div>
+    {%endblock%}
+
+    {% block graphs %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <script>
+                    function fn_toogle_legend_flot(a, i) {
+                        var $container = $('.chart-' + i).parent();
+                        var $l = $container.find('.legend');
+                        console.log($container.html());
+                        if ($l.is(':hidden')) {
+                            $l.show();
+                        } else {
+                            $l.hide();
+                        }
+                        $(a).text('切换legend');
+                        return false;
+                    }
+
+                    function fn_toogle_sum_flot(a, i) {
+                        var $container = $('.chart-' + i).parent();
+                        var url = $container.data('u');
+                        var u = $.query.load(url);
+                        var s = u.get('sum');
+                        if (s && s === 'on') {
+                            s = 'off';
+                        } else {
+                            s = 'on';
+                        }
+                        $(a).text('切换求和');
+                        u = u.set('sum', s);
+                        var dataU = url.split('?')[0] + u.toString();
+                        $container.data('u', dataU);
+
+                        // 重新请求这个url
+                        if (window.getData) {
+                            window.getData($container, dataU);
+                        }
+                        return false;
+                    }
+
+                    $(function(){
+                        //setInterval(function() {
+                        //    if (window.active) {
+                        //        active();
+                        //    }
+                        //}, 60000);
+                    });
+                </script>
+                <div class="row">
+                    {%for graph in all_graphs%}
+                        {% if forloop.counter0|i_cols:cols  %}
+                            <div style="clear: both;">
+                        {% endif %}
+                        {% with col=cols|cols_12int %}
+                        <div class="col-md-{{col}}" id="graph-{{ forloop.counter0 }}" style="padding:3px;">
+                                <div class="panel panel-default chart-container" data-u="{{graph.src}}">
+                                        <div class="panel-heading" style="padding: 10px 5px;">
+                                            <a class="btn btn-default btn-xs reset-zoom pull-right" style="margin-left:5px;" data-index="{{forloop.counter0}}">
+                                                <span class="glyphicon glyphicon-zoom-out" aria-hidden="true" data-index="{{forloop.counter0}}"></span>
+                                            </a>
+                                            <div class="btn-group pull-right">
+                                                <a class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" href="#">
+                                                    <span class="caret"></span>
+                                                </a>
+                                                <ul class="dropdown-menu">
+                                                    <li>
+                                                        <a href="javascript:void(0);" class="btn btn-link btn-xs" onclick="return fn_toogle_legend_flot(this, '{{forloop.counter0}}');">切换legend</a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="javascript:void(0);" class="btn btn-link btn-xs" onclick="return fn_toogle_sum_flot(this, '{{forloop.counter0}}');">切换求和</a>
+                                                    </li>
+
+                                                    <li>
+                                                    {%if graph.src|big_graph|find_graph_h >= 0 %}
+                                                        <a href="{{ graph.src|big_graph_h|safe }}&start=-86400&graph_type=h" target="__blank" class="btn btn-link btn-xs">查看大图</a>
+                                                    {%elif graph.src|big_graph|find_graph_k >= 0%}
+                                                        <a href="{{graph.src|big_graph_k|safe}}&start=-86400&graph_type=k" target="__blank" class="btn btn-link btn-xs">查看大图</a>
+                                                    {%else%}
+                                                        <a href="{{graph.src|big_graph_a|safe}}&start=-86400&graph_type=a" target="__blank" class="btn btn-link btn-xs">查看大图</a>
+                                                    {%endif%}
+                                                    </li>
+
+                                                    <li>
+                                                        <a href="/monitor/graph/{{graph.id}}/edit" class="btn btn-link btn-xs">编辑</a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                            <span class="panel-title graph-title">{{graph.title}}</span>
+                                        </div>
+
+                                        <div class="panel-body text-center" style="margin:5px;padding:0px;">
+                                            <span class="chart-title"></span>
+                                        </div>
+
+                                        <div class="chart-{{forloop.counter0}} chart-area panel-body" style="margin:10px;padding:10px;"></div>
+                                        <div class="legend panel-body graph-legend"></div>
+                                </div>
+                        </div>
+                        {% endwith %}
+                        {% if forloop.counter0|i_cols:cols or loop.last %}
+                            </div>
+                        {% endif %}
+                    {%endfor%}
+                </div>
+            </div>
+        </div>
+    </div>
+    {%endblock%}
+
+    <script>
+    $(function(){
+        // 渲染当前screen 的id, 编辑时用
+        window.sid = {{ sid }};
+    });
+
+    function myrefresh(){
+        window.location.reload();
+    }
+    {% if flash > 0 %}
+        setTimeout('myrefresh()',{{ flash }}*1000); //指定1秒刷新一次
+    {% endif %}
+    </script>
+
+
+{%endblock%}

@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+{% load mytags %}
+
+
+{% block content %}
+    {% include 'nav_cat_bar.html' %}
+    <div class="wrapper wrapper-content animated fadeInRight">
+        <div class="row">
+            <div class="col-sm-4">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <span class="label label-primary"><b>{{ group.name }}</b></span>
+                        <div class="ibox-tools">
+                            <a class="collapse-link">
+                                <i class="fa fa-chevron-up"></i>
+                            </a>
+                            <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                                <i class="fa fa-wrench"></i>
+                            </a>
+                            <ul class="dropdown-menu dropdown-group">
+                                <li><a href="#"></a>
+                                </li>
+                                <li><a href="#"></a>
+                                </li>
+                            </ul>
+                            <a class="close-link">
+                                <i class="fa fa-times"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="ibox-content">
+                        <div>
+                            <div class="text-left">
+                                <table class="table">
+                                    <tr>
+                                        <td class="text-navy">ID</td>
+                                        <td>{{ group.id }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">用户组名</td>
+                                        <td>{{ group.name }}</td>
+                                    </tr>
+                                    {% if perms.account.perm_can_view_user %}
+                                    <tr>
+                                        <td class="text-navy">成员</td>
+                                        <td>
+                                            <table class="table">
+                                                {% for user in user_all %}
+                                                    <tr>
+                                                        <td><a href="{% url 'user_detail' %}?id={{ user.id }}">{{ user.name }}</a></td>
+                                                    </tr>
+                                                {% endfor %}
+                                            </table>
+                                        </td>
+                                    </tr>
+                                    {% endif %}
+                                    <tr>
+                                        <td class="text-navy">权限</td>
+                                        <td>
+                                             <table class="table">
+                                                 {% for permission in permissions_all %}
+                                                    <tr>
+                                                        <td>{{ permission.name }}</td>
+                                                    </tr>
+                                                 {% endfor %}
+                                             </table>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">授权主机数量</td>
+                                        <td>
+                                            {{ user_perm_info.asset.keys | length }}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">授权主机组</td>
+                                        <td>
+                                             <table class="table">
+                                                 {% for group in  user_perm_info.asset_group.keys%}
+                                                    <tr>
+                                                        <td><a href="{% url 'user_group_list' %}?id={{ group.id }}">{{ group.name }}</a></td>
+                                                    </tr>
+                                                 {% endfor %}
+                                             </table>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">授权规则</td>
+                                        <td>
+                                             <table class="table">
+                                                 {% for rule in  user_perm_info.rule%}
+                                                    <tr>
+                                                        <td><a href="{% url 'role_list' %}?id={{ rule.id }}">{{ rule.name }}</a></td>
+                                                    </tr>
+                                                 {% endfor %}
+                                             </table>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<script>
+    $(document).ready(function(){
+        $('#show').click(function(){
+            $('#last').css('display', 'none');
+            $('#all').css('display', 'block');
+        })
+    })
+</script>
+
+
+{% endblock %}

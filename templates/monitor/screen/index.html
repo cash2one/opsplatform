@@ -1,0 +1,49 @@
+{% extends 'monitor/screen/base.html' %}
+{% load mytags %}
+{% block content %}
+    <div class="row">
+        <a href="#container"></a>
+        <div class="col-md-12" >
+            <ul class="breadcrumb">
+                <li>
+                    <div class="btn-group">
+                        <button class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
+                             {%if current_top_screen%}
+                                {{current_top_screen.name}}
+                             {%else%}
+                                screen首页
+                             {%endif%}
+                          <span class="caret"></span>
+                        </button>
+
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a href="{% url 'dash_screen_add' %}"> <small>+ 导航</small></a></li>
+                            <li>
+                                <div class="form-group search-area">
+                                    <input class="form-control" id="searchinput" type="search" placeholder="搜索..">
+                                </div>
+                            </li>
+                            {%for c in top_screens%}
+                            <li class="screen" role="presentation">
+                                <a role="menuitem" href="/monitor/screen/{{c.id}}"><small>{{c.name}}</small></a>
+                            </li>
+                            {%endfor%}
+                        </ul>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div style="padding: 100px">
+            <h2>收藏夹</h2>
+            <ul>
+                {% for screen in heart_screens %}
+                    <br/>
+                    <li>
+                    <span class="glyphicon glyphicon-heart" aria-hidden="true"></span>
+                        <a href="/monitor/screen/{{screen.id}}/">{{ screen.name }}</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+{% endblock %}
