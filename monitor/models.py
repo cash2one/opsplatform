@@ -23,9 +23,9 @@ class DashboardScreen(models.Model):
 
 class DashboardGraph(models.Model):
     title = models.CharField('title', max_length=100)
-    hosts = models.CharField('hosts', max_length=100)
-    counters = models.CharField('counters', max_length=100)
-    screen_id = models.CharField('screen_id', max_length=100)
+    hosts = models.CharField('hosts', max_length=10240)
+    counters = models.CharField('counters', max_length=10240)
+    screen_id = models.CharField('screen_id', max_length=1000)
     timespan = models.IntegerField('timespan', default=3600)
     graph_type = models.CharField('graph_type', max_length=10, default='h')
     method = models.CharField('method', max_length=100)
