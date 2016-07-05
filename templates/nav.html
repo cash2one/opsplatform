@@ -67,7 +67,7 @@
                     {% if perms.account.perm_can_view_portal %}
                     <li class="portal"><a href="{{ portal_url }}" target="_blank">报警规则设置</a></li>
                     {% endif %}
-                    {% if perms.perm_can_view_alarm %}
+                    {% if perms.account.perm_can_view_alarm %}
                     <li class="alarm"><a href="{{ alarm_url }}" target="_blank">未恢复的报警</a></li>
                     {% endif %}
                 </ul>

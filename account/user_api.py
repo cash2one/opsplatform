@@ -123,7 +123,7 @@ def user_add_mail(user, kwargs):
     add user send mail
     发送用户添加邮件
     """
-    mail_title = u'恭喜你的运维平台用户 %s 添加成功' % user.name
+    mail_title = u'恭喜你的人人快递运维平台用户 %s 添加成功' % user.name
     mail_msg = u"""
     Hi, %s
         您的用户名： %s
