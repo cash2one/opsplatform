@@ -10,6 +10,7 @@
 from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django.db.models import Q
+from django.contrib.auth.decorators import login_required
 
 from account.user_api import *
 
@@ -443,6 +444,7 @@ def regen_ssh_key(request):
     return HttpResponse('ssh密钥已生成，密码为 %s, 请到下载页面下载' % ssh_key_pass)
 
 
+@login_required(login_url='/login')
 def down_key(request):
     if request.user.is_superuser:
         uuid_r = request.GET.get('uuid', '')
