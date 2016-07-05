@@ -202,10 +202,10 @@ CRONJOBS = [
 ]
 
 # portal_url URL
-PORTAL_URL = 'http://127.0.0.1:5050'
+PORTAL_URL = 'http://172.16.60.23:5050'
 
 # alarm url
-ALARM_URL = 'http://127.0.0.1:9912'
+ALARM_URL = 'http://172.16.60.23:9912'
 
 
-QUERY_ADDR = 'http://127.0.0.1:9966'
+QUERY_ADDR = 'http://172.16.60.23:9966'
