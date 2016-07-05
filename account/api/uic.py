@@ -10,6 +10,7 @@ from opsplatform.api import *
 from account.models import User
 from django.contrib.sessions.models import Session
 from django.contrib.auth.models import Group
+from django.contrib.auth import logout
 
 
 def sso_sig(request):
@@ -25,9 +26,12 @@ def sso_user(request, sig=''):
     """
     if not sig:
         return HttpResponse('sig is blank')
-    session = Session.objects.get(session_key=sig)
-    uid = session.get_decoded().get('_auth_user_id')
-    user = User.objects.get(pk=uid)
+    try:
+        session = Session.objects.get(session_key=sig)
+        uid = session.get_decoded().get('_auth_user_id')
+        user = User.objects.get(pk=uid)
+    except:
+        user = None
     if not user:
         return HttpResponse('no such user')
     u = {
@@ -58,8 +62,10 @@ def auth_login(request):
         return HttpResponseRedirect(callback)
     if session_key and callback:
         request.session['pre_url'] = callback
+        logout(request)
         return HttpResponseRedirect(reverse('login'))
     else:
+        logout(request)
         return HttpResponseRedirect(reverse('login'))
 
 
@@ -114,7 +120,7 @@ def user_in(request):
         if team:
             users_obj = User.objects.filter(groups=team)
             for user_obj in users_obj:
-                if user_obj.username == name:
+                if user_obj.email.split('@')[0] == name:
                     return HttpResponse('1')
 
     return HttpResponse('0')
