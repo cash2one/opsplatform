@@ -611,7 +611,7 @@ def dash_screen(request, sid):
     end = request.GET.get("end")
     legend = request.GET.get("legend") or "off"
     heart = request.GET.get("heart") or None
-    flash = int(request.GET.get("flash")) or 0
+    flash = request.GET.get("flash")or 0
 
     top_screens = DashboardScreen.objects.filter(pid='0')
     top_screens = sorted(top_screens, key=lambda x: x.name)
