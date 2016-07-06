@@ -116,6 +116,9 @@
                                 <li><a href="#" onclick="fn_query({flash: 3600})"><small>1h</small></a></li>
                                 <li><a href="#" onclick="fn_query({flash: 7200})"><small>2h</small></a></li>
                             </ul>
+
+                            <span class="refresh-time" hidden style="margin:5px;padding:0px;color: #1E0FBE"><small>Refresh every {{ flash }}s</small></span>
+
                         </div>
                     </li>
                     {% if heart == 'on' %}
@@ -259,12 +262,14 @@
         setTimeout("$('.flash-loading').toggle()", 1000);
 
     }
-    if (flash > 0){
+    if (parseInt(flash) > 1){
+        $('.refresh-time').show();
         var t = parseInt(flash)*1000;
         s = setInterval("flash_chart()", t);
     }
     else{
-         window.clearInterval(s);
+        $('.refresh-time').hide();
+        window.clearInterval(s);
     }
     </script>
 
