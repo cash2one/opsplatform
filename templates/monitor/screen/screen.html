@@ -221,6 +221,9 @@
                                                 </ul>
                                             </div>
                                             <span class="panel-title graph-title">{{graph.title}}</span>
+                                            <span class="flash-loading pull-right" style="margin:5px;padding:0px;" hidden>
+                                                <i class="fa fa-spinner fa-spin"></i>
+                                            </span>
                                         </div>
 
                                         <div class="panel-body text-center" style="margin:5px;padding:0px;">
@@ -247,14 +250,22 @@
         // 渲染当前screen 的id, 编辑时用
         window.sid = {{ sid }};
     });
+    var href = $.query.load(window.location.href);
+    var flash = href.get('flash') || 0;
+    var s;
+    function flash_chart(){
+        $('.flash-loading').toggle();
+        window.active();
+        setTimeout("$('.flash-loading').toggle()", 1000);
 
-    function myrefresh(){
-        window.location.reload();
     }
-    {% if flash > 0 %}
-        setTimeout('myrefresh()',{{ flash }}*1000); //指定1秒刷新一次
-    {% endif %}
+    if (flash > 0){
+        var t = parseInt(flash)*1000;
+        s = setInterval("flash_chart()", t);
+    }
+    else{
+         window.clearInterval(s);
+    }
     </script>
-
 
 {%endblock%}

@@ -110,7 +110,6 @@ $(function() {
                 cachePlot[i].$el = $el;
                 cachePlot[i].$l = $l;
                 $t.html(title);
-
                 $el.on('plothover', function (event, pos, item) {
                     // console.log('1111');
                     if (item) {
