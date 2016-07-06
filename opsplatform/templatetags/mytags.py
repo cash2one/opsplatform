@@ -294,5 +294,10 @@ def top_screen(pid):
 
 
 @register.filter(name='my_split')
-def my_split(str, arg):
-    return str.split(arg)
+def my_split(strl, arg):
+    return strl.split(arg)
+
+
+@register.filter(name='my_join')
+def my_join(strl):
+    return '\n'.join(strl)

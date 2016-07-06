@@ -22,14 +22,14 @@
                      <div class="form-group">
                          <label class="control-label col-md-2" for="hosts">Endpoints列表</label>
                          <div class="col-md-8">
-                            <textarea name="hosts" rows="5" class="form-control">{{ graph.hosts | my_split:'|' | join:"\n" }}</textarea>
+                            <textarea name="hosts" rows="5" class="form-control">{{ graph.hosts | my_split:'|' | my_join}}</textarea>
                          </div>
                      </div>
 
                      <div class="form-group">
                          <label class="control-label col-md-2" for="counters">Counters列表</label>
                          <div class="col-md-8">
-                             <textarea required rows="5" class="form-control" name="counters">{{ graph.counters | my_split:'|' | join:"\n" }}</textarea>
+                             <textarea required rows="5" class="form-control" name="counters">{{ graph.counters | my_split:'|' | my_join}}</textarea>
                              <span class="help-block">一行一个完整的counter，比如: cpu.idle 或者<br/>
                              使用tag来筛选，比如metric=net.if.in.bytes iface=eth0 (其中metric项必须得有; metric和tag之间，tag与tag之间用空格分割)</span>
                          </div>
