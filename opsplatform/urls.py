@@ -33,8 +33,7 @@ urlpatterns = [
     url(r'^perm/', include('perm.urls')),
     url(r'^jlog/', include('jlog.urls')),
     url(r'^monitor/', include('monitor.urls')),
-
-    url(r'^note_list/$', views.note_list, name='note_list'),
+    url(r'^note/', include('note.urls')),
 
     # api url
     url(r'^sso/sig$', sso_sig, name='sso_sig'),

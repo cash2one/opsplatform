@@ -101,6 +101,7 @@ INSTALLED_APPS = [
     'perm',
     'jlog',
     'monitor',
+    'note',
 ]
 
 MIDDLEWARE_CLASSES = [
