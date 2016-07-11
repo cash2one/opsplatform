@@ -331,11 +331,9 @@ def perm_role_delete(request):
                 raise ServerError(u"role_id %s 无数据记录" % role_id)
             # 删除推送到主机上的role
             filter_type = request.GET.get("filter_type")
-            print filter_type
             if filter_type:
                 if filter_type == "recycle_assets":
                     recycle_assets = [push.asset for push in role.perm_push.all() if push.success]
-                    print recycle_assets
                     recycle_assets_ip = ','.join([asset.ip for asset in recycle_assets])
                     return HttpResponse(recycle_assets_ip)
                 else:
@@ -428,15 +426,19 @@ def perm_role_edit(request):
     edit role page
     """
     # 渲染数据
-    header_title, path1, path2 = "系统用户", "系统用户管理", "系统用户编辑"
+    header_title, path1, path2 = "系统用户PermRole.objects.get", "系统用户管理", "系统用户编辑"
 
     # 渲染数据
     role_id = request.GET.get("id")
-    role = PermRole.objects.get(id=role_id)
-    role_pass = CRYPTOR.decrypt(role.password)
+    role = get_object(PermRole, id=role_id)
+
     sudo_all = PermSudo.objects.all()
-    role_sudos = role.sudo.all()
-    sudo_all = PermSudo.objects.all()
+    if role:
+        role_pass = CRYPTOR.decrypt(role.password)
+        role_sudos = role.sudo.all()
+    else:
+        role_pass = None
+        role_sudos = None
     if request.method == "GET":
         return render_to_response('perm/perm_role_edit.html', locals(), RequestContext(request))
 

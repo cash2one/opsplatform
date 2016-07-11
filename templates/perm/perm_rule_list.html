@@ -116,7 +116,7 @@ function remove_rule(rule_id){
         $.ajax({
            type: "POST",
            url: "{% url 'rule_del' %}",
-           data: "id=" + rule_id,
+           data: {id: rule_id},
            success: function(msg){
                alert( "成功: " + msg );
                var del_row = $('tbody#edittbody>tr#' + rule_id);

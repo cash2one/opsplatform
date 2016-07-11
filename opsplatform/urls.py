@@ -22,7 +22,7 @@ urlpatterns = [
     # Examples:
     url(r'^$', views.index, name='index'),
     url(r'^skin_config/$', views.skin_config, name='skin_config'),
-    url(r'^login/$', views.Login, name='login'),
+    url(r'^login', views.Login, name='login'),
     url(r'^logout/$', views.Logout, name='logout'),
     url(r'^exec_cmd/$', views.exec_cmd, name='exec_cmd'),
     url(r'^terminal/$', views.web_terminal, name='terminal'),
