@@ -84,7 +84,7 @@
                     <div class="form-group">
                         <label for="groups" class="col-sm-2 control-label">所属主机组</label>
 
-                        <div class="col-sm-3">
+                        <div class="col-sm-5">
                             <select id="groups" size="10" class="form-control m-b" multiple>
                             {% for asset_group in asset_group_all %}
                                     <option value="{{ asset_group.id }}">{{ asset_group.name }}</option>
@@ -97,7 +97,7 @@
                                 <button type="button" class="btn btn-white" onclick="move_left('groups_selected', 'groups')"><i class="fa fa-chevron-left"></i> </button>
                             </div>
                         </div>
-                        <div class="col-sm-3">
+                        <div class="col-sm-4">
                             <div>
                                 <select id="groups_selected" name="group" class="form-control m-b" size="10"  multiple>
                                 </select>

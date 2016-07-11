@@ -284,3 +284,8 @@ def web_terminal(request):
     if asset:
         hostname = asset.hostname
     return render_to_response('web_terminal.html', locals())
+
+
+@login_required(login_url='/login')
+def note_list(request):
+    pass
