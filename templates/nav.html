@@ -88,6 +88,27 @@
                 </ul>
             </li>
             {% endif %}
+            {% if perms.account.perm_can_view_deploy %}
+                <li id="deploy">
+                    <a href="{{ deploy_url }}" target="_blank"><i class="fa fa-coffee"></i>
+                        <span class="nav-label">代码发布</span><span class="label label-info pull-right"></span>
+                    </a>
+                </li>
+            {% endif %}
+            {% if perms.account.perm_can_view_config %}
+                <li id="deploy">
+                    <a href="{{ config_url }}" target="_blank"><i class="fa fa-cogs"></i>
+                        <span class="nav-label">配置中心</span><span class="label label-info pull-right"></span>
+                    </a>
+                </li>
+            {% endif %}
+            {% if perms.account.perm_can_view_virtmgr %}
+                <li id="deploy">
+                    <a href="{{ virtmgr_url }}" target="_blank"><i class="fa fa-cloud"></i>
+                        <span class="nav-label">虚拟化管理平台</span><span class="label label-info pull-right"></span>
+                    </a>
+                </li>
+            {% endif %}
         </ul>
     </div>
 </nav>

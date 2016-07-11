@@ -207,5 +207,13 @@ PORTAL_URL = 'http://172.16.60.23:5000'
 # alarm url
 ALARM_URL = 'http://172.16.60.23:9912'
 
+# deploy url
+DEPLOY_URL = 'http://172.16.60.4:8080/'
+
+# config url
+CONFIG_URL = 'http://172.16.60.8/'
+
+# virtmgr url
+VIRTMGR_URL = 'http://172.16.100.2/servers/'
 
 QUERY_ADDR = 'http://127.0.0.1:9966'

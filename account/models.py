@@ -89,5 +89,9 @@ class Role(models.Model):
             ("perm_can_view_portal", "查看监控Portal"),
             ("perm_can_view_screen", "查看监控趋势图"),
             ("perm_can_view_alarm", "查看未恢复的报警"),
+
+            ("perm_can_view_deploy", "查看代码发布"),
+            ("perm_can_view_config", "产看配置中心"),
+            ("perm_can_view_virtmgr", "查看虚拟化管理平台"),
         )
 
