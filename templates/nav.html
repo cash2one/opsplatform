@@ -109,12 +109,12 @@
                     </a>
                 </li>
             {% endif %}
-            {% if perms.account.perm_can_view_note %}
-                <li id="note">
-                    <a href="{% url 'note_list'%}"><i class="fa fa-book"></i>
-                    <span class="nav-label">运维记录</span><span class="label label-info pull-right"></span></a>
-                </li>
-            {% endif %}
+{#            {% if perms.account.perm_can_view_note %}#}
+{#                <li id="note">#}
+{#                    <a href="{% url 'note_list'%}"><i class="fa fa-book"></i>#}
+{#                    <span class="nav-label">运维记录</span><span class="label label-info pull-right"></span></a>#}
+{#                </li>#}
+{#            {% endif %}#}
         </ul>
     </div>
 </nav>
