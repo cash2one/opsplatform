@@ -93,5 +93,7 @@ class Role(models.Model):
             ("perm_can_view_deploy", "查看代码发布"),
             ("perm_can_view_config", "产看配置中心"),
             ("perm_can_view_virtmgr", "查看虚拟化管理平台"),
+
+            ("perm_can_view_note", "查看运维记录"),
         )
 
