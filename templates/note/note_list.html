@@ -41,7 +41,6 @@
                         </div>
                     </form>
                     </div>
-
                     <table class="table table-striped table-bordered table-hover " id="editable" >
                         <thead>
                             <tr>
@@ -74,7 +73,7 @@
                                     <a href="{% url 'note_edit' %}?id={{ note.id }}" class="btn btn-xs btn-info">编辑</a>
                                     {% endif %}
                                     {% if perms.account.perm_can_delete_note %}
-                                    <a href="{% url 'note_del' %}?id={{ note.id }}" class="btn btn-xs btn-danger del">删除</a>
+                                    <a value="{% url 'note_del' %}?id={{ note.id }}" class="btn btn-xs btn-danger del">删除</a>
                                     {% endif %}
                                 </td>
                             </tr>
