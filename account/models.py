@@ -95,5 +95,8 @@ class Role(models.Model):
             ("perm_can_view_virtmgr", "查看虚拟化管理平台"),
 
             ("perm_can_view_note", "查看运维记录"),
+            ("perm_can_change_note", "修改运维记录"),
+            ("perm_can_delete_note", "删除运维记录"),
+            ("perm_can_add_note", "增加运维记录"),
         )
 

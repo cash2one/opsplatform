@@ -13,5 +13,6 @@ from note.views import *
 urlpatterns = [
     url(r'^list/$', note_list, name='note_list'),
     url(r'^add/$', note_add, name='note_add'),
+    url(r'^edit/$', note_edit, name='note_edit'),
     url(r'^del/$', note_del, name='note_del'),
 ]
