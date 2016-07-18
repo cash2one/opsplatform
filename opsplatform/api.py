@@ -82,6 +82,12 @@ def mkdir(dir_name, username='', mode=755):
         chown(dir_name, username)
 
 
+def list_drop_str(a_list, a_str):
+    for i in a_list:
+        if i == a_str:
+            a_list.remove(a_str)
+    return a_list
+
 def http_success(request, msg):
     message = msg
     return render_to_response('success.html', locals(), RequestContext(request))

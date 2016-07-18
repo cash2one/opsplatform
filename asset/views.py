@@ -70,7 +70,6 @@ def group_edit(request):
         name = request.POST.get('name', '')
         asset_select = request.POST.getlist('asset_select', [])
         comment = request.POST.get('comment', '')
-
         try:
             if not name:
                 emg = u'组名不能为空'
@@ -88,7 +87,7 @@ def group_edit(request):
         else:
             group.asset_set.clear()
             db_update_group(id=group_id, name=name, comment=comment, asset_select=asset_select)
-            smg = u"主机组 %s 添加成功" % name
+            smg = u"主机组 %s 修改成功" % name
 
         return HttpResponseRedirect(reverse('asset_group_list'))
 
