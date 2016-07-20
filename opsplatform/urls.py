@@ -33,6 +33,7 @@ urlpatterns = [
     url(r'^perm/', include('perm.urls')),
     url(r'^jlog/', include('jlog.urls')),
     url(r'^monitor/', include('monitor.urls')),
+    url(r'^express/', include('express.urls')),
     url(r'^note/', include('note.urls')),
 
     # api url
