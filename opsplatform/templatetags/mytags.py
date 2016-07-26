@@ -14,6 +14,7 @@ from opsplatform.api import *
 from account.models import User
 from django.contrib.auth.models import Group, Permission
 from monitor.models import DashboardScreen
+from express.models import *
 from perm.perm_api import get_group_user_perm
 
 register = template.Library()
@@ -301,3 +302,39 @@ def my_split(strl, arg):
 @register.filter(name='my_join')
 def my_join(strl):
     return '\n'.join(strl)
+
+
+
+@register.filter(name='list_0')
+def list_0(char_str):
+    return char_str[0]
+
+
+@register.filter(name='list_1')
+def list_1(char_str):
+    return char_str[1]
+
+
+@register.filter(name='get_env_name')
+def get_env_name(code):
+    try:
+        return [i[1] for i in ENV if i[0] == int(code)][0]
+    except:
+        return ''
+
+
+@register.filter(name='get_product_name')
+def get_product_name(code):
+    try:
+        return [i[1] for i in LINE if i[0] == int(code)][0]
+    except:
+        return ''
+
+
+@register.filter(name='get_status_name')
+def get_status_name(code):
+    try:
+        print code
+        return [i[1] for i in STATUS if i[0] == int(code)][0]
+    except:
+        return ''

@@ -9,7 +9,7 @@
             <div class="ibox float-e-margins">
 
                 <div class="ibox-title">
-                    <h5> 发布列表</h5>
+                    <h5> 查看发布任务</h5>
                     <div class="ibox-tools">
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>
@@ -24,7 +24,7 @@
                 </div>
 
                 <div class="ibox-content">
-                    <a href="{% url 'express_add' %}" class="btn btn-sm btn-primary "> 添加发布任务 </a>
+                    <div class="">
                     <form id="search_form" method="get" action="" class="pull-right mail-search">
                         <div class="input-group">
                             <input type="text" class="form-control input-sm" id="search_input" name="search" placeholder="Search">
@@ -35,21 +35,24 @@
                             </div>
                         </div>
                     </form>
+                    </div>
+
                     <table class="table table-striped table-bordered table-hover " id="editable" >
                         <thead>
                             <tr>
                                 <th class="text-center">发布序列号</th>
-                                <th class="text-center">产品线</th>
-                                <th class="text-center">项目名称</th>
+                                <th class="text-center">生产线</th>
+                                <th class="text-center">产品名称</th>
                                 <th class="text-center">环境类型</th>
                                 <th class="text-center">版本</th>
                                 <th class="text-center">项目负责人</th>
-                                <th class="text-center">提交时间</th>
-                                <th class="text-center">提交人</th>
-                                <th class="text-center">审核时间</th>
-                                <th class="text-center">审核人</th>
-                                <th class="text-center">发布时间</th>
-                                <th class="text-center">发布人</th>
+{#                                <th class="text-center">提交时间</th>#}
+{#                                <th class="text-center">提交人</th>#}
+{#                                <th class="text-center">审核时间</th>#}
+{#                                <th class="text-center">审核人</th>#}
+{#                                <th class="text-center">计划发版时间</th>#}
+{#                                <th class="text-center">发布时间</th>#}
+{#                                <th class="text-center">发布人</th>#}
                                 <th class="text-center">状态</th>
                                 <th class="text-center">操作</th>
                             </tr>
@@ -58,18 +61,16 @@
                         {% for task in publish_tasks.object_list %}
                             <tr class="gradeX">
                                 <td class="text-center">
-                                    {% if perms.account.express_can_view_publishtask %}
-                                    <a href="{% url 'express_detail' %}?id={{ task.id }}"> {{ task.seq_no }} </a>
-                                    {% endif %}
+                                    <a href="{% url 'publish_task_detail' %}?id={{ task.id }}"> {{ task.seq_no }} </a>
                                 </td>
                                 <td class="text-center">
-                                    {{ task.product }}
+                                    {{ task.product|get_product_name }}
                                 </td>
                                 <td class="text-center">
                                     {{ task.project }}
                                 </td>
                                 <td class="text-center">
-                                    {{ task.type }}
+                                    {{ task.env|get_env_name }}
                                 </td>
                                 <td class="text-center">
                                     {{ task.version }}
@@ -77,36 +78,40 @@
                                 <td class="text-center">
                                     {{ task.owner }}
                                 </td>
+{#                                <td class="text-center">#}
+{#                                    {{ task.submit_time }}#}
+{#                                </td>#}
+{#                                <td class="text-center">#}
+{#                                    {{ task.submit_by }}#}
+{#                                </td>#}
+{#                                <td class="text-center">#}
+{#                                    {{ task.approval_time }}#}
+{#                                </td>#}
+{#                                <td class="text-center">#}
+{#                                    {{ task.approval_by }}#}
+{#                                </td>#}
+{#                                <td class="text-center">#}
+{#                                    {{ task.publish_time }}#}
+{#                                </td>#}
+{#                                <td class="text-center">#}
+{#                                    {{ task.deploy_time }}#}
+{#                                </td>#}
+{#                                <td class="text-center">#}
+{#                                    {{ task.deploy_by }}#}
+{#                                </td>#}
                                 <td class="text-center">
-                                    {{ task.submit_time }}
+                                    {{ task.status|get_status_name }}
                                 </td>
+
                                 <td class="text-center">
-                                    {{ task.submit_by }}
-                                </td>
-                                <td class="text-center">
-                                    {{ task.approval_time|none2null }}
-                                </td>
-                                <td class="text-center">
-                                    {{ task.approval_by|none2null }}
-                                </td>
-                                <td class="text-center">
-                                    {{ task.deploy_time|none2null }}
-                                </td>
-                                <td class="text-center">
-                                    {{ task.deploy_by|none2null }}
-                                </td>
-                                <td class="text-center">
-                                    {{ task.status }}
-                                </td>
-                                <td class="text-center">
-                                    {% if perms.account.express_can_change_publishtask %}
-                                    <a href="{% url 'express_detail' %}?id={{ task.id }}" class="btn btn-xs btn-warning">驳回</a>
+                                    {% if perms.account.perm_can_change_publish_task %}
+                                    <a href="{% url 'publish_task_trash' %}?id={{ task.id }}" class="btn btn-xs btn-info">作废</a>
                                     {% endif %}
-                                    {% if perms.account.express_can_change_publishtask %}
-                                    <a href="{% url 'express_detail' %}?id={{ task.id }}" class="btn btn-xs btn-success">发布</a>
+                                    {% if perms.account.perm_can_submit_publish_task %}
+                                    <a href="{% url 'publish_task_deploy' %}?id={{ task.id }}" class="btn btn-xs btn-info">发布</a>
                                     {% endif %}
-                                    {% if perms.account.express_can_change_publishtask %}
-                                    <a href="{% url 'express_detail' %}?id={{ task.id }}" class="btn btn-xs btn-danger">回滚</a>
+                                    {% if perms.account.perm_can_apply_publish_task %}
+                                    <a href="{% url 'publish_task_rollback' %}?id={{ task.id }}" class="btn btn-xs btn-info">回滚</a>
                                     {% endif %}
                                 </td>
                             </tr>
@@ -128,7 +133,3 @@
 </div>
 {% endblock %}
 
-{% block self_head_css_js %}
-    {% load staticfiles %}
-    <script src="{% static 'js/jquery.shiftcheckbox.js' %}"></script>
-{% endblock %}

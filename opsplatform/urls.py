@@ -35,6 +35,7 @@ urlpatterns = [
     url(r'^monitor/', include('monitor.urls')),
     url(r'^express/', include('express.urls')),
     url(r'^note/', include('note.urls')),
+    url(r'^api/', include('api.urls')),
 
     # api url
     url(r'^sso/sig$', sso_sig, name='sso_sig'),

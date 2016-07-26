@@ -103,6 +103,7 @@ INSTALLED_APPS = [
     'monitor',
     'express',
     'note',
+    'api',
 ]
 
 MIDDLEWARE_CLASSES = [

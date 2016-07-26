@@ -1,0 +1,162 @@
+{% extends 'base.html' %}
+{% load mytags %}
+
+
+{% block content %}
+    {% include 'nav_cat_bar.html' %}
+    <div class="wrapper wrapper-content animated fadeInRight">
+        <div class="row">
+            <div class="col-sm-4">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <span class="label label-primary"><b>{{ publish_task.seq_no }}</b></span>
+                        <div class="ibox-tools">
+                            <a class="collapse-link">
+                                <i class="fa fa-chevron-up"></i>
+                            </a>
+                            <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                                <i class="fa fa-wrench"></i>
+                            </a>
+                            <ul class="dropdown-menu dropdown-group">
+                                <li><a href="#"></a>
+                                </li>
+                                <li><a href="#"></a>
+                                </li>
+                            </ul>
+                            <a class="close-link">
+                                <i class="fa fa-times"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="ibox-content">
+                        <div>
+                            <div class="text-left">
+                                <table class="table">
+                                    <tr>
+                                        <td class="text-navy">ID</td>
+                                        <td>{{ publish_task.id }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">发布序列号</td>
+                                        <td>{{ publish_task.seq_no }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">产品线</td>
+                                        <td>{{ publish_task.product|get_product_name }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">产品名称</td>
+                                        <td>
+                                            {{ publish_task.project }}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">环境类型</td>
+                                        <td>
+                                            {{ publish_task.env|get_env_name }}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">版本</td>
+                                        <td>
+                                            {{ publish_task.version }}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">更新理由</td>
+                                        <td>
+                                            {{ publish_task.update_remark }}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">代码地址</td>
+                                        <td>{{ publish_task.code_dir }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">Tag</td>
+                                        <td>{{ publish_task.code_tag }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">数据库更新说明</td>
+                                        <td>{{ publish_task.database_update }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">数据库更新说明</td>
+                                        <td>{{ publish_task.database_update }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">更新SQL文件</td>
+                                        <td>{{ publish_task.upload_sql }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">环境设置</td>
+                                        <td>{{ publish_task.settings }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">更新说明</td>
+                                        <td>{{ publish_task.update_note }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">项目负责人</td>
+                                        <td>{{ publish_task.owner }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">提交时间</td>
+                                        <td>{{ publish_task.submit_time|none2null }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">提交人</td>
+                                        <td>{{ publish_task.submit_by|none2null }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">审核时间</td>
+                                        <td>{{ publish_task.approval_time|none2null }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">审核人</td>
+                                        <td>{{ publish_task.approval_by|none2null }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">计划发版时间</td>
+                                        <td>{{ publish_task.publish_time|none2null }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">发布时间</td>
+                                        <td>{{ publish_task.deploy_time|none2null }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">发布人</td>
+                                        <td>{{ publish_task.deploy_by|none2null }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">状态</td>
+                                        <td>{{ publish_task.status|get_status_name }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">创建时间</td>
+                                        <td>{{ publish_task.create_time }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">创建人</td>
+                                        <td>{{ publish_task.create_by }}</td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<script>
+    $(document).ready(function(){
+        $('#show').click(function(){
+            $('#last').css('display', 'none');
+            $('#all').css('display', 'block');
+        })
+    })
+</script>
+
+
+{% endblock %}
