@@ -12,5 +12,5 @@ from api.views import *
 
 
 urlpatterns = [
-    url(r'^publish_task_create/$', publish_task_create, name='publish_task_create$'),
+    url(r'^publish_task_create/$', publish_task_create, name='publish_task_create'),
 ]

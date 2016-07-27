@@ -19,6 +19,8 @@ import subprocess
 import uuid
 import json
 import logging
+import urllib
+import urllib2
 
 from settings import *
 from django.core.serializers.json import DjangoJSONEncoder
@@ -322,6 +324,23 @@ def get_tmp_dir():
     dir_name = os.path.join('/tmp', '%s-%s' % (datetime.datetime.now().strftime('%Y%m%d-%H%M%S'), seed))
     mkdir(dir_name, mode=777)
     return dir_name
+
+
+def api_call(url, param={}, method='GET', headers={}):
+    '''
+    get data from other system via api
+    '''
+    if isinstance(param, dict):
+        param = urllib.urlencode(param)
+    try:
+        if method == 'GET':
+            req = urllib2.Request('%s?%s' % (url, param), headers=headers)
+        else:
+            req = urllib2.Request(url, param, headers)
+        r = urllib2.urlopen(req).read()
+        return json.loads(r)
+    except Exception, e:
+        return {'msg': e, 'code': -1}
 
 
 CRYPTOR = PyCrypt(KEY)

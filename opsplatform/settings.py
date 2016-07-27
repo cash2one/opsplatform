@@ -204,11 +204,17 @@ CRONJOBS = [
     ('*/10 * * * *', 'jlog.log_api.kill_invalid_connection'),
 ]
 
-# portal_url URL
+# open-falcon URL
 PORTAL_URL = 'http://172.16.60.23:5000'
-
-# alarm url
 ALARM_URL = 'http://172.16.60.23:9912'
+QUERY_ADDR = 'http://172.16.60.23:9966'
+
+
+# API Domian
+PUBLISH_CENTER_URL = config.get('base', 'publish_center_api_url')
+PUBLISH_TASK_STATUS_UPDATE = '/publish_task_status_update/'
+
+
 
 # deploy url
 DEPLOY_URL = 'http://172.16.60.4:8080/'
@@ -218,5 +224,3 @@ CONFIG_URL = 'http://172.16.60.8/'
 
 # virtmgr url
 VIRTMGR_URL = 'http://172.16.100.2/servers/'
-
-QUERY_ADDR = 'http://127.0.0.1:9966'

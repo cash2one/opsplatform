@@ -32,7 +32,7 @@ STATUS = (
 
 
 class PublishTask(models.Model):
-    seq_no = models.CharField(u'发布序列号', max_length=50)
+    seq_no = models.CharField(u'发布序列号', max_length=50, unique=True)
     product = models.CharField(u'产品线', max_length=100, null=True)
     project = models.CharField(u'产品名称', max_length=100)
     env = models.CharField(u'环境类型', max_length=50)

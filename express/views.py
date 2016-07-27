@@ -10,6 +10,7 @@
 from opsplatform.api import *
 from models import *
 from django.utils import timezone
+from opsplatform import settings
 
 
 def publish_task_list(request):
@@ -44,15 +45,78 @@ def publish_task_detail(request):
 
 
 def publish_task_trash(request):
-    pass
+    task_id = request.GET.get('id', '')
+    if not task_id:
+        return HttpResponseRedirect(reverse('publish_task_list'))
+    publish_task = get_object(PublishTask, id=task_id)
+    if not publish_task:
+        return HttpResponseRedirect(reverse('publish_task_list'))
+    publish_task.status = 6
+    publish_task.save()
+    # 调用接口
+    data = api_call('%s%s' % (settings.PUBLISH_CENTER_URL, settings.PUBLISH_TASK_STATUS_UPDATE),
+                    json.dumps({"seq_no": publish_task.seq_no, "status": publish_task.status,
+                                "deploy_time": publish_task.deploy_time.strftime("%Y-%m-%d %H:%M:%S"),
+                                "deploy_by": publish_task.deploy_by}), 'POST',
+                    {'Content-Type': 'application/json'})
+    if data and data.get('code') == -1:
+        error = data.get('msg')
+        return HttpResponse(error)
+    if not data:
+        error = u'无法打开目标网址,请联系系统开发人员!'
+        return HttpResponse(error)
+    return HttpResponseRedirect(reverse('publish_task_list'))
 
 
 def publish_task_deploy(request):
-    pass
+    task_id = request.GET.get('id', '')
+    if not task_id:
+        return HttpResponseRedirect(reverse('publish_task_list'))
+    publish_task = get_object(PublishTask, id=task_id)
+    if not publish_task:
+        return HttpResponseRedirect(reverse('publish_task_list'))
+    publish_task.status = 4
+    publish_task.deploy_time = datetime.datetime.now()
+    publish_task.deploy_by = request.user.username
+    publish_task.save()
+    # 调用接口
+    data = api_call('%s%s' % (settings.PUBLISH_CENTER_URL, settings.PUBLISH_TASK_STATUS_UPDATE),
+                    json.dumps({"seq_no": publish_task.seq_no, "status": publish_task.status,
+                                "deploy_time": publish_task.deploy_time.strftime("%Y-%m-%d %H:%M:%S"),
+                                "deploy_by": publish_task.deploy_by}), 'POST',
+                    {'Content-Type': 'application/json'})
+    print data
+    if data and data.get('code') == -1:
+        error = data.get('msg')
+        return HttpResponse(error)
+    if not data:
+        error = u'无法打开目标网址,请联系系统开发人员!'
+        return HttpResponse(error)
+    return HttpResponseRedirect(reverse('publish_task_list'))
 
 
 def publish_task_rollback(request):
-    pass
+    task_id = request.GET.get('id', '')
+    if not task_id:
+        return HttpResponseRedirect(reverse('publish_task_list'))
+    publish_task = get_object(PublishTask, id=task_id)
+    if not publish_task:
+        return HttpResponseRedirect(reverse('publish_task_list'))
+    publish_task.status = 5
+    publish_task.save()
+    # 调用接口
+    data = api_call('%s%s' % (settings.PUBLISH_CENTER_URL, settings.PUBLISH_TASK_STATUS_UPDATE),
+                    json.dumps({"seq_no": publish_task.seq_no, "status": publish_task.status,
+                                "deploy_time": publish_task.deploy_time.strftime("%Y-%m-%d %H:%M:%S"),
+                                "deploy_by": publish_task.deploy_by}), 'POST',
+                    {'Content-Type': 'application/json'})
+    if data and data.get('code') == -1:
+        error = data.get('msg')
+        return HttpResponse(error)
+    if not data:
+        error = u'无法打开目标网址,请联系系统开发人员!'
+        return HttpResponse(error)
+    return HttpResponseRedirect(reverse('publish_task_list'))
 
 
 def express_app_list(request):

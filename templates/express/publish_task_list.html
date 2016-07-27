@@ -105,7 +105,7 @@
 
                                 <td class="text-center">
                                     {% if perms.account.perm_can_change_publish_task %}
-                                    <a href="{% url 'publish_task_trash' %}?id={{ task.id }}" class="btn btn-xs btn-info">作废</a>
+                                    <a href="{% url 'publish_task_trash' %}?id={{ task.id }}" class="btn btn-xs btn-info">驳回</a>
                                     {% endif %}
                                     {% if perms.account.perm_can_submit_publish_task %}
                                     <a href="{% url 'publish_task_deploy' %}?id={{ task.id }}" class="btn btn-xs btn-info">发布</a>
