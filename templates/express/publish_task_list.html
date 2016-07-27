@@ -45,7 +45,9 @@
                                 <th class="text-center">产品名称</th>
                                 <th class="text-center">环境类型</th>
                                 <th class="text-center">版本</th>
+                                <th class="text-center">提交人</th>
                                 <th class="text-center">项目负责人</th>
+                                <th class="text-center">计划发版时间</th>
 {#                                <th class="text-center">提交时间</th>#}
 {#                                <th class="text-center">提交人</th>#}
 {#                                <th class="text-center">审核时间</th>#}
@@ -76,7 +78,14 @@
                                     {{ task.version }}
                                 </td>
                                 <td class="text-center">
+                                    {{ task.submit_by }}
+                                </td>
+
+                                <td class="text-center">
                                     {{ task.owner }}
+                                </td>
+                                <td class="text-center">
+                                    {{ task.publish_time }}
                                 </td>
 {#                                <td class="text-center">#}
 {#                                    {{ task.submit_time }}#}
@@ -104,13 +113,13 @@
                                 </td>
 
                                 <td class="text-center">
-                                    {% if perms.account.perm_can_change_publish_task %}
+                                    {% if perms.account.perm_can_trash_publish_task %}
                                     <a href="{% url 'publish_task_trash' %}?id={{ task.id }}" class="btn btn-xs btn-info">驳回</a>
                                     {% endif %}
-                                    {% if perms.account.perm_can_submit_publish_task %}
+                                    {% if perms.account.perm_can_deploy_publish_task %}
                                     <a href="{% url 'publish_task_deploy' %}?id={{ task.id }}" class="btn btn-xs btn-info">发布</a>
                                     {% endif %}
-                                    {% if perms.account.perm_can_apply_publish_task %}
+                                    {% if perms.account.perm_can_rollback_publish_task %}
                                     <a href="{% url 'publish_task_rollback' %}?id={{ task.id }}" class="btn btn-xs btn-info">回滚</a>
                                     {% endif %}
                                 </td>

@@ -90,9 +90,11 @@ class Role(models.Model):
             ("perm_can_view_screen", "查看监控趋势图"),
             ("perm_can_view_alarm", "查看未恢复的报警"),
 
-            ("perm_can_view_express", "代码发布"),
-            ("perm_can_view_publish_task", "查看代码发布"),
-
+            ("perm_can_view_express", "发布任务管理"),
+            ("perm_can_view_publish_task", "查看发布任务"),
+            ("perm_can_trash_publish_task", "驳回发布任务"),
+            ("perm_can_deploy_publish_task", "部署发布任务"),
+            ("perm_can_rollback_publish_task", "回滚发布任务"),
 
             ("perm_can_view_config", "产看配置中心"),
             ("perm_can_view_virtmgr", "查看虚拟化管理平台"),

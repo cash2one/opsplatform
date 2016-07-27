@@ -13,6 +13,7 @@ from django.utils import timezone
 from opsplatform import settings
 
 
+@require_permission('account.perm_can_view_publish_task')
 def publish_task_list(request):
     """
     list publish task
@@ -33,6 +34,7 @@ def publish_task_list(request):
     return render_to_response('express/publish_task_list.html', locals(), RequestContext(request))
 
 
+@require_permission('account.perm_can_view_publish_task')
 def publish_task_detail(request):
     header_title, path1, path2 = '发布任务详情', '查看发布任务', '发布任务详情'
     task_id = request.GET.get('id', '')
@@ -44,6 +46,7 @@ def publish_task_detail(request):
     return render_to_response('express/publish_task_detail.html', locals(), RequestContext(request))
 
 
+@require_permission('account.perm_can_trash_publish_task')
 def publish_task_trash(request):
     task_id = request.GET.get('id', '')
     if not task_id:
@@ -68,6 +71,7 @@ def publish_task_trash(request):
     return HttpResponseRedirect(reverse('publish_task_list'))
 
 
+@require_permission('account.perm_can_deploy_publish_task')
 def publish_task_deploy(request):
     task_id = request.GET.get('id', '')
     if not task_id:
@@ -95,6 +99,7 @@ def publish_task_deploy(request):
     return HttpResponseRedirect(reverse('publish_task_list'))
 
 
+@require_permission('account.perm_can_rollback_publish_task')
 def publish_task_rollback(request):
     task_id = request.GET.get('id', '')
     if not task_id:
