@@ -744,8 +744,7 @@ def dash_screen_delete(request, sid):
         return HttpResponse("no such screen")
     screen.delete()
     try:
-        heart_screen = DashboardScreenHeart.objects.get(id=sid)
-        heart_screen.delete()
+        DashboardScreenHeart.objects.filter(screenid=sid).delete()
     except:
         pass
 
