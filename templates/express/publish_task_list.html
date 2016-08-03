@@ -113,13 +113,13 @@
 
                                     <td class="text-center">
                                         {% if perms.account.perm_can_trash_publish_task %}
-                                        <a href="{% url 'publish_task_trash' %}?id={{ task.id }}" class="btn btn-xs btn-info">驳回</a>
+                                        <a href="{% url 'publish_task_trash' %}?id={{ task.id }}" class="btn btn-xs btn-warning {% if task.status != '3' %} disabled {% endif %}">驳回</a>
                                         {% endif %}
                                         {% if perms.account.perm_can_deploy_publish_task %}
-                                        <a href="{% url 'publish_task_deploy' %}?id={{ task.id }}" class="btn btn-xs btn-info">发布</a>
+                                        <a href="{% url 'publish_task_deploy' %}?id={{ task.id }}" class="btn btn-xs btn-success {% if task.status != '3' %} disabled {% endif %}">发布</a>
                                         {% endif %}
                                         {% if perms.account.perm_can_rollback_publish_task %}
-                                        <a href="{% url 'publish_task_rollback' %}?id={{ task.id }}" class="btn btn-xs btn-info">回滚</a>
+                                        <a href="{% url 'publish_task_rollback' %}?id={{ task.id }}" class="btn btn-xs btn-danger {% if task.status != '4' %} disabled {% endif %}">回滚</a>
                                         {% endif %}
                                     </td>
                                 </tr>
