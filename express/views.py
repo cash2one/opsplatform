@@ -23,12 +23,17 @@ def publish_task_list(request):
     keyword = request.GET.get('search', '')
     publish_task_list = PublishTask.objects.all().order_by('-seq_no')
     task_id = request.GET.get('id', '')
+    status_all = list(STATUS)
+    env_all = list(ENV)
+    env_value = request.GET.get('env', '')
+    status_value = request.GET.get('status', '3')
 
+    if env_value:
+        publish_task_list = publish_task_list.filter(env=env_value)
+    if status_value:
+        publish_task_list = publish_task_list.filter(status=status_value)
     if keyword:
         publish_task_list = publish_task_list.filter(name__icontains=keyword)
-
-    if task_id:
-        publish_task_list = publish_task_list.filter(id=int(task_id))
 
     publish_task_list, p, publish_tasks, page_range, current_page, show_first, show_end = pages(publish_task_list, request)
     return render_to_response('express/publish_task_list.html', locals(), RequestContext(request))
