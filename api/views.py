@@ -7,7 +7,7 @@
 @time: 16-7-25 上午11:36
 """
 
-from express.models import PublishTask
+from express.models import *
 from django.views.decorators.csrf import csrf_exempt
 import json
 from opsplatform.api import JsonResponse
@@ -49,4 +49,59 @@ def publish_task_create(request):
     else:
         return JsonResponse({'msg': "not POST method.", 'code': 0})
     return JsonResponse({'msg': 'success', 'code': 1})
+
+
+@csrf_exempt
+def app_publish_task_create(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            data = data.get('data')
+            print data
+            obj, created = AppPublishTask.objects.get_or_create(seq_no=data.get('seq_no'),
+                                                                defaults={
+                                                                    'style': data.get('style'),
+                                                                    'platform': data.get('platform'),
+                                                                    'version': data.get('version'),
+                                                                    'owner': data.get('owner'),
+                                                                    'update_remark': data.get('update_remark'),
+                                                                    'client_apk_path': data.get('client_apk_path'),
+                                                                    'client_sys_AndroidPublishVersion': data.get('client_sys_AndroidPublishVersion'),
+                                                                    'client_sys_IOSPublishVersion': data.get('client_sys_IOSPublishVersion'),
+                                                                    'client_sys_isforcedupdate': data.get('client_sys_isforcedupdate'),
+                                                                    'client_config_iossjversion': data.get('client_config_iossjversion'),
+                                                                    'client_config_iosUpdateRemark': data.get('client_config_iosUpdateRemark'),
+                                                                    'client_config_androidversion': data.get('client_config_androidversion'),
+                                                                    'client_config_androidsjversion': data.get('client_config_androidsjversion'),
+                                                                    'client_config_downloadandroidpath': data.get('client_config_downloadandroidpath'),
+                                                                    'client_config_androidverremark': data.get('client_config_androidverremark'),
+                                                                    'client_config_androidsUpdateRemark': data.get('client_config_androidsUpdateRemark'),
+                                                                    'courier_apk_path': data.get('courier_apk_path'),
+                                                                    'courier_sys_AndroidPublishVersion': data.get('courier_sys_AndroidPublishVersion'),
+                                                                    'courier_sys_IOSPublishVersion': data.get('courier_sys_IOSPublishVersion'),
+                                                                    'courier_sys_isforcedupdate': data.get('courier_sys_isforcedupdate'),
+                                                                    'courier_config_iossjversion': data.get('courier_config_iossjversion'),
+                                                                    'courier_config_iosUpdateRemark': data.get('courier_config_iosUpdateRemark'),
+                                                                    'courier_config_androidversion': data.get('courier_config_androidversion'),
+                                                                    'courier_config_androidsjversion': data.get('courier_config_androidsjversion'),
+                                                                    'courier_config_downloadandroidpath': data.get('courier_config_downloadandroidpath'),
+                                                                    'courier_config_androidverremark': data.get('courier_config_androidverremark'),
+                                                                    'courier_config_androidsUpdateRemark': data.get('courier_config_androidsUpdateRemark'),
+                                                                    'apply_time': data.get('apply_time'),
+                                                                    'apply_by': data.get('apply_by'),
+                                                                    'publish_time': data.get('publish_time'),
+                                                                    'submit_time': data.get('submit_time'),
+                                                                    'submit_by': data.get('submit_by'),
+                                                                    'status': data.get('status'),
+                                                                    'create_time': data.get('create_time'),
+                                                                    'create_by': data.get('create_by'),
+                                                             })
+        except Exception, e:
+            print e
+            return JsonResponse({'msg': "parameter format invalid.", 'code': 0})
+    else:
+        return JsonResponse({'msg': "not POST method.", 'code': 0})
+    return JsonResponse({'msg': 'success', 'code': 1})
+
+
 

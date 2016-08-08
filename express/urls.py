@@ -17,5 +17,9 @@ urlpatterns = [
     url(r'^publish_task_trash/$', publish_task_trash, name='publish_task_trash'),
     url(r'^publish_task_deploy/$', publish_task_deploy, name='publish_task_deploy'),
     url(r'^publish_task_rollback/$', publish_task_rollback, name='publish_task_rollback'),
-    url(r'^express_app_list/$', express_app_list, name='express_app_list'),
+    url(r'^app_publish_task_list/$', app_publish_task_list, name='app_publish_task_list'),
+    url(r'^app_publish_task_detail/$', app_publish_task_detail, name='app_publish_task_detail'),
+    url(r'^app_publish_task_trash/$', app_publish_task_trash, name='app_publish_task_trash'),
+    url(r'^app_publish_task_deploy/$', app_publish_task_deploy, name='app_publish_task_deploy'),
+    url(r'^app_publish_task_rollback/$', app_publish_task_rollback, name='app_publish_task_rollback'),
 ]

@@ -95,6 +95,10 @@ class Role(models.Model):
             ("perm_can_trash_publish_task", "驳回发布任务"),
             ("perm_can_deploy_publish_task", "部署发布任务"),
             ("perm_can_rollback_publish_task", "回滚发布任务"),
+            ("perm_can_view_app_publish_task", "查看APP发布任务"),
+            ("perm_can_trash_app_publish_task", "驳回APP发布任务"),
+            ("perm_can_deploy_app_publish_task", "部署APP发布任务"),
+            ("perm_can_rollback_app_publish_task", "回滚APP发布任务"),
 
             ("perm_can_view_config", "产看配置中心"),
             ("perm_can_view_virtmgr", "查看虚拟化管理平台"),

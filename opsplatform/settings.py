@@ -213,6 +213,7 @@ QUERY_ADDR = 'http://172.16.60.23:9966'
 # API Domian
 PUBLISH_CENTER_URL = config.get('base', 'publish_center_api_url')
 PUBLISH_TASK_STATUS_UPDATE = '/publish_task_status_update/'
+APP_PUBLISH_TASK_STATUS_UPDATE = '/app_publish_task_status_update/'
 
 
 

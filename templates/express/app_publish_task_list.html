@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+{% load mytags %}
+{% block content %}
+{% include 'nav_cat_bar.html' %}
+
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-sm-10">
+            <div class="ibox float-e-margins">
+
+                <div class="ibox-title">
+                    <h5> 查看发布任务</h5>
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                            <i class="fa fa-wrench"></i>
+                        </a>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="ibox-content">
+                    <div class="">
+                    <form id="search_form" method="get" action="" class="pull-right mail-search">
+                        <div class="input-group">
+                            <input type="text" class="form-control input-sm" id="search_input" name="search" placeholder="Search">
+                            <div class="input-group-btn">
+                                <button id='search_btn' type="submit" class="btn btn-sm btn-primary">
+                                    -搜索-
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                    </div>
+
+                    <table class="table table-striped table-bordered table-hover " id="editable" >
+                        <thead>
+                            <tr>
+                                <th class="text-center">发布序列号</th>
+                                <th class="text-center">类型</th>
+                                <th class="text-center">平台</th>
+                                <th class="text-center">版本</th>
+                                <th class="text-center">项目负责人</th>
+                                <th class="text-center">计划发版时间</th>
+                                <th class="text-center">状态</th>
+                                <th class="text-center">操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for task in app_publish_tasks.object_list %}
+                            <tr class="gradeX">
+                                <td class="text-center">
+                                    <a href="{% url 'app_publish_task_detail' %}?id={{ task.id }}"> {{ task.seq_no }} </a>
+                                </td>
+                                <td class="text-center">
+                                    {{ task.style|get_style_name }}
+                                </td>
+                                <td class="text-center">
+                                    {{ task.platform|get_platform_name }}
+                                </td>
+                                <td class="text-center">
+                                    {{ task.version }}
+                                </td>
+                                <td class="text-center">
+                                    {{ task.owner }}
+                                </td>
+                                <td class="text-center">
+                                    {{ task.publish_time }}
+                                </td>
+                                <td class="text-center">
+                                    {{ task.status|get_status_name }}
+                                </td>
+
+                                <td class="text-center">
+                                    {% if perms.account.perm_can_trash_app_publish_task %}
+                                    <a href="{% url 'app_publish_task_trash' %}?id={{ task.id }}" class="btn btn-xs btn-warning {% if task.status != '3' %} disabled {% endif %}">驳回</a>
+                                    {% endif %}
+                                    {% if perms.account.perm_can_deploy_app_publish_task %}
+                                    <a href="{% url 'app_publish_task_deploy' %}?id={{ task.id }}" class="btn btn-xs btn-success {% if task.status != '3' %} disabled {% endif %}">发布</a>
+                                    {% endif %}
+                                    {% if perms.account.perm_can_rollback_app_publish_task %}
+                                    <a href="{% url 'app_publish_task_rollback' %}?id={{ task.id }}" class="btn btn-xs btn-danger {% if task.status != '4' %} disabled {% endif %}">回滚</a>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="dataTables_info" id="editable_info" role="status" aria-live="polite">
+                                Showing {{ app_publish_tasks.start_index }} to {{ app_publish_tasks.end_index }} of {{ p.count }} entries
+                            </div>
+                        </div>
+                        {% include 'paginator.html' %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

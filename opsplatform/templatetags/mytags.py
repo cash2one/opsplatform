@@ -338,3 +338,19 @@ def get_status_name(code):
         return [i[1] for i in STATUS if i[0] == int(code)][0]
     except:
         return ''
+
+
+@register.filter(name='get_style_name')
+def get_style_name(code):
+    try:
+        return [i[1] for i in STYLE if i[0] == int(code)][0]
+    except:
+        return ''
+
+
+@register.filter(name='get_platform_name')
+def get_platform_name(code):
+    try:
+        return [i[1] for i in PLATFORM if i[0] == int(code)][0]
+    except:
+        return ''

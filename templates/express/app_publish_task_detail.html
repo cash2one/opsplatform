@@ -1,0 +1,502 @@
+{% extends 'base.html' %}
+{% load mytags %}
+
+
+{% block content %}
+    {% include 'nav_cat_bar.html' %}
+    <div class="wrapper wrapper-content animated fadeInRight">
+        <div class="row">
+            <div class="col-sm-8">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <span class="label label-primary"><b>{{ app_publish_task.seq_no }}</b></span>
+                        <div class="ibox-tools">
+                            <a class="collapse-link">
+                                <i class="fa fa-chevron-up"></i>
+                            </a>
+                            <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                                <i class="fa fa-wrench"></i>
+                            </a>
+                            <ul class="dropdown-menu dropdown-group">
+                                <li><a href="#"></a>
+                                </li>
+                                <li><a href="#"></a>
+                                </li>
+                            </ul>
+                            <a class="close-link">
+                                <i class="fa fa-times"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="ibox-content">
+                        <div>
+                            <div class="text-left">
+                                <table class="table" id="id_client_android">
+                                    <tr>
+                                        <td class="text-navy">ID</td>
+                                        <td>{{ app_publish_task.id }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">发布序列号</td>
+                                        <td>{{ app_publish_task.seq_no }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">APP类型</td>
+                                        <td>{{ app_publish_task.style|get_style_name }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">平台</td>
+                                        <td>
+                                            {{ app_publish_task.platform|get_platform_name }}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">版本</td>
+                                        <td>
+                                            {{ app_publish_task.version }}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">项目负责人</td>
+                                        <td>
+                                            {{ app_publish_task.owner }}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">计划发版时间</td>
+                                        <td>
+                                            {{ app_publish_task.publish_time }}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">更新理由</td>
+                                        <td>
+                                            {{ app_publish_task.update_remark }}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">APK</td>
+                                        <td>{{ app_publish_task.client_apk_path }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">AndroidPublishVersion</td>
+                                        <td>{{ app_publish_task.client_sys_AndroidPublishVersion }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">isforcedupdate</td>
+                                        <td>{{ app_publish_task.client_sys_isforcedupdate }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">androidversion</td>
+                                        <td>{{ app_publish_task.client_config_androidversion }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">androidsjversion</td>
+                                        <td>{{ app_publish_task.client_config_androidsjversion }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">downloadandroidpath</td>
+                                        <td>{{ app_publish_task.client_config_downloadandroidpath }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">androidverremark</td>
+                                        <td>{{ app_publish_task.client_config_androidverremark }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">androidsUpdateRemark</td>
+                                        <td>{{ app_publish_task.client_config_androidsUpdateRemark }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">审核时间</td>
+                                        <td>{{ app_publish_task.apply_time }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">审核人</td>
+                                        <td>{{ app_publish_task.apply_by }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">提交时间</td>
+                                        <td>{{ app_publish_task.submit_time|none2null }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">提交人</td>
+                                        <td>{{ app_publish_task.submit_by|none2null }}</td>
+                                    </tr>
+
+                                    <tr>
+                                        <td class="text-navy">发布时间</td>
+                                        <td>{{ app_publish_task.deploy_time|none2null }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">发布人</td>
+                                        <td>{{ app_publish_task.deploy_by|none2null }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">状态</td>
+                                        <td>{{ app_publish_task.status|get_status_name }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">创建时间</td>
+                                        <td>{{ app_publish_task.create_time }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">创建人</td>
+                                        <td>{{ app_publish_task.create_by }}</td>
+                                    </tr>
+                                </table>
+
+                                <table class="table" id="id_client_ios">
+                                    <tr>
+                                        <td class="text-navy">ID</td>
+                                        <td>{{ app_publish_task.id }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">发布序列号</td>
+                                        <td>{{ app_publish_task.seq_no }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">APP类型</td>
+                                        <td>{{ app_publish_task.style|get_style_name }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">平台</td>
+                                        <td>
+                                            {{ app_publish_task.platform|get_platform_name }}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">版本</td>
+                                        <td>
+                                            {{ app_publish_task.version }}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">项目负责人</td>
+                                        <td>
+                                            {{ app_publish_task.owner }}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">计划发版时间</td>
+                                        <td>
+                                            {{ app_publish_task.publish_time }}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">更新理由</td>
+                                        <td>
+                                            {{ app_publish_task.update_remark }}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">IOSPublishVersion</td>
+                                        <td>{{ app_publish_task.client_sys_IOSPublishVersion }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">isforcedupdate</td>
+                                        <td>{{ app_publish_task.client_sys_isforcedupdate }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">iossjversion</td>
+                                        <td>{{ app_publish_task.client_config_iossjversion }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">iosUpdateRemark</td>
+                                        <td>{{ app_publish_task.client_config_iosUpdateRemark }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">审核时间</td>
+                                        <td>{{ app_publish_task.apply_time }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">审核人</td>
+                                        <td>{{ app_publish_task.apply_by }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">提交时间</td>
+                                        <td>{{ app_publish_task.submit_time|none2null }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">提交人</td>
+                                        <td>{{ app_publish_task.submit_by|none2null }}</td>
+                                    </tr>
+
+                                    <tr>
+                                        <td class="text-navy">发布时间</td>
+                                        <td>{{ app_publish_task.deploy_time|none2null }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">发布人</td>
+                                        <td>{{ app_publish_task.deploy_by|none2null }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">状态</td>
+                                        <td>{{ app_publish_task.status|get_status_name }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">创建时间</td>
+                                        <td>{{ app_publish_task.create_time }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">创建人</td>
+                                        <td>{{ app_publish_task.create_by }}</td>
+                                    </tr>
+                                </table>
+
+                                <table class="table" id="id_courier_android">
+                                    <tr>
+                                        <td class="text-navy">ID</td>
+                                        <td>{{ app_publish_task.id }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">发布序列号</td>
+                                        <td>{{ app_publish_task.seq_no }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">APP类型</td>
+                                        <td>{{ app_publish_task.style|get_style_name }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">平台</td>
+                                        <td>
+                                            {{ app_publish_task.platform|get_platform_name }}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">版本</td>
+                                        <td>
+                                            {{ app_publish_task.version }}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">项目负责人</td>
+                                        <td>
+                                            {{ app_publish_task.owner }}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">计划发版时间</td>
+                                        <td>
+                                            {{ app_publish_task.publish_time }}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">更新理由</td>
+                                        <td>
+                                            {{ app_publish_task.update_remark }}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">APK</td>
+                                        <td>{{ app_publish_task.courier_apk_path }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">AndroidPublishVersion</td>
+                                        <td>{{ app_publish_task.courier_sys_AndroidPublishVersion }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">isforcedupdate</td>
+                                        <td>{{ app_publish_task.courier_sys_isforcedupdate }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">androidversion</td>
+                                        <td>{{ app_publish_task.courier_config_androidversion }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">androidsjversion</td>
+                                        <td>{{ app_publish_task.courier_config_androidsjversion }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">downloadandroidpath</td>
+                                        <td>{{ app_publish_task.courier_config_downloadandroidpath }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">androidverremark</td>
+                                        <td>{{ app_publish_task.courier_config_androidverremark }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">androidsUpdateRemark</td>
+                                        <td>{{ app_publish_task.courier_config_androidsUpdateRemark }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">审核时间</td>
+                                        <td>{{ app_publish_task.apply_time }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">审核人</td>
+                                        <td>{{ app_publish_task.apply_by }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">提交时间</td>
+                                        <td>{{ app_publish_task.submit_time|none2null }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">提交人</td>
+                                        <td>{{ app_publish_task.submit_by|none2null }}</td>
+                                    </tr>
+
+                                    <tr>
+                                        <td class="text-navy">发布时间</td>
+                                        <td>{{ app_publish_task.deploy_time|none2null }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">发布人</td>
+                                        <td>{{ app_publish_task.deploy_by|none2null }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">状态</td>
+                                        <td>{{ app_publish_task.status|get_status_name }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">创建时间</td>
+                                        <td>{{ app_publish_task.create_time }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">创建人</td>
+                                        <td>{{ app_publish_task.create_by }}</td>
+                                    </tr>
+                                </table>
+
+                                <table class="table" id="id_courier_ios">
+                                    <tr>
+                                        <td class="text-navy">ID</td>
+                                        <td>{{ app_publish_task.id }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">发布序列号</td>
+                                        <td>{{ app_publish_task.seq_no }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">APP类型</td>
+                                        <td>{{ app_publish_task.style|get_style_name }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">平台</td>
+                                        <td>
+                                            {{ app_publish_task.platform|get_platform_name }}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">版本</td>
+                                        <td>
+                                            {{ app_publish_task.version }}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">项目负责人</td>
+                                        <td>
+                                            {{ app_publish_task.owner }}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">计划发版时间</td>
+                                        <td>
+                                            {{ app_publish_task.publish_time }}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">更新理由</td>
+                                        <td>
+                                            {{ app_publish_task.update_remark }}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">IOSPublishVersion</td>
+                                        <td>{{ app_publish_task.courier_sys_IOSPublishVersion }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">isforcedupdate</td>
+                                        <td>{{ app_publish_task.courier_sys_isforcedupdate }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">iossjversion</td>
+                                        <td>{{ app_publish_task.courier_config_iossjversion }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">iosUpdateRemark</td>
+                                        <td>{{ app_publish_task.courier_config_iosUpdateRemark }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">审核时间</td>
+                                        <td>{{ app_publish_task.apply_time }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">审核人</td>
+                                        <td>{{ app_publish_task.apply_by }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">提交时间</td>
+                                        <td>{{ app_publish_task.submit_time|none2null }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">提交人</td>
+                                        <td>{{ app_publish_task.submit_by|none2null }}</td>
+                                    </tr>
+
+                                    <tr>
+                                        <td class="text-navy">发布时间</td>
+                                        <td>{{ app_publish_task.deploy_time|none2null }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">发布人</td>
+                                        <td>{{ app_publish_task.deploy_by|none2null }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">状态</td>
+                                        <td>{{ app_publish_task.status|get_status_name }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">创建时间</td>
+                                        <td>{{ app_publish_task.create_time }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">创建人</td>
+                                        <td>{{ app_publish_task.create_by }}</td>
+                                    </tr>
+                                </table>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<script>
+    $(document).ready(function(){
+        $('#show').click(function(){
+            $('#last').css('display', 'none');
+            $('#all').css('display', 'block');
+        });
+        var style = {{ app_publish_task.style }};
+        var platform = {{ app_publish_task.platform }};
+        if(style == 1 && platform == 1){
+            $('#id_client_android').show();
+            $('#id_client_ios').hide();
+            $('#id_courier_android').hide();
+            $('#id_courier_ios').hide();
+        }
+        else if(style == 1 && platform == 2){
+            $('#id_client_android').hide();
+            $('#id_client_ios').show();
+            $('#id_courier_android').hide();
+            $('#id_courier_ios').hide();
+        }
+        else if(style == 2 && platform == 1){
+            $('#id_client_android').hide();
+            $('#id_client_ios').hide();
+            $('#id_courier_android').show();
+            $('#id_courier_ios').hide();
+        }
+        else if(style == 2 && platform == 2){
+            $('#id_client_android').hide();
+            $('#id_client_ios').hide();
+            $('#id_courier_android').hide();
+            $('#id_courier_ios').show();
+        }
+    })
+</script>
+
+
+{% endblock %}
