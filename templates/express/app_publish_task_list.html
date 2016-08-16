@@ -41,6 +41,7 @@
                         <thead>
                             <tr>
                                 <th class="text-center">发布序列号</th>
+                                <th class="text-center">环境类型</th>
                                 <th class="text-center">类型</th>
                                 <th class="text-center">平台</th>
                                 <th class="text-center">版本</th>
@@ -55,6 +56,9 @@
                             <tr class="gradeX">
                                 <td class="text-center">
                                     <a href="{% url 'app_publish_task_detail' %}?id={{ task.id }}"> {{ task.seq_no }} </a>
+                                </td>
+                                <td class="text-center">
+                                    {{ task.env|get_env_name }}
                                 </td>
                                 <td class="text-center">
                                     {{ task.style|get_style_name }}

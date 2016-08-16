@@ -11,6 +11,7 @@ from opsplatform.api import *
 from models import *
 from django.utils import timezone
 from opsplatform import settings
+from express_api import *
 
 
 @require_permission('account.perm_can_view_publish_task')
@@ -85,7 +86,7 @@ def publish_task_deploy(request):
     if not publish_task:
         return HttpResponseRedirect(reverse('publish_task_list'))
     publish_task.status = 4
-    publish_task.deploy_time = datetime.datetime.now()
+    publish_task.deploy_time = timezone.now()
     publish_task.deploy_by = request.user.username
     publish_task.save()
     # 调用接口
@@ -153,6 +154,7 @@ def app_publish_task_list(request):
     return render_to_response('express/app_publish_task_list.html', locals(), RequestContext(request))
 
 
+@require_permission('account.perm_can_view_app_publish_task')
 def app_publish_task_detail(request):
     header_title, path1, path2 = 'APP发布任务详情', '发布任务管理', 'APP发布任务详情'
     task_id = request.GET.get('id', '')
@@ -164,6 +166,7 @@ def app_publish_task_detail(request):
     return render_to_response('express/app_publish_task_detail.html', locals(), RequestContext(request))
 
 
+@require_permission('account.perm_can_trash_app_publish_task')
 def app_publish_task_trash(request):
     task_id = request.GET.get('id', '')
     if not task_id:
@@ -188,6 +191,7 @@ def app_publish_task_trash(request):
     return HttpResponseRedirect(reverse('app_publish_task_list'))
 
 
+@require_permission('account.perm_can_deploy_app_publish_task')
 def app_publish_task_deploy(request):
     task_id = request.GET.get('id', '')
     if not task_id:
@@ -195,8 +199,10 @@ def app_publish_task_deploy(request):
     app_publish_task = get_object(AppPublishTask, id=task_id)
     if not app_publish_task:
         return HttpResponseRedirect(reverse('app_publish_task_list'))
+    # 执行异步发布任务
+    app_publish_task_express(task_id)
     app_publish_task.status = 4
-    app_publish_task.deploy_time = datetime.datetime.now()
+    app_publish_task.deploy_time = timezone.now()
     app_publish_task.deploy_by = request.user.username
     app_publish_task.save()
     # 调用接口
@@ -205,7 +211,6 @@ def app_publish_task_deploy(request):
                                 "deploy_time": app_publish_task.deploy_time.strftime("%Y-%m-%d %H:%M:%S"),
                                 "deploy_by": app_publish_task.deploy_by}), 'POST',
                     {'Content-Type': 'application/json'})
-    print data
     if data and data.get('code') == -1:
         error = data.get('msg')
         return HttpResponse(error)
@@ -215,6 +220,7 @@ def app_publish_task_deploy(request):
     return HttpResponseRedirect(reverse('app_publish_task_list'))
 
 
+@require_permission('account.perm_can_rollback_app_publish_task')
 def app_publish_task_rollback(request):
     task_id = request.GET.get('id', '')
     if not task_id:
@@ -222,6 +228,7 @@ def app_publish_task_rollback(request):
     app_publish_task = get_object(AppPublishTask, id=task_id)
     if not app_publish_task:
         return HttpResponseRedirect(reverse('app_publish_task_list'))
+    app_publish_task_rollback_config(task_id)
     app_publish_task.status = 5
     app_publish_task.save()
     # 调用接口

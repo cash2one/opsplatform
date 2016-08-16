@@ -71,7 +71,6 @@ def str_to_list(info):
     """
     str to list
     """
-    print ast.literal_eval(info), type(ast.literal_eval(info))
     return ast.literal_eval(info)
 
 
@@ -144,7 +143,6 @@ def get_role(user_id):
     """
     根据用户id获取用户权限
     """
-    print user_id
     user = get_object(User, id=user_id)
     if user:
         if user.is_superuser:
@@ -334,7 +332,6 @@ def get_product_name(code):
 @register.filter(name='get_status_name')
 def get_status_name(code):
     try:
-        print code
         return [i[1] for i in STATUS if i[0] == int(code)][0]
     except:
         return ''

@@ -69,6 +69,23 @@ try:
 except (ConfigParser.NoSectionError, ConfigParser.NoOptionError):
     NAV_SORT_BY = 'ip'
 
+
+# rrkdinterface config
+RRKDINTERFACE_HOST = config.get('rrkdinterface', 'host')
+RRKDINTERFACE_PORT = config.get('rrkdinterface', 'port')
+RRKDINTERFACE_USERNAME = config.get('rrkdinterface', 'username')
+RRKDINTERFACE_PASSWORD = config.get('rrkdinterface', 'password')
+RRKDINTERFACE_CLIENT_PATH = config.get('rrkdinterface', 'client_path')
+RRKDINTERFACE_COURIER_PATH = config.get('rrkdinterface', 'courier_path')
+
+
+# apk config
+APK_HOST = config.get('apk', 'host')
+APK_PORT = config.get('apk', 'port')
+APK_USERNAME = config.get('apk', 'username')
+APK_PASSWORD = config.get('apk', 'password')
+APK_APK_PATH = config.get('apk', 'apk_path')
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.9/howto/deployment/checklist/
 
