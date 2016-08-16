@@ -73,21 +73,6 @@
                 </ul>
             </li>
             {% endif %}
-            {% if perms.account.perm_can_view_log %}
-            <li id="jlog">
-                <a href="{% url 'log_list' 'online' %}"><i class="fa fa-files-o"></i>
-                   <span class="nav-label">日志审计</span><span class="label label-info pull-right"></span></a>
-            </li>
-            {% endif %}
-            {% if perms.account.perm_can_upload_download_file %}
-            <li id="file">
-                <a href="#"><i class="fa fa-download"></i> <span class="nav-label">上传下载</span><span class="fa arrow"></span></a>
-                <ul class="nav nav-second-level">
-                    <li class="upload"><a href="{% url 'file_upload' %}">文件上传</a></li>
-                    <li class="download"><a href="{% url 'file_download' %}">文件下载</a></li>
-                </ul>
-            </li>
-            {% endif %}
             {% if perms.account.perm_can_view_deploy %}
             <li id="express">
                 <a href="#"><i class="fa  fa-rocket"></i> <span class="nav-label">代码发布</span><span class="fa arrow"></span></a>
@@ -111,6 +96,21 @@
                         <span class="nav-label">虚拟化管理平台</span><span class="label label-info pull-right"></span>
                     </a>
                 </li>
+            {% endif %}
+                    {% if perms.account.perm_can_view_log %}
+            <li id="jlog">
+                <a href="{% url 'log_list' 'online' %}"><i class="fa fa-files-o"></i>
+                   <span class="nav-label">日志审计</span><span class="label label-info pull-right"></span></a>
+            </li>
+            {% endif %}
+            {% if perms.account.perm_can_upload_download_file %}
+            <li id="file">
+                <a href="#"><i class="fa fa-download"></i> <span class="nav-label">上传下载</span><span class="fa arrow"></span></a>
+                <ul class="nav nav-second-level">
+                    <li class="upload"><a href="{% url 'file_upload' %}">文件上传</a></li>
+                    <li class="download"><a href="{% url 'file_download' %}">文件下载</a></li>
+                </ul>
+            </li>
             {% endif %}
             {% if perms.account.perm_can_view_note %}
                 <li id="note">
