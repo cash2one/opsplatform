@@ -41,6 +41,10 @@
                                         <td>{{ app_publish_task.seq_no }}</td>
                                     </tr>
                                     <tr>
+                                        <td class="text-navy">环境类型</td>
+                                        <td>{{ app_publish_task.env|get_env_name }}</td>
+                                    </tr>
+                                    <tr>
                                         <td class="text-navy">APP类型</td>
                                         <td>{{ app_publish_task.style|get_style_name }}</td>
                                     </tr>
@@ -107,14 +111,6 @@
                                         <td>{{ app_publish_task.client_config_androidsUpdateRemark }}</td>
                                     </tr>
                                     <tr>
-                                        <td class="text-navy">审核时间</td>
-                                        <td>{{ app_publish_task.approval_time }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-navy">审核人</td>
-                                        <td>{{ app_publish_task.approval_by }}</td>
-                                    </tr>
-                                    <tr>
                                         <td class="text-navy">提交时间</td>
                                         <td>{{ app_publish_task.submit_time|none2null }}</td>
                                     </tr>
@@ -122,7 +118,18 @@
                                         <td class="text-navy">提交人</td>
                                         <td>{{ app_publish_task.submit_by|none2null }}</td>
                                     </tr>
-
+                                    <tr>
+                                        <td class="text-navy">预计发布时间</td>
+                                        <td>{{ app_publish_task.publish_time }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">审核时间</td>
+                                        <td>{{ app_publish_task.approval_time }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">审核人</td>
+                                        <td>{{ app_publish_task.approval_by }}</td>
+                                    </tr>
                                     <tr>
                                         <td class="text-navy">发布时间</td>
                                         <td>{{ app_publish_task.deploy_time|none2null }}</td>
@@ -153,6 +160,10 @@
                                     <tr>
                                         <td class="text-navy">发布序列号</td>
                                         <td>{{ app_publish_task.seq_no }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">环境类型</td>
+                                        <td>{{ app_publish_task.env|get_env_name }}</td>
                                     </tr>
                                     <tr>
                                         <td class="text-navy">APP类型</td>
@@ -205,14 +216,6 @@
                                         <td>{{ app_publish_task.client_config_iosUpdateRemark }}</td>
                                     </tr>
                                     <tr>
-                                        <td class="text-navy">审核时间</td>
-                                        <td>{{ app_publish_task.approval_time }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-navy">审核人</td>
-                                        <td>{{ app_publish_task.approval_by }}</td>
-                                    </tr>
-                                    <tr>
                                         <td class="text-navy">提交时间</td>
                                         <td>{{ app_publish_task.submit_time|none2null }}</td>
                                     </tr>
@@ -220,7 +223,18 @@
                                         <td class="text-navy">提交人</td>
                                         <td>{{ app_publish_task.submit_by|none2null }}</td>
                                     </tr>
-
+                                    <tr>
+                                        <td class="text-navy">预计发布时间</td>
+                                        <td>{{ app_publish_task.publish_time }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">审核时间</td>
+                                        <td>{{ app_publish_task.approval_time }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">审核人</td>
+                                        <td>{{ app_publish_task.approval_by }}</td>
+                                    </tr>
                                     <tr>
                                         <td class="text-navy">发布时间</td>
                                         <td>{{ app_publish_task.deploy_time|none2null }}</td>
@@ -251,6 +265,10 @@
                                     <tr>
                                         <td class="text-navy">发布序列号</td>
                                         <td>{{ app_publish_task.seq_no }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">环境类型</td>
+                                        <td>{{ app_publish_task.env|get_env_name }}</td>
                                     </tr>
                                     <tr>
                                         <td class="text-navy">APP类型</td>
@@ -318,14 +336,7 @@
                                         <td class="text-navy">androidsUpdateRemark</td>
                                         <td>{{ app_publish_task.courier_config_androidsUpdateRemark }}</td>
                                     </tr>
-                                    <tr>
-                                        <td class="text-navy">审核时间</td>
-                                        <td>{{ app_publish_task.approval_time }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-navy">审核人</td>
-                                        <td>{{ app_publish_task.approval_by }}</td>
-                                    </tr>
+
                                     <tr>
                                         <td class="text-navy">提交时间</td>
                                         <td>{{ app_publish_task.submit_time|none2null }}</td>
@@ -334,7 +345,18 @@
                                         <td class="text-navy">提交人</td>
                                         <td>{{ app_publish_task.submit_by|none2null }}</td>
                                     </tr>
-
+                                    <tr>
+                                        <td class="text-navy">预计发布时间</td>
+                                        <td>{{ app_publish_task.publish_time }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">审核时间</td>
+                                        <td>{{ app_publish_task.approval_time }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">审核人</td>
+                                        <td>{{ app_publish_task.approval_by }}</td>
+                                    </tr>
                                     <tr>
                                         <td class="text-navy">发布时间</td>
                                         <td>{{ app_publish_task.deploy_time|none2null }}</td>
@@ -365,6 +387,10 @@
                                     <tr>
                                         <td class="text-navy">发布序列号</td>
                                         <td>{{ app_publish_task.seq_no }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">环境类型</td>
+                                        <td>{{ app_publish_task.env|get_env_name }}</td>
                                     </tr>
                                     <tr>
                                         <td class="text-navy">APP类型</td>
@@ -416,14 +442,7 @@
                                         <td class="text-navy">iosUpdateRemark</td>
                                         <td>{{ app_publish_task.courier_config_iosUpdateRemark }}</td>
                                     </tr>
-                                    <tr>
-                                        <td class="text-navy">审核时间</td>
-                                        <td>{{ app_publish_task.approval_time }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="text-navy">审核人</td>
-                                        <td>{{ app_publish_task.approval_by }}</td>
-                                    </tr>
+
                                     <tr>
                                         <td class="text-navy">提交时间</td>
                                         <td>{{ app_publish_task.submit_time|none2null }}</td>
@@ -432,7 +451,18 @@
                                         <td class="text-navy">提交人</td>
                                         <td>{{ app_publish_task.submit_by|none2null }}</td>
                                     </tr>
-
+                                    <tr>
+                                        <td class="text-navy">预计发布时间</td>
+                                        <td>{{ app_publish_task.publish_time }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">审核时间</td>
+                                        <td>{{ app_publish_task.approval_time }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">审核人</td>
+                                        <td>{{ app_publish_task.approval_by }}</td>
+                                    </tr>
                                     <tr>
                                         <td class="text-navy">发布时间</td>
                                         <td>{{ app_publish_task.deploy_time|none2null }}</td>
