@@ -12,8 +12,9 @@ import paramiko
 from opsplatform.api import *
 from models import *
 from opsplatform.settings import RRKDINTERFACE_HOST, RRKDINTERFACE_PORT, RRKDINTERFACE_USERNAME, \
-    RRKDINTERFACE_PASSWORD, RRKDINTERFACE_CLIENT_PATH, RRKDINTERFACE_COURIER_PATH, APK_HOST, APK_PORT, \
-    APK_USERNAME, APK_PASSWORD, APK_APK_PATH
+    RRKDINTERFACE_PASSWORD, RRKDINTERFACE_CLIENT_PATH, RRKDINTERFACE_COURIER_PATH, RRKDINTERFACE_MONI_HOST, \
+    RRKDINTERFACE_MONI_PORT, RRKDINTERFACE_MONI_USERNAME, RRKDINTERFACE_MONI_PASSWORD, RRKDINTERFACE_MONI_CLIENT_PATH, \
+    RRKDINTERFACE_MONI_COURIER_PATH, APK_HOST, APK_PORT, APK_USERNAME, APK_PASSWORD, APK_APK_PATH, APK_MONI_PATH
 
 default_encoding = 'utf-8'
 if sys.getdefaultencoding() != default_encoding:
@@ -21,19 +22,30 @@ if sys.getdefaultencoding() != default_encoding:
     sys.setdefaultencoding(default_encoding)
 
 
-def download_file(localpath, remotepath):
+def download_file(env, localpath, remotepath):
     """
     下载配置文件
     :return:
     """
-    t = paramiko.Transport((RRKDINTERFACE_HOST, int(RRKDINTERFACE_PORT)))
-    t.connect(username=RRKDINTERFACE_USERNAME, password=RRKDINTERFACE_PASSWORD)
+    if env == '1':
+        host = RRKDINTERFACE_HOST
+        port = int(RRKDINTERFACE_PORT)
+        username = RRKDINTERFACE_USERNAME
+        password = RRKDINTERFACE_PASSWORD
+    elif env == '2':
+        host = RRKDINTERFACE_MONI_HOST
+        port = int(RRKDINTERFACE_MONI_PORT)
+        username = RRKDINTERFACE_MONI_USERNAME
+        password = RRKDINTERFACE_MONI_PASSWORD
+    t = paramiko.Transport((host, port))
+    t.connect(username=username, password=password)
     sftp = paramiko.SFTPClient.from_transport(t)
     sftp.get(remotepath, localpath)
     t.close()
 
 
 def upload_apk(localpath, remotepath):
+
     t = paramiko.Transport((APK_HOST, int(APK_PORT)))
     t.connect(username=APK_USERNAME, password=APK_PASSWORD)
     sftp = paramiko.SFTPClient.from_transport(t)
@@ -41,9 +53,19 @@ def upload_apk(localpath, remotepath):
     t.close()
 
 
-def upload_config(localpath, remotepath):
-    t = paramiko.Transport((RRKDINTERFACE_HOST, int(RRKDINTERFACE_PORT)))
-    t.connect(username=RRKDINTERFACE_USERNAME, password=RRKDINTERFACE_PASSWORD)
+def upload_config(env, localpath, remotepath):
+    if env == '1':
+        host = RRKDINTERFACE_HOST
+        port = int(RRKDINTERFACE_PORT)
+        username = RRKDINTERFACE_USERNAME
+        password = RRKDINTERFACE_PASSWORD
+    elif env == '2':
+        host = RRKDINTERFACE_MONI_HOST
+        port = int(RRKDINTERFACE_MONI_PORT)
+        username = RRKDINTERFACE_MONI_USERNAME
+        password = RRKDINTERFACE_MONI_PASSWORD
+    t = paramiko.Transport((host, port))
+    t.connect(username=username, password=password)
     sftp = paramiko.SFTPClient.from_transport(t)
     sftp.put(localpath, remotepath)
     t.close()
@@ -93,13 +115,16 @@ def app_publish_task_express(task_id):
     if app_publish_task.style == '1' and app_publish_task.platform == '1':
         # 上传 APK
         apk_name = os.path.basename(app_publish_task.client_apk_path)
-        upload_apk("../publish_center/" + app_publish_task.client_apk_path, APK_APK_PATH + apk_name)
+        if app_publish_task.env == '1':
+            upload_apk("../publish_center/" + app_publish_task.client_apk_path, APK_APK_PATH + apk_name)
+        elif app_publish_task.env == '2':
+            upload_apk("../publish_center/" + app_publish_task.client_apk_path, APK_MONI_PATH + apk_name)
 
         localpath = 'data/' + app_publish_task.seq_no
         mkdir(localpath)
 
         # 修改system.php配置文件
-        download_file(localpath + "/system.php", RRKDINTERFACE_CLIENT_PATH + 'system.php')
+        download_file(app_publish_task.env, localpath + "/system.php", RRKDINTERFACE_CLIENT_PATH + 'system.php')
 
         data = {'AndroidPublishVersion': app_publish_task.client_sys_AndroidPublishVersion,
                 'isforcedupdate': app_publish_task.client_sys_Androidisforcedupdate}

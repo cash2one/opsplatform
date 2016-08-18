@@ -65,7 +65,7 @@ def publish_task_trash(request):
     # 调用接口
     data = api_call('%s%s' % (settings.PUBLISH_CENTER_URL, settings.PUBLISH_TASK_STATUS_UPDATE),
                     json.dumps({"seq_no": publish_task.seq_no, "status": publish_task.status,
-                                "deploy_time": timezone.localtime(publish_task.deploy_time).strftime("%Y-%m-%d %H:%M:%S") if publish_task.deploy_time else '',
+                                "deploy_time": publish_task.deploy_time.strftime("%Y-%m-%d %H:%M:%S") if publish_task.deploy_time else '',
                                 "deploy_by": publish_task.deploy_by}), 'POST',
                     {'Content-Type': 'application/json'})
     if data and data.get('code') == -1:
@@ -92,7 +92,7 @@ def publish_task_deploy(request):
     # 调用接口
     data = api_call('%s%s' % (settings.PUBLISH_CENTER_URL, settings.PUBLISH_TASK_STATUS_UPDATE),
                     json.dumps({"seq_no": publish_task.seq_no, "status": publish_task.status,
-                                "deploy_time": timezone.localtime(publish_task.deploy_time).strftime("%Y-%m-%d %H:%M:%S"),
+                                "deploy_time": publish_task.deploy_time.strftime("%Y-%m-%d %H:%M:%S"),
                                 "deploy_by": publish_task.deploy_by}), 'POST',
                     {'Content-Type': 'application/json'})
     print data
@@ -121,7 +121,7 @@ def publish_task_rollback(request):
     # 调用接口
     data = api_call('%s%s' % (settings.PUBLISH_CENTER_URL, settings.PUBLISH_TASK_STATUS_UPDATE),
                     json.dumps({"seq_no": publish_task.seq_no, "status": publish_task.status,
-                                "deploy_time": timezone.localtime(publish_task.deploy_time).strftime("%Y-%m-%d %H:%M:%S") if publish_task.deploy_time else '',
+                                "deploy_time": publish_task.deploy_time.strftime("%Y-%m-%d %H:%M:%S") if publish_task.deploy_time else '',
                                 "deploy_by": publish_task.deploy_by}), 'POST',
                     {'Content-Type': 'application/json'})
     if data and data.get('code') == -1:
@@ -179,7 +179,7 @@ def app_publish_task_trash(request):
     # 调用接口
     data = api_call('%s%s' % (settings.PUBLISH_CENTER_URL, settings.APP_PUBLISH_TASK_STATUS_UPDATE),
                     json.dumps({"seq_no": app_publish_task.seq_no, "status": app_publish_task.status,
-                                "deploy_time": timezone.localtime(app_publish_task.deploy_time).strftime("%Y-%m-%d %H:%M:%S") if app_publish_task.deploy_time else '',
+                                "deploy_time": app_publish_task.deploy_time.strftime("%Y-%m-%d %H:%M:%S") if app_publish_task.deploy_time else '',
                                 "deploy_by": app_publish_task.deploy_by}), 'POST',
                     {'Content-Type': 'application/json'})
     if data and data.get('code') == -1:
@@ -208,7 +208,7 @@ def app_publish_task_deploy(request):
     # 调用接口
     data = api_call('%s%s' % (settings.PUBLISH_CENTER_URL, settings.APP_PUBLISH_TASK_STATUS_UPDATE),
                     json.dumps({"seq_no": app_publish_task.seq_no, "status": app_publish_task.status,
-                                "deploy_time": timezone.localtime(app_publish_task.deploy_time).strftime("%Y-%m-%d %H:%M:%S"),
+                                "deploy_time": app_publish_task.deploy_time.strftime("%Y-%m-%d %H:%M:%S"),
                                 "deploy_by": app_publish_task.deploy_by}), 'POST',
                     {'Content-Type': 'application/json'})
     if data and data.get('code') == -1:
@@ -234,7 +234,7 @@ def app_publish_task_rollback(request):
     # 调用接口
     data = api_call('%s%s' % (settings.PUBLISH_CENTER_URL, settings.APP_PUBLISH_TASK_STATUS_UPDATE),
                     json.dumps({"seq_no": app_publish_task.seq_no, "status": app_publish_task.status,
-                                "deploy_time": timezone.localtime(app_publish_task.deploy_time).strftime("%Y-%m-%d %H:%M:%S") if app_publish_task.deploy_time else '',
+                                "deploy_time": app_publish_task.deploy_time.strftime("%Y-%m-%d %H:%M:%S") if app_publish_task.deploy_time else '',
                                 "deploy_by": app_publish_task.deploy_by}), 'POST',
                     {'Content-Type': 'application/json'})
     if data and data.get('code') == -1:

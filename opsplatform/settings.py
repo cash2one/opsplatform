@@ -77,6 +77,12 @@ RRKDINTERFACE_USERNAME = config.get('rrkdinterface', 'username')
 RRKDINTERFACE_PASSWORD = config.get('rrkdinterface', 'password')
 RRKDINTERFACE_CLIENT_PATH = config.get('rrkdinterface', 'client_path')
 RRKDINTERFACE_COURIER_PATH = config.get('rrkdinterface', 'courier_path')
+RRKDINTERFACE_MONI_HOST = config.get('rrkdinterface', 'moni_host')
+RRKDINTERFACE_MONI_PORT = config.get('rrkdinterface', 'moni_port')
+RRKDINTERFACE_MONI_USERNAME = config.get('rrkdinterface', 'moni_username')
+RRKDINTERFACE_MONI_PASSWORD = config.get('rrkdinterface', 'moni_password')
+RRKDINTERFACE_MONI_CLIENT_PATH = config.get('rrkdinterface', 'moni_client_path')
+RRKDINTERFACE_MONI_COURIER_PATH = config.get('rrkdinterface', 'moni_courier_path')
 
 
 # apk config
@@ -85,6 +91,7 @@ APK_PORT = config.get('apk', 'port')
 APK_USERNAME = config.get('apk', 'username')
 APK_PASSWORD = config.get('apk', 'password')
 APK_APK_PATH = config.get('apk', 'apk_path')
+APK_MONI_PATH = config.get('apk', 'moni_path')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.9/howto/deployment/checklist/
