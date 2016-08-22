@@ -82,7 +82,7 @@
                                     </tr>
                                     <tr>
                                         <td class="text-navy">更新SQL文件</td>
-                                        <td>{{ publish_task.upload_sql }}</td>
+                                        <td><a href="{{ publish_task.upload_sql|get_url }}">{{ publish_task.upload_sql|get_filename }}</a></td>
                                     </tr>
                                     <tr>
                                         <td class="text-navy">环境设置</td>

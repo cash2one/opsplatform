@@ -100,8 +100,9 @@ class Role(models.Model):
             ("perm_can_deploy_app_publish_task", "部署APP发布任务"),
             ("perm_can_rollback_app_publish_task", "回滚APP发布任务"),
 
-            ("perm_can_view_config", "产看配置中心"),
+            ("perm_can_view_config", "查看配置中心"),
             ("perm_can_view_virtmgr", "查看虚拟化管理平台"),
+            ("perm_can_view_logserver", "查看日志系统"),
 
             ("perm_can_view_note", "查看运维记录"),
             ("perm_can_change_note", "修改运维记录"),

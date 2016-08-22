@@ -11,6 +11,8 @@ def name_proc(request):
     deploy_url = settings.DEPLOY_URL
     config_url = settings.CONFIG_URL
     virtmgr_url = settings.VIRTMGR_URL
+    logserver_url = settings.LOGSERVER_URL
+    logalarm_url = settings.LOGALARM_URL
     user_total_num = User.objects.all().count()
     user_active_num = User.objects.filter(is_active=True).count()
     host_total_num = Asset.objects.all().count()
@@ -23,6 +25,8 @@ def name_proc(request):
                 'virtmgr_url': virtmgr_url,
                 'portal_url': portal_url,
                 'alarm_url': alarm_url,
+                'logserver_url': logserver_url,
+                'logalarm_url': logalarm_url,
                 'user_total_num': user_total_num,
                 'user_active_num': user_active_num,
                 'host_total_num': host_total_num,

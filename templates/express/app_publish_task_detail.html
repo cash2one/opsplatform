@@ -80,7 +80,7 @@
                                     </tr>
                                     <tr>
                                         <td class="text-navy">APK</td>
-                                        <td>{{ app_publish_task.client_apk_path }}</td>
+                                        <td><a href="{{ app_publish_task.client_apk_path|get_url }}">{{ app_publish_task.client_apk_path|get_filename }}</a></td>
                                     </tr>
                                     <tr>
                                         <td class="text-navy">AndroidPublishVersion</td>
@@ -306,7 +306,7 @@
                                     </tr>
                                     <tr>
                                         <td class="text-navy">APK</td>
-                                        <td>{{ app_publish_task.courier_apk_path }}</td>
+                                        <td><a href="{{ app_publish_task.courier_apk_path|get_url }}">{{ app_publish_task.courier_apk_path|get_filename }}</a></td>
                                     </tr>
                                     <tr>
                                         <td class="text-navy">AndroidPublishVersion</td>

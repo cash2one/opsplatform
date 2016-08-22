@@ -9,6 +9,10 @@
 
 from opsplatform.api import *
 from models import *
+from opsplatform import settings
+from account.models import *
+from django.contrib.auth.models import Group
+from opsplatform.send import sms_send
 
 
 @require_permission('account.perm_can_view_note')
@@ -40,6 +44,22 @@ def note_add(request):
                 error = u'记录 不能为空'
                 raise ServerError(error)
             Note.objects.create(text=note_text, create_by=request.user.username)
+            msg = u"""
+                Hi All,
+                    运维平台有新的运维记录新增
+
+                    %s
+            """ % note_text
+            group = get_object(Group, name='运维组')
+            users_obj = User.objects.filter(groups=group)
+            sa_email = []
+            sa_sms = []
+            for user_obj in users_obj:
+                sa_email.append(user_obj.email) if user_obj.email else None
+                sa_sms.append(user_obj.phone) if user_obj.phone else None
+            send_mail('[运维平台][运维记录提醒]', msg, settings.EMAIL_HOST_USER, sa_email, fail_silently=False)
+            sms_msg = u"""【运维平台】%s""" % note_text
+            sms_send(sa_sms, sms_msg)
         except ServerError:
             pass
         except TypeError:

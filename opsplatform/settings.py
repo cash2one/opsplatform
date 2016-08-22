@@ -235,11 +235,13 @@ QUERY_ADDR = 'http://172.16.60.23:9966'
 
 
 # API Domian
+PUBLISH_CENTER_DATA_URL = config.get('base', 'publish_center_url')
 PUBLISH_CENTER_URL = config.get('base', 'publish_center_api_url')
 PUBLISH_TASK_STATUS_UPDATE = '/publish_task_status_update/'
 APP_PUBLISH_TASK_STATUS_UPDATE = '/app_publish_task_status_update/'
 
-
+# sms config
+SMS_INTERFACE = 'http://172.16.60.17:8071/sms_client_falcon.php'
 
 # deploy url
 DEPLOY_URL = 'http://172.16.60.4:8080/'
@@ -249,3 +251,8 @@ CONFIG_URL = 'http://172.16.60.8/'
 
 # virtmgr url
 VIRTMGR_URL = 'http://172.16.100.2/servers/'
+
+
+# log url
+LOGSERVER_URL = 'http://172.16.100.18:5601/'
+LOGALARM_URL = 'http://172.16.100.18:9001/sentry/'

@@ -351,3 +351,19 @@ def get_platform_name(code):
         return [i[1] for i in PLATFORM if i[0] == int(code)][0]
     except:
         return ''
+
+
+@register.filter(name='get_filename')
+def get_filename(path):
+    try:
+        return os.path.basename(path)
+    except:
+        return ''
+
+
+@register.filter(name='get_url')
+def get_url(path):
+    try:
+        return PUBLISH_CENTER_DATA_URL + '/' + path
+    except:
+        return ''
