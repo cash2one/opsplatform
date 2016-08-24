@@ -140,14 +140,14 @@ def app_publish_task_express(task_id):
                 'isforcedupdate': app_publish_task.client_sys_Androidisforcedupdate}
         update_file(localpath + "/system.php", data)
         if app_publish_task.env == '1':
-            upload_config(localpath + "/system.php", RRKDINTERFACE_CLIENT_PATH + 'system.php')
+            upload_config(app_publish_task.env, localpath + "/system.php", RRKDINTERFACE_CLIENT_PATH + 'system.php')
         elif app_publish_task.env == '2':
-            upload_config(localpath + "/system.php", RRKDINTERFACE_MONI_CLIENT_PATH + 'system.php')
+            upload_config(app_publish_task.env, localpath + "/system.php", RRKDINTERFACE_MONI_CLIENT_PATH + 'system.php')
         # 修改config.php配置文件
         if app_publish_task.env == '1':
-            download_file(localpath + "/config.php", RRKDINTERFACE_CLIENT_PATH + 'config.php')
+            download_file(app_publish_task.env, localpath + "/config.php", RRKDINTERFACE_CLIENT_PATH + 'config.php')
         elif app_publish_task.env == '2':
-            download_file(localpath + "/config.php", RRKDINTERFACE_MONI_CLIENT_PATH + 'config.php')
+            download_file(app_publish_task.env, localpath + "/config.php", RRKDINTERFACE_MONI_CLIENT_PATH + 'config.php')
         data = {'androidversion': app_publish_task.client_config_androidversion,
                 'androidsjversion': app_publish_task.client_config_androidsjversion,
                 'downloadandroidpath': app_publish_task.client_config_downloadandroidpath,
@@ -155,9 +155,9 @@ def app_publish_task_express(task_id):
                 'androidsUpdateRemark': app_publish_task.client_config_androidsUpdateRemark}
         update_file(localpath + "/config.php", data)
         if app_publish_task.env == '1':
-            upload_config(localpath + "/config.php", RRKDINTERFACE_CLIENT_PATH + 'config.php')
+            upload_config(app_publish_task.env, localpath + "/config.php", RRKDINTERFACE_CLIENT_PATH + 'config.php')
         elif app_publish_task.env == '2':
-            upload_config(localpath + "/config.php", RRKDINTERFACE_MONI_CLIENT_PATH + 'config.php')
+            upload_config(app_publish_task.env, localpath + "/config.php", RRKDINTERFACE_MONI_CLIENT_PATH + 'config.php')
 
     elif app_publish_task.style == '1' and app_publish_task.platform == '2':
         localpath = 'data/' + app_publish_task.seq_no
@@ -165,31 +165,31 @@ def app_publish_task_express(task_id):
 
         # 修改system.php配置文件
         if app_publish_task.env == '1':
-            download_file(localpath + "/system.php", RRKDINTERFACE_CLIENT_PATH + "system.php")
+            download_file(app_publish_task.env, localpath + "/system.php", RRKDINTERFACE_CLIENT_PATH + "system.php")
         elif app_publish_task.env == '2':
-            download_file(localpath + "/system.php", RRKDINTERFACE_MONI_CLIENT_PATH + "system.php")
+            download_file(app_publish_task.env, localpath + "/system.php", RRKDINTERFACE_MONI_CLIENT_PATH + "system.php")
 
         data = {'IOSPublishVersion': app_publish_task.client_sys_IOSPublishVersion,
                 'isforcedupdate': app_publish_task.client_sys_IOSisforcedupdate}
         update_file(localpath + "/system.php", data)
         if app_publish_task.env == '1':
-            upload_config(localpath + "/system.php", RRKDINTERFACE_CLIENT_PATH + "system.php")
+            upload_config(app_publish_task.env, localpath + "/system.php", RRKDINTERFACE_CLIENT_PATH + "system.php")
         elif app_publish_task.env == '2':
-            upload_config(localpath + "/system.php", RRKDINTERFACE_MONI_CLIENT_PATH + "system.php")
+            upload_config(app_publish_task.env, localpath + "/system.php", RRKDINTERFACE_MONI_CLIENT_PATH + "system.php")
         # 修改config.php配置文件
         if app_publish_task.env == '1':
-            download_file(localpath + "/config.php", RRKDINTERFACE_CLIENT_PATH + 'config.php')
+            download_file(app_publish_task.env, localpath + "/config.php", RRKDINTERFACE_CLIENT_PATH + 'config.php')
         elif app_publish_task.env == '2':
-            download_file(localpath + "/config.php", RRKDINTERFACE_MONI_CLIENT_PATH + 'config.php')
+            download_file(app_publish_task.env, localpath + "/config.php", RRKDINTERFACE_MONI_CLIENT_PATH + 'config.php')
         data = {'iossjversion': app_publish_task.client_config_iossjversion,
                 'iosUpdateRemark': app_publish_task.client_config_iosUpdateRemark,
                 'iosverremark': app_publish_task.client_config_iosverremark
                 }
         update_file(localpath + "/config.php", data)
         if app_publish_task.env == '1':
-            upload_config(localpath + "/config.php", RRKDINTERFACE_CLIENT_PATH + 'config.php')
+            upload_config(app_publish_task.env, localpath + "/config.php", RRKDINTERFACE_CLIENT_PATH + 'config.php')
         elif app_publish_task.env == '2':
-            upload_config(localpath + "/config.php", RRKDINTERFACE_MONI_CLIENT_PATH + 'config.php')
+            upload_config(app_publish_task.env, localpath + "/config.php", RRKDINTERFACE_MONI_CLIENT_PATH + 'config.php')
 
     elif app_publish_task.style == '2' and app_publish_task.platform == '1':
         # 上传 APK
@@ -204,22 +204,22 @@ def app_publish_task_express(task_id):
 
         # 修改system.php配置文件
         if app_publish_task.env == '1':
-            download_file(localpath + "/system.php", RRKDINTERFACE_COURIER_PATH + 'system.php')
+            download_file(app_publish_task.env, localpath + "/system.php", RRKDINTERFACE_COURIER_PATH + 'system.php')
         elif app_publish_task.env == '2':
-            download_file(localpath + "/system.php", RRKDINTERFACE_MONI_COURIER_PATH + 'system.php')
+            download_file(app_publish_task.env, localpath + "/system.php", RRKDINTERFACE_MONI_COURIER_PATH + 'system.php')
 
         data = {'AndroidPublishVersion': app_publish_task.courier_sys_AndroidPublishVersion,
                 'isforcedupdate': app_publish_task.courier_sys_Androidisforcedupdate}
         update_file(localpath + "/system.php", data)
         if app_publish_task.env == '1':
-            upload_config(localpath + "/system.php", RRKDINTERFACE_COURIER_PATH + 'system.php')
+            upload_config(app_publish_task.env, localpath + "/system.php", RRKDINTERFACE_COURIER_PATH + 'system.php')
         elif app_publish_task.env == '1':
-            upload_config(localpath + "/system.php", RRKDINTERFACE_MONI_COURIER_PATH + 'system.php')
+            upload_config(app_publish_task.env, localpath + "/system.php", RRKDINTERFACE_MONI_COURIER_PATH + 'system.php')
         # 修改config.php配置文件
         if app_publish_task.env == '1':
-            download_file(localpath + "/config.php", RRKDINTERFACE_COURIER_PATH + 'config.php')
+            download_file(app_publish_task.env, localpath + "/config.php", RRKDINTERFACE_COURIER_PATH + 'config.php')
         elif app_publish_task.env == '2':
-            download_file(localpath + "/config.php", RRKDINTERFACE_MONI_COURIER_PATH + 'config.php')
+            download_file(app_publish_task.env, localpath + "/config.php", RRKDINTERFACE_MONI_COURIER_PATH + 'config.php')
         data = {'androidversion': app_publish_task.courier_config_androidversion,
                 'androidsjversion': app_publish_task.courier_config_androidsjversion,
                 'downloadandroidpath': app_publish_task.courier_config_downloadandroidpath,
@@ -227,9 +227,9 @@ def app_publish_task_express(task_id):
                 'androidsUpdateRemark': app_publish_task.courier_config_androidsUpdateRemark}
         update_file(localpath + "/config.php", data)
         if app_publish_task.env == '1':
-            upload_config(localpath + "/config.php", RRKDINTERFACE_COURIER_PATH + 'config.php')
+            upload_config(app_publish_task.env, localpath + "/config.php", RRKDINTERFACE_COURIER_PATH + 'config.php')
         elif app_publish_task.env == '2':
-            upload_config(localpath + "/config.php", RRKDINTERFACE_MONI_COURIER_PATH + 'config.php')
+            upload_config(app_publish_task.env, localpath + "/config.php", RRKDINTERFACE_MONI_COURIER_PATH + 'config.php')
 
     elif app_publish_task.style == '2' and app_publish_task.platform == '2':
         localpath = 'data/' + app_publish_task.seq_no
@@ -237,31 +237,31 @@ def app_publish_task_express(task_id):
 
         # 修改system.php配置文件
         if app_publish_task.env == '1':
-            download_file(localpath + "/system.php", RRKDINTERFACE_COURIER_PATH + 'system.php')
+            download_file(app_publish_task.env, localpath + "/system.php", RRKDINTERFACE_COURIER_PATH + 'system.php')
         elif app_publish_task.env == '2':
-            download_file(localpath + "/system.php", RRKDINTERFACE_MONI_COURIER_PATH + 'system.php')
+            download_file(app_publish_task.env, localpath + "/system.php", RRKDINTERFACE_MONI_COURIER_PATH + 'system.php')
 
         data = {'IOSPublishVersion': app_publish_task.courier_sys_IOSPublishVersion,
                 'isforcedupdate': app_publish_task.courier_sys_IOSisforcedupdate}
         update_file(localpath + "/system.php", data)
         if app_publish_task.env == '1':
-            upload_config(localpath + "/system.php", RRKDINTERFACE_COURIER_PATH + 'system.php')
+            upload_config(app_publish_task.env, localpath + "/system.php", RRKDINTERFACE_COURIER_PATH + 'system.php')
         elif app_publish_task.env == '2':
-            upload_config(localpath + "/system.php", RRKDINTERFACE_MONI_COURIER_PATH + 'system.php')
+            upload_config(app_publish_task.env, localpath + "/system.php", RRKDINTERFACE_MONI_COURIER_PATH + 'system.php')
         # 修改config.php配置文件
         if app_publish_task.env == '1':
-            download_file(localpath + "/config.php", RRKDINTERFACE_COURIER_PATH + 'config.php')
+            download_file(app_publish_task.env, localpath + "/config.php", RRKDINTERFACE_COURIER_PATH + 'config.php')
         elif app_publish_task.env == '2':
-            download_file(localpath + "/config.php", RRKDINTERFACE_MONI_COURIER_PATH + 'config.php')
+            download_file(app_publish_task.env, localpath + "/config.php", RRKDINTERFACE_MONI_COURIER_PATH + 'config.php')
         data = {'iossjversion': app_publish_task.courier_config_iossjversion,
                 'iosUpdateRemark': app_publish_task.courier_config_iosUpdateRemark,
                 'iosverremark': app_publish_task.courier_config_iosverremark
                 }
         update_file(localpath + "/config.php", data)
         if app_publish_task.env == '1':
-            upload_config(localpath + "/config.php", RRKDINTERFACE_COURIER_PATH + 'config.php')
+            upload_config(app_publish_task.env, localpath + "/config.php", RRKDINTERFACE_COURIER_PATH + 'config.php')
         elif app_publish_task.env == '2':
-            upload_config(localpath + "/config.php", RRKDINTERFACE_MONI_COURIER_PATH + 'config.php')
+            upload_config(app_publish_task.env, localpath + "/config.php", RRKDINTERFACE_MONI_COURIER_PATH + 'config.php')
 
 
 def app_publish_task_rollback_config(task_id):
@@ -274,15 +274,15 @@ def app_publish_task_rollback_config(task_id):
     localpath = 'data/' + app_publish_task.seq_no
     if app_publish_task.style == '1':
         if app_publish_task.env == '1':
-            upload_config(localpath + "/backup/system.php", RRKDINTERFACE_CLIENT_PATH + 'system.php')
-            upload_config(localpath + "/backup/config.php", RRKDINTERFACE_CLIENT_PATH + 'config.php')
+            upload_config(app_publish_task.env, localpath + "/backup/system.php", RRKDINTERFACE_CLIENT_PATH + 'system.php')
+            upload_config(app_publish_task.env, localpath + "/backup/config.php", RRKDINTERFACE_CLIENT_PATH + 'config.php')
         elif app_publish_task.env == '2':
-            upload_config(localpath + "/backup/system.php", RRKDINTERFACE_MONI_CLIENT_PATH + 'system.php')
-            upload_config(localpath + "/backup/config.php", RRKDINTERFACE_MONI_CLIENT_PATH + 'config.php')
+            upload_config(app_publish_task.env, localpath + "/backup/system.php", RRKDINTERFACE_MONI_CLIENT_PATH + 'system.php')
+            upload_config(app_publish_task.env, localpath + "/backup/config.php", RRKDINTERFACE_MONI_CLIENT_PATH + 'config.php')
     elif app_publish_task.style == '2':
         if app_publish_task.env == '1':
-            upload_config(localpath + "/backup/system.php", RRKDINTERFACE_COURIER_PATH + 'system.php')
-            upload_config(localpath + "/backup/config.php", RRKDINTERFACE_COURIER_PATH + 'config.php')
+            upload_config(app_publish_task.env, localpath + "/backup/system.php", RRKDINTERFACE_COURIER_PATH + 'system.php')
+            upload_config(app_publish_task.env, localpath + "/backup/config.php", RRKDINTERFACE_COURIER_PATH + 'config.php')
         elif app_publish_task.env == '2':
-            upload_config(localpath + "/backup/system.php", RRKDINTERFACE_MONI_COURIER_PATH + 'system.php')
-            upload_config(localpath + "/backup/config.php", RRKDINTERFACE_MONI_COURIER_PATH + 'config.php')
+            upload_config(app_publish_task.env, localpath + "/backup/system.php", RRKDINTERFACE_MONI_COURIER_PATH + 'system.php')
+            upload_config(app_publish_task.env, localpath + "/backup/config.php", RRKDINTERFACE_MONI_COURIER_PATH + 'config.php')
