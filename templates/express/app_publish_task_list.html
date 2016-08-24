@@ -113,7 +113,7 @@
     <script>
     $(document).ready(function() {
         $('.btn-trash').click(function(){
-            var url = '{% url 'publish_task_trash' %}?id=' + $(this).attr('value');
+            var url = '{% url 'app_publish_task_trash' %}?id=' + $(this).attr('value');
             if (confirm("确定驳回?")) {
                 $.ajax({
                     type: 'GET',
@@ -131,7 +131,7 @@
 
 
         $('.btn-deploy').click(function(){
-            var url = '{% url 'publish_task_deploy' %}?id=' + $(this).attr('value');
+            var url = '{% url 'app_publish_task_deploy' %}?id=' + $(this).attr('value');
             if (confirm("确定发布?")) {
                 $.ajax({
                     type: 'GET',
@@ -148,7 +148,7 @@
         });
 
         $('.btn-rollback').click(function(){
-            var url = '{% url 'publish_task_rollback' %}?id=' + $(this).attr('value');
+            var url = '{% url 'app_publish_task_rollback' %}?id=' + $(this).attr('value');
             if (confirm("确定回滚?")) {
                 $.ajax({
                     type: 'GET',
@@ -168,7 +168,7 @@
 
     function change_info(){
         var args = $("#asset_form").serialize();
-        window.location = "{% url 'publish_task_list' %}?" + args
+        window.location = "{% url 'app_publish_task_list' %}?" + args
     }
     </script>
 {% endblock %}

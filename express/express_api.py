@@ -96,8 +96,8 @@ def update_file(file_path, param={}):
             for l in ls:
                 if "'" + key + "'=>" in l:
                     print ls
-                    last = l.split('=>')[1]
-                    lr = l.replace(last, "'" + value + "',")
+                    last = l.split('=>')[1].split(',')[0]
+                    lr = l.replace(last, "'" + value + "'")
                     ls[i] = lr
                     print lr
                     print ls
