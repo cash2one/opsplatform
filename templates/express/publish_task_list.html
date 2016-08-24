@@ -113,13 +113,13 @@
 
                                     <td class="text-center">
                                         {% if perms.account.perm_can_trash_publish_task %}
-                                        <a href="{% url 'publish_task_trash' %}?id={{ task.id }}" class="btn btn-xs btn-warning {% if task.status != '3' %} disabled {% endif %}">驳回</a>
+                                        <a value="{{ task.id }}" class="btn btn-xs btn-warning btn-trash {% if task.status != '3' %} disabled {% endif %}">驳回</a>
                                         {% endif %}
                                         {% if perms.account.perm_can_deploy_publish_task %}
-                                        <a href="{% url 'publish_task_deploy' %}?id={{ task.id }}" class="btn btn-xs btn-success {% if task.status != '3' %} disabled {% endif %}">发布</a>
+                                        <a value="{{ task.id }}" class="btn btn-xs btn-success btn-deploy {% if task.status != '3' %} disabled {% endif %}">发布</a>
                                         {% endif %}
                                         {% if perms.account.perm_can_rollback_publish_task %}
-                                        <a href="{% url 'publish_task_rollback' %}?id={{ task.id }}" class="btn btn-xs btn-danger {% if task.status != '4' %} disabled {% endif %}">回滚</a>
+                                        <a value="{{ task.id }}" class="btn btn-xs btn-danger btn-rollback {% if task.status != '4' %} disabled {% endif %}">回滚</a>
                                         {% endif %}
                                     </td>
                                 </tr>
@@ -144,7 +144,62 @@
 
 {% block self_footer_js %}
     <script>
-        function change_info(){
+    $(document).ready(function() {
+        $('.btn-trash').click(function(){
+            var url = '{% url 'publish_task_trash' %}?id=' + $(this).attr('value');
+            if (confirm("确定驳回?")) {
+                $.ajax({
+                    type: 'GET',
+                    url: url,
+                    data: {},
+                    success: function (data) {
+                        if (data == 'error' || data == '' || data == undefined) {
+                            layer.alert('提交出错，联系管理员！')
+                        }
+                        parent.location.reload();
+                    }
+                });
+            }
+        });
+
+
+        $('.btn-deploy').click(function(){
+            var url = '{% url 'publish_task_deploy' %}?id=' + $(this).attr('value');
+            if (confirm("确定发布?")) {
+                $.ajax({
+                    type: 'GET',
+                    url: url,
+                    data: {},
+                    success: function (data) {
+                        if (data == 'error' || data == '' || data == undefined) {
+                            layer.alert('提交出错，联系管理员！')
+                        }
+                        parent.location.reload();
+                    }
+                });
+            }
+        });
+
+        $('.btn-rollback').click(function(){
+            var url = '{% url 'publish_task_rollback' %}?id=' + $(this).attr('value');
+            if (confirm("确定回滚?")) {
+                $.ajax({
+                    type: 'GET',
+                    url: url,
+                    data: {},
+                    success: function (data) {
+                        if (data == 'error' || data == '' || data == undefined) {
+                            layer.alert('提交出错，联系管理员！')
+                        }
+                        parent.location.reload();
+                    }
+                });
+            }
+        });
+
+    });
+
+    function change_info(){
         var args = $("#asset_form").serialize();
         window.location = "{% url 'publish_task_list' %}?" + args
     }

@@ -108,3 +108,67 @@
     </div>
 </div>
 {% endblock %}
+
+{% block self_footer_js %}
+    <script>
+    $(document).ready(function() {
+        $('.btn-trash').click(function(){
+            var url = '{% url 'publish_task_trash' %}?id=' + $(this).attr('value');
+            if (confirm("确定驳回?")) {
+                $.ajax({
+                    type: 'GET',
+                    url: url,
+                    data: {},
+                    success: function (data) {
+                        if (data == 'error' || data == '' || data == undefined) {
+                            layer.alert('提交出错，联系管理员！')
+                        }
+                        parent.location.reload();
+                    }
+                });
+            }
+        });
+
+
+        $('.btn-deploy').click(function(){
+            var url = '{% url 'publish_task_deploy' %}?id=' + $(this).attr('value');
+            if (confirm("确定发布?")) {
+                $.ajax({
+                    type: 'GET',
+                    url: url,
+                    data: {},
+                    success: function (data) {
+                        if (data == 'error' || data == '' || data == undefined) {
+                            layer.alert('提交出错，联系管理员！')
+                        }
+                        parent.location.reload();
+                    }
+                });
+            }
+        });
+
+        $('.btn-rollback').click(function(){
+            var url = '{% url 'publish_task_rollback' %}?id=' + $(this).attr('value');
+            if (confirm("确定回滚?")) {
+                $.ajax({
+                    type: 'GET',
+                    url: url,
+                    data: {},
+                    success: function (data) {
+                        if (data == 'error' || data == '' || data == undefined) {
+                            layer.alert('提交出错，联系管理员！')
+                        }
+                        parent.location.reload();
+                    }
+                });
+            }
+        });
+
+    });
+
+    function change_info(){
+        var args = $("#asset_form").serialize();
+        window.location = "{% url 'publish_task_list' %}?" + args
+    }
+    </script>
+{% endblock %}

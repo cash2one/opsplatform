@@ -126,10 +126,12 @@ def publish_task_rollback(request):
                     {'Content-Type': 'application/json'})
     if data and data.get('code') == -1:
         error = data.get('msg')
-        return HttpResponse(error)
+        print error
+        return HttpResponse('error')
     if not data:
         error = u'无法打开目标网址,请联系系统开发人员!'
-        return HttpResponse(error)
+        print error
+        return HttpResponse('error')
     return HttpResponseRedirect(reverse('publish_task_list'))
 
 
@@ -184,10 +186,12 @@ def app_publish_task_trash(request):
                     {'Content-Type': 'application/json'})
     if data and data.get('code') == -1:
         error = data.get('msg')
-        return HttpResponse(error)
+        print error
+        return HttpResponse('error')
     if not data:
         error = u'无法打开目标网址,请联系系统开发人员!'
-        return HttpResponse(error)
+        print error
+        return HttpResponse('error')
     return HttpResponseRedirect(reverse('app_publish_task_list'))
 
 
@@ -213,10 +217,12 @@ def app_publish_task_deploy(request):
                     {'Content-Type': 'application/json'})
     if data and data.get('code') == -1:
         error = data.get('msg')
-        return HttpResponse(error)
+        print error
+        return HttpResponse('error')
     if not data:
         error = u'无法打开目标网址,请联系系统开发人员!'
-        return HttpResponse(error)
+        print error
+        return HttpResponse('error')
     return HttpResponseRedirect(reverse('app_publish_task_list'))
 
 
