@@ -73,7 +73,7 @@ def upload_config(env, localpath, remotepath):
         s = paramiko.SSHClient()
         s.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         s.connect(hostname=host, port=port, username=username, password=password)
-        stdin, stdout, stderr = s.exec_command('ifconfig;')
+        stdin, stdout, stderr = s.exec_command('unison fr-web3;unison web2;unison web3')
         print stdin
         s.close()
 
@@ -196,7 +196,7 @@ def app_publish_task_express(task_id):
         apk_name = os.path.basename(app_publish_task.courier_apk_path)
         if app_publish_task.env == '1':
             upload_apk("../publish_center/" + app_publish_task.courier_apk_path, APK_APK_PATH + apk_name)
-        elif app_publish_task.env == '1':
+        elif app_publish_task.env == '2':
             upload_apk("../publish_center/" + app_publish_task.courier_apk_path, APK_MONI_PATH + apk_name)
 
         localpath = 'data/' + app_publish_task.seq_no
@@ -213,7 +213,7 @@ def app_publish_task_express(task_id):
         update_file(localpath + "/system.php", data)
         if app_publish_task.env == '1':
             upload_config(app_publish_task.env, localpath + "/system.php", RRKDINTERFACE_COURIER_PATH + 'system.php')
-        elif app_publish_task.env == '1':
+        elif app_publish_task.env == '2':
             upload_config(app_publish_task.env, localpath + "/system.php", RRKDINTERFACE_MONI_COURIER_PATH + 'system.php')
         # 修改config.php配置文件
         if app_publish_task.env == '1':
