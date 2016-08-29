@@ -1,0 +1,204 @@
+{% extends 'base.html' %}
+{% load mytags %}
+
+{% block content %}
+    {% include 'nav_cat_bar.html' %}
+    <div class="wrapper wrapper-content animated fadeInRight">
+        <div class="row">
+            <div class="col-sm-10">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>填写基本信息</h5>
+                        <div class="ibox-tools">
+                            <a class="collapse-link">
+                                <i class="fa fa-chevron-up"></i>
+                            </a>
+                            <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                                <i class="fa fa-wrench"></i>
+                            </a>
+                            <a class="close-link">
+                                <i class="fa fa-times"></i>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="ibox-content">
+                        <form id="groupForm" enctype="multipart/form-data" method="post" class="form-horizontal" action="">
+                            {% csrf_token %}
+                            {% if error %}
+                                <div class="alert alert-warning text-center">{{ error }}</div>
+                            {% endif %}
+                            {% if msg %}
+                                <div class="alert alert-success text-center">{{ msg }}</div>
+                            {% endif %}
+                            <div class="form-group">
+                                <label for="product" class="col-sm-2 control-label">产品线</label>
+                                <div class="col-sm-8">
+                                    <select class="form-control" id="product" name="product" onchange="product_change()">
+                                        {% for p in product_list %}
+                                            <option value="{{ p|list_0 }}">{{ p|list_1 }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="hr-line-dashed"></div>
+                            <div class="form-group">
+                                <label for="project" class="col-sm-2 control-label">产品名称</label>
+                                <div class="col-sm-8">
+                                    <input id="project" name="project" placeholder="产品名称" type="text" class="form-control" value="{{ project }}">
+                                </div>
+                            </div>
+
+                            <div class="hr-line-dashed"></div>
+                            <div class="form-group">
+                                <label for="env" class="col-sm-2 control-label">环境类型</label>
+                                <div class="col-sm-8">
+                                    <select class="form-control " id="env" name="env">
+                                        {% for p in env_list %}
+                                            <option value="{{ p|list_0 }}">{{ p|list_1 }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="hr-line-dashed"></div>
+                            <div class="form-group">
+                                <label for="owner" class="col-sm-2 control-label">项目负责人</label>
+                                <div class="col-sm-8">
+                                    <select class="form-control " id="owner" name="owner">
+                                        {% for p in pm_list %}
+                                            <option value="{{ p }}">{{ p }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="hr-line-dashed"></div>
+                            <div class="form-group">
+                                <label for="version" class="col-sm-2 control-label">版本</label>
+                                <div class="col-sm-8">
+                                    <input id="version" name="version" placeholder="v1.0.0" type="text" class="form-control" value="{{ version }}">
+                                </div>
+                            </div>
+
+                            <div class="hr-line-dashed"></div>
+                            <div class="form-group">
+                                <label for="update_remark" class="col-sm-2 control-label">更新理由</label>
+                                <div class="col-sm-8">
+                                    <textarea id="update_remark" name="update_remark" class="form-control" rows="5" placeholder=""></textarea>
+                                </div>
+                            </div>
+                        <div id="code">
+                            <div class="hr-line-dashed"></div>
+                            <div class="form-group">
+                                <label for="code_dir" class="col-sm-2 control-label">代码地址</label>
+                                <div class="col-sm-8">
+                                    <input id="code_dir" name="code_dir" placeholder="git:" type="text" class="form-control" value="{{ code_dir }}">
+                                </div>
+                            </div>
+
+                            <div class="hr-line-dashed"></div>
+                            <div class="form-group">
+                                <label for="code_tag" class="col-sm-2 control-label">Tag</label>
+                                <div class="col-sm-8">
+                                    <input id="code_tag" name="code_tag" placeholder="Tag" type="text" class="form-control" value="{{ code_tag }}">
+                                </div>
+                            </div>
+                        </div>
+                            <div class="hr-line-dashed"></div>
+                            <div class="form-group">
+                                <label for="database_update" class="col-sm-2 control-label">数据库更新说明</label>
+                                <div class="col-sm-8">
+                                    <textarea id="database_update" name="database_update" class="form-control" rows="5" placeholder=""></textarea>
+                                </div>
+                            </div>
+
+                            <div class="hr-line-dashed"></div>
+                            <div class="form-group">
+                                <label for="update_sql" class="col-sm-2 control-label">更新SQL文件</label>
+                                <div class="col-sm-8">
+                                    <input type="file" name="update_sql" id="update_sql" placeholder="更新SQL文件" class="form-control" />
+                                </div>
+                            </div>
+
+                            <div class="hr-line-dashed"></div>
+                            <div class="form-group">
+                                <label for="settings" class="col-sm-2 control-label">环境设置</label>
+                                <div class="col-sm-8">
+                                    <textarea id="settings" name="settings" class="form-control" rows="5" placeholder=""></textarea>
+                                </div>
+                            </div>
+
+                            <div class="hr-line-dashed"></div>
+                            <div class="form-group">
+                                <label for="update_note" class="col-sm-2 control-label">更新说明</label>
+                                <div class="col-sm-8">
+                                    <textarea id="update_note" name="update_note" class="form-control" rows="5" placeholder=""></textarea>
+                                </div>
+                            </div>
+
+
+                            <div class="hr-line-dashed"></div>
+                            <div class="form-group">
+                                <div class="col-sm-4 col-sm-offset-2">
+                                    <button class="btn btn-white" type="reset">取消</button>
+                                    <button id="submit_button" class="btn btn-primary" type="submit">创建</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block self_footer_js %}
+<script>
+$('#groupForm').validator({
+    timely: 2,
+    theme: "yellow_right_effect",
+    fields: {
+        "group_name": {
+            rule: "required",
+            tip: "用户输入组名",
+            ok: "",
+            msg: {required: "必须填写!"}
+        },
+        "group_type": {
+            rule: "checked",
+            tip: "选择组类型",
+            ok: "",
+            msg: {required: "至少选择一个组!"}
+        }
+    },
+    valid: function(form) {
+        form.submit();
+    }
+});
+
+
+$(document).ready(function(){
+    $("#submit_button").click(function(){
+        $('#permissions_selected option').each(function(){
+            $(this).prop('selected', true)
+        })
+    });
+})
+
+
+function product_change(){
+    //综合发布时 隐藏  代码路径和tag
+    var product = $('#product').val();
+    if (product == '-1'){
+        $('#code').hide();
+    }
+    else{
+        $('#code').show();
+    }
+}
+
+</script>
+{% endblock %}

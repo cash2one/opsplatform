@@ -12,6 +12,7 @@ from models import *
 from django.utils import timezone
 from opsplatform import settings
 from express_api import *
+from account.models import User
 
 
 @require_permission('account.perm_can_view_project')
@@ -46,12 +47,8 @@ def project_add(request):
     msg = ''
     header_title, path1, path2 = '创建发布任务', '发布任务管理', '创建发布任务'
 
-    product_list = list(LINE)
+    yesno_list = list(YES_NO)
     env_list = list(ENV)
-    pm_list = list()
-    for user in User.objects.filter(is_active=True):
-        if 'PM' in [group.name for group in user.groups.all()]:
-            pm_list.append(user.name)
 
     if request.method == 'POST':
         product = request.POST.get('product', '')
@@ -62,28 +59,10 @@ def project_add(request):
         code_dir = request.POST.get('code_dir', '')
         code_tag = request.POST.get('code_tag', '')
         database_update = request.POST.get('database_update', '')
-        if request.FILES:
-            upload_sql = request.FILES['update_sql']
-            upload_sql_name = handle_uploaded_file(upload_sql)
-        else:
-            upload_sql_name = ''
         settings = request.POST.get('settings', '')
         update_note = request.POST.get('update_note', '')
         owner = request.POST.get('owner', '')
         try:
-            current_year = timezone.now().year
-            current_month = timezone.now().month
-            current_day = timezone.now().day
-            latest = PublishTask.objects.filter(create_time__startswith=
-                                                datetime.date(current_year,
-                                                              current_month,
-                                                              current_day)).order_by('-seq_no')
-            if latest:
-                latest = latest[0]
-                num = int(latest.seq_no[-2:]) + 1
-            else:
-                num = 1
-            seq_no = 'RRPT-%s%s%s%s' % (current_year, '%02i' % current_month, '%02i' % current_day, '%02i' % num)
             create_time = timezone.now()
             PublishTask.objects.create(seq_no=seq_no,
                                        product=product,
@@ -107,9 +86,9 @@ def project_add(request):
             print e
             error = u'添加任务失败'
         else:
-            msg = u'添加任务 %s 成功' % seq_no
+            msg = u'添加任务成功'
 
-    return render_to_response('express/publish_task_add.html', locals(), RequestContext(request))
+    return render_to_response('express/project_add.html', locals(), RequestContext(request))
 
 
 @require_permission('account.perm_can_edit_project')
