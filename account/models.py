@@ -99,6 +99,10 @@ class Role(models.Model):
             ("perm_can_trash_app_publish_task", "驳回APP发布任务"),
             ("perm_can_deploy_app_publish_task", "部署APP发布任务"),
             ("perm_can_rollback_app_publish_task", "回滚APP发布任务"),
+            ("perm_can_view_project", "查看项目信息"),
+            ("perm_can_add_project", "新增项目信息"),
+            ("perm_can_edit_project", "编辑项目信息"),
+            ("perm_can_del_project", "删除项目信息"),
 
             ("perm_can_view_config", "查看配置中心"),
             ("perm_can_view_virtmgr", "查看虚拟化管理平台"),

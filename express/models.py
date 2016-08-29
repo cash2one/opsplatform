@@ -21,6 +21,7 @@ LINE = (
     (8, '微信端'),
     (9, '裹裹对接系统'),
     (10, '客服系统'),
+    (11, '推送系统'),
     (-1, '综合发布')
 )
 
@@ -130,3 +131,25 @@ class AppPublishTask(models.Model):
 
     def __unicode__(self):
         return self.seq_no
+
+
+YES_NO = (
+    ('yes', 'Yes'),
+    ('no', 'No'),
+)
+
+
+class Project(models.Model):
+    name = models.CharField(u'项目名称', max_length=100, unique=True)
+    git_url = models.CharField(u'Git地址', max_length=200)
+    git_branch = models.CharField(u'Git Branch', max_length=100)
+    env = models.CharField(u'发布环境', max_length=100)
+    is_full = models.CharField(u'是否全量更新', max_length=100)
+    host = models.CharField(u'服务器IP', max_length=100)
+    src = models.CharField(u'源地址', max_length=200)
+    dest = models.CharField(u'部署路径', max_length=200)
+    tomcat_num = models.CharField(u'Tomcat编号', max_length=10)
+    backup_dir = models.CharField(u'备份路径', max_length=200)
+
+    def __unicode__(self):
+        return self.name

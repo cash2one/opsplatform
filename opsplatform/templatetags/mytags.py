@@ -353,6 +353,14 @@ def get_platform_name(code):
         return ''
 
 
+@register.filter(name='get_is_full_name')
+def get_is_full_name(code):
+    try:
+        return [i[1] for i in YES_NO if i[0] == int(code)][0]
+    except:
+        return ''
+
+
 @register.filter(name='get_filename')
 def get_filename(path):
     try:

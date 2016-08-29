@@ -14,6 +14,119 @@ from opsplatform import settings
 from express_api import *
 
 
+@require_permission('account.perm_can_view_project')
+def project_list(request):
+    """
+    项目列表
+    :param request:
+    :return:
+    """
+    header_title, path1, path2 = '查看项目信息', '发布任务管理', '查看项目信息'
+    keyword = request.GET.get('keyword', '')
+    project_list = Project.objects.all()
+    task_id = request.GET.get('id', '')
+
+    if task_id:
+        project_list = project_list.filter(id=task_id)
+
+    if keyword:
+        project_list = project_list.filter(name__icontains=keyword)
+
+    project_list, p, projects, page_range, current_page, show_first, show_end = pages(project_list, request)
+    return render_to_response('express/project_list.html', locals(), RequestContext(request))
+
+
+@require_permission('account.perm_can_add_project')
+def project_add(request):
+    """
+    project add view for route
+    添加 项目信息 的视图
+    """
+    error = ''
+    msg = ''
+    header_title, path1, path2 = '创建发布任务', '发布任务管理', '创建发布任务'
+
+    product_list = list(LINE)
+    env_list = list(ENV)
+    pm_list = list()
+    for user in User.objects.filter(is_active=True):
+        if 'PM' in [group.name for group in user.groups.all()]:
+            pm_list.append(user.name)
+
+    if request.method == 'POST':
+        product = request.POST.get('product', '')
+        project = request.POST.get('project', '')
+        env = request.POST.get('env', '')
+        version = request.POST.get('version', '')
+        update_remark = request.POST.get('update_remark', '')
+        code_dir = request.POST.get('code_dir', '')
+        code_tag = request.POST.get('code_tag', '')
+        database_update = request.POST.get('database_update', '')
+        if request.FILES:
+            upload_sql = request.FILES['update_sql']
+            upload_sql_name = handle_uploaded_file(upload_sql)
+        else:
+            upload_sql_name = ''
+        settings = request.POST.get('settings', '')
+        update_note = request.POST.get('update_note', '')
+        owner = request.POST.get('owner', '')
+        try:
+            current_year = timezone.now().year
+            current_month = timezone.now().month
+            current_day = timezone.now().day
+            latest = PublishTask.objects.filter(create_time__startswith=
+                                                datetime.date(current_year,
+                                                              current_month,
+                                                              current_day)).order_by('-seq_no')
+            if latest:
+                latest = latest[0]
+                num = int(latest.seq_no[-2:]) + 1
+            else:
+                num = 1
+            seq_no = 'RRPT-%s%s%s%s' % (current_year, '%02i' % current_month, '%02i' % current_day, '%02i' % num)
+            create_time = timezone.now()
+            PublishTask.objects.create(seq_no=seq_no,
+                                       product=product,
+                                       project=project,
+                                       env=env,
+                                       version=version,
+                                       update_remark=update_remark,
+                                       code_dir=code_dir,
+                                       code_tag=code_tag,
+                                       database_update=database_update,
+                                       upload_sql=upload_sql_name,
+                                       settings=settings,
+                                       update_note=update_note,
+                                       owner=owner,
+                                       create_time=create_time,
+                                       create_by=request.user.username,
+                                       status=1)
+        except ServerError:
+            pass
+        except Exception as e:
+            print e
+            error = u'添加任务失败'
+        else:
+            msg = u'添加任务 %s 成功' % seq_no
+
+    return render_to_response('express/publish_task_add.html', locals(), RequestContext(request))
+
+
+@require_permission('account.perm_can_edit_project')
+def project_edit(request):
+    pass
+
+
+@require_permission('account.perm_can_view_project')
+def project_detail(request):
+    pass
+
+
+@require_permission('account.perm_can_delete_project')
+def project_del(request):
+    pass
+
+
 @require_permission('account.perm_can_view_publish_task')
 def publish_task_list(request):
     """
