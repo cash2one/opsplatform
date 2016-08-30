@@ -45,65 +45,113 @@ def project_add(request):
     """
     error = ''
     msg = ''
-    header_title, path1, path2 = '创建发布任务', '发布任务管理', '创建发布任务'
+    header_title, path1, path2 = '创建项目', '项目设置', '创建项目'
 
     yesno_list = list(YES_NO)
     env_list = list(ENV)
 
     if request.method == 'POST':
-        product = request.POST.get('product', '')
-        project = request.POST.get('project', '')
+        name = request.POST.get('name', '')
+        git_url = request.POST.get('git_url', '')
+        git_branch = request.POST.get('git_branch', '')
         env = request.POST.get('env', '')
-        version = request.POST.get('version', '')
-        update_remark = request.POST.get('update_remark', '')
-        code_dir = request.POST.get('code_dir', '')
-        code_tag = request.POST.get('code_tag', '')
-        database_update = request.POST.get('database_update', '')
-        settings = request.POST.get('settings', '')
-        update_note = request.POST.get('update_note', '')
-        owner = request.POST.get('owner', '')
+        is_full = request.POST.get('is_full', '')
+        host = request.POST.get('host', '')
+        src = request.POST.get('src', '')
+        dest = request.POST.get('dest', '')
+        tomcat_num = request.POST.get('tomcat_num', '')
+        backup_dir = request.POST.get('backup_dir', '')
         try:
-            create_time = timezone.now()
-            PublishTask.objects.create(seq_no=seq_no,
-                                       product=product,
-                                       project=project,
-                                       env=env,
-                                       version=version,
-                                       update_remark=update_remark,
-                                       code_dir=code_dir,
-                                       code_tag=code_tag,
-                                       database_update=database_update,
-                                       upload_sql=upload_sql_name,
-                                       settings=settings,
-                                       update_note=update_note,
-                                       owner=owner,
-                                       create_time=create_time,
-                                       create_by=request.user.username,
-                                       status=1)
+            Project.objects.create(name=name,
+                                   git_url=git_url,
+                                   git_branch=git_branch,
+                                   env=env,
+                                   is_full=is_full,
+                                   host=host,
+                                   src=src,
+                                   dest=dest,
+                                   tomcat_num=tomcat_num,
+                                   backup_dir=backup_dir)
         except ServerError:
             pass
         except Exception as e:
             print e
-            error = u'添加任务失败'
+            error = u'添加项目失败'
         else:
-            msg = u'添加任务成功'
+            msg = u'添加项目成功'
 
     return render_to_response('express/project_add.html', locals(), RequestContext(request))
 
 
 @require_permission('account.perm_can_edit_project')
 def project_edit(request):
-    pass
+    error = ''
+    msg = ''
+    header_title, path1, path2 = '编辑项目', '项目设置', '编辑项目'
+
+    if request.method == 'GET':
+        project_id = request.GET.get('id', '')
+        env_list = list(ENV)
+        yesno_list = list(YES_NO)
+        project = get_object(Project, id=project_id)
+
+    if request.method == 'POST':
+        project_id = request.POST.get('project_id', '')
+        name = request.POST.get('name', '')
+        git_url = request.POST.get('git_url', '')
+        git_branch = request.POST.get('git_branch', '')
+        env = request.POST.get('env', '')
+        is_full = request.POST.get('is_full', '')
+        host = request.POST.get('host', '')
+        src = request.POST.get('src', '')
+        dest = request.POST.get('dest', '')
+        tomcat_num = request.POST.get('tomcat_num', '')
+        backup_dir = request.POST.get('backup_dir', '')
+        try:
+            Project.objects.filter(id=project_id).update(name=name,
+                                                         git_url=git_url,
+                                                         git_branch=git_branch,
+                                                         env=env,
+                                                         is_full=is_full,
+                                                         host=host,
+                                                         src=src,
+                                                         dest=dest,
+                                                         tomcat_num=tomcat_num,
+                                                         backup_dir=backup_dir)
+        except ServerError:
+            pass
+        except Exception as e:
+            print e
+            error = u'保存项目失败'
+        else:
+            msg = u'保存项目成功'
+    return render_to_response('express/project_edit.html', locals(), RequestContext(request))
 
 
 @require_permission('account.perm_can_view_project')
 def project_detail(request):
-    pass
+    header_title, path1, path2 = '查看项目详情', '项目设置', '查看项目详情'
+    project_id = request.GET.get('id', '')
+    if not project_id:
+        return HttpResponseRedirect(reverse('project_list'))
+    project = get_object(Project, id=project_id)
+    if not project:
+        return HttpResponseRedirect(reverse('project_list'))
+    return render_to_response('express/project_detail.html', locals(), RequestContext(request))
 
 
 @require_permission('account.perm_can_delete_project')
 def project_del(request):
-    pass
+    """
+    del a project
+    删除发布任务
+    """
+    project_ids = request.GET.get('id', '')
+    project_id_list = project_ids.split(',')
+    for project_id in project_id_list:
+        Project.objects.filter(id=project_id, status=1).delete()
+
+    return HttpResponse('删除成功')
 
 
 @require_permission('account.perm_can_view_publish_task')

@@ -302,7 +302,6 @@ def my_join(strl):
     return '\n'.join(strl)
 
 
-
 @register.filter(name='list_0')
 def list_0(char_str):
     return char_str[0]
@@ -356,7 +355,7 @@ def get_platform_name(code):
 @register.filter(name='get_is_full_name')
 def get_is_full_name(code):
     try:
-        return [i[1] for i in YES_NO if i[0] == int(code)][0]
+        return [i[1] for i in YES_NO if i[0] == code][0]
     except:
         return ''
 

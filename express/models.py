@@ -134,8 +134,8 @@ class AppPublishTask(models.Model):
 
 
 YES_NO = (
-    ('yes', 'Yes'),
-    ('no', 'No'),
+    ('yes', u'是'),
+    ('no', u'否'),
 )
 
 

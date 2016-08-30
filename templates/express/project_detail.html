@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+{% load mytags %}
+
+
+{% block content %}
+    {% include 'nav_cat_bar.html' %}
+    <div class="wrapper wrapper-content animated fadeInRight">
+        <div class="row">
+            <div class="col-sm-8">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <span class="label label-primary"><b>{{ project.name }}</b></span>
+                        <div class="ibox-tools">
+                            <a class="collapse-link">
+                                <i class="fa fa-chevron-up"></i>
+                            </a>
+                            <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                                <i class="fa fa-wrench"></i>
+                            </a>
+                            <ul class="dropdown-menu dropdown-group">
+                                <li><a href="#"></a>
+                                </li>
+                                <li><a href="#"></a>
+                                </li>
+                            </ul>
+                            <a class="close-link">
+                                <i class="fa fa-times"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="ibox-content">
+                        <div>
+                            <div class="text-left">
+                                <table class="table">
+                                    <tr>
+                                        <td class="text-navy">ID</td>
+                                        <td>{{ project.id }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">项目名称</td>
+                                        <td>{{ project.name }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">Git地址</td>
+                                        <td>{{ project.git_url }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">Git Branch</td>
+                                        <td>
+                                            {{ project.git_branch }}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">发布环境</td>
+                                        <td>
+                                            {{ project.env|get_env_name }}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">是否全量更新</td>
+                                        <td>
+                                            {{ project.is_full|get_is_full_name }}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">服务器IP</td>
+                                        <td>{{ project.host }}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">源地址</td>
+                                        <td>{{ project.src }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">部署路径</td>
+                                        <td>{{ project.dest }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">Tomcat编号</td>
+                                        <td>{{ project.tomcat_num }}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">备份路径</td>
+                                        <td>{{ project.backup_dir }}</td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<script>
+    $(document).ready(function(){
+        $('#show').click(function(){
+            $('#last').css('display', 'none');
+            $('#all').css('display', 'block');
+        })
+    })
+</script>
+
+
+{% endblock %}
