@@ -140,7 +140,7 @@ YES_NO = (
 
 
 class Project(models.Model):
-    name = models.CharField(u'项目名称', max_length=100, unique=True)
+    name = models.CharField(u'项目名称', max_length=100)
     git_url = models.CharField(u'Git地址', max_length=200)
     git_branch = models.CharField(u'Git Branch', max_length=100)
     env = models.CharField(u'发布环境', max_length=100)
