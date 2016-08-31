@@ -139,8 +139,23 @@ YES_NO = (
 )
 
 
+MVN_ENV = (
+    ('pro', '线上环境'),
+    ('sim', '模拟环境'),
+)
+
+
+LANGUAGE_TYPE = (
+    ('Java', 'Java'),
+    ('PHP', 'PHP'),
+    ('GO', 'GO'),
+)
+
+
 class Project(models.Model):
     name = models.CharField(u'项目名称', max_length=100)
+    code = models.CharField(u'项目编号', max_length=100)
+    language_type = models.CharField(u'开发语言', max_length=100)
     git_url = models.CharField(u'Git地址', max_length=200)
     git_branch = models.CharField(u'Git Branch', max_length=100)
     env = models.CharField(u'发布环境', max_length=100)

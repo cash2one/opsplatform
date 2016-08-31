@@ -320,6 +320,14 @@ def get_env_name(code):
         return ''
 
 
+@register.filter(name='get_mvnenv_name')
+def get_mvnenv_name(code):
+    try:
+        return [i[1] for i in MVN_ENV if i[0] == code][0]
+    except:
+        return ''
+
+
 @register.filter(name='get_product_name')
 def get_product_name(code):
     try:
@@ -356,6 +364,14 @@ def get_platform_name(code):
 def get_is_full_name(code):
     try:
         return [i[1] for i in YES_NO if i[0] == code][0]
+    except:
+        return ''
+
+
+@register.filter(name='get_language_type_name')
+def get_language_type_name(code):
+    try:
+        return [i[1] for i in LANGUAGE_TYPE if i[0] == code][0]
     except:
         return ''
 

@@ -48,10 +48,13 @@ def project_add(request):
     header_title, path1, path2 = '创建项目', '项目设置', '创建项目'
 
     yesno_list = list(YES_NO)
-    env_list = list(ENV)
+    mvnenv_list = list(MVN_ENV)
+    languagetype_list = list(LANGUAGE_TYPE)
 
     if request.method == 'POST':
         name = request.POST.get('name', '')
+        code = request.POST.get('code', '')
+        language_type = request.POST.get('language_type', '')
         git_url = request.POST.get('git_url', '')
         git_branch = request.POST.get('git_branch', '')
         env = request.POST.get('env', '')
@@ -63,6 +66,8 @@ def project_add(request):
         backup_dir = request.POST.get('backup_dir', '')
         try:
             Project.objects.create(name=name,
+                                   code=code,
+                                   language_type=language_type,
                                    git_url=git_url,
                                    git_branch=git_branch,
                                    env=env,
@@ -91,13 +96,16 @@ def project_edit(request):
 
     if request.method == 'GET':
         project_id = request.GET.get('id', '')
-        env_list = list(ENV)
+        mvnenv_list = list(MVN_ENV)
         yesno_list = list(YES_NO)
+        languagetype_list = list(LANGUAGE_TYPE)
         project = get_object(Project, id=project_id)
 
     if request.method == 'POST':
         project_id = request.POST.get('project_id', '')
         name = request.POST.get('name', '')
+        code = request.POST.get('code', '')
+        language_type = request.POST.get('language_type', '')
         git_url = request.POST.get('git_url', '')
         git_branch = request.POST.get('git_branch', '')
         env = request.POST.get('env', '')
@@ -109,6 +117,8 @@ def project_edit(request):
         backup_dir = request.POST.get('backup_dir', '')
         try:
             Project.objects.filter(id=project_id).update(name=name,
+                                                         code=code,
+                                                         language_type=language_type,
                                                          git_url=git_url,
                                                          git_branch=git_branch,
                                                          env=env,
@@ -149,7 +159,7 @@ def project_del(request):
     project_ids = request.GET.get('id', '')
     project_id_list = project_ids.split(',')
     for project_id in project_id_list:
-        Project.objects.filter(id=project_id, status=1).delete()
+        Project.objects.filter(id=project_id).delete()
 
     return HttpResponse('删除成功')
 

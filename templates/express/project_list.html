@@ -46,6 +46,8 @@
                             <thead>
                                 <tr>
                                     <th class="text-center">项目名称</th>
+                                    <th class="text-center">项目代码</th>
+                                    <th class="text-center">开发语言</th>
                                     <th class="text-center">Git地址</th>
                                     <th class="text-center">Git Branch</th>
                                     <th class="text-center">发布环境</th>
@@ -65,13 +67,19 @@
                                         <a href="{% url 'project_detail' %}?id={{ project.id }}"> {{ project.name }} </a>
                                     </td>
                                     <td class="text-center">
+                                        {{ project.code }}
+                                    </td>
+                                    <td class="text-center">
+                                        {{ project.language_type|get_language_type_name }}
+                                    </td>
+                                    <td class="text-center">
                                         {{ project.git_url }}
                                     </td>
                                     <td class="text-center">
                                         {{ project.git_branch }}
                                     </td>
                                     <td class="text-center">
-                                        {{ project.env|get_env_name }}
+                                        {{ project.env|get_mvnenv_name }}
                                     </td>
                                     <td class="text-center">
                                         {{ project.is_full|get_is_full_name }}
@@ -93,11 +101,11 @@
                                     </td>
 
                                     <td class="text-center">
-                                        {% if perms.account.perm_can_change_assetgroup %}
+                                        {% if perms.account.perm_can_change_project %}
                                         <a href="{% url 'project_edit' %}?id={{ project.id }}" class="btn btn-xs btn-info">编辑</a>
                                         {% endif %}
-                                        {% if perms.account.perm_can_delete_assetgroup %}
-                                            <a value="{% url 'project_del' %}?id={{ project.id }}" class="btn btn-xs btn-danger project_del">删除</a>
+                                        {% if perms.account.perm_can_delete_project %}
+                                            <a value="{{ project.id }}" class="btn btn-xs btn-danger project_del">删除</a>
                                         {% endif %}
                                     </td>
                                 </tr>
@@ -124,15 +132,19 @@
     <script>
     $(document).ready(function() {
         $('.project_del').click(function () {
-            var row = $(this).closest('tr');
+            var url = '{% url 'project_del' %}?id=' + $(this).attr('value');
             if (confirm("确定删除?")) {
-                $.get(
-                        $(this).attr('value'),
-                        {},
-                        function (data) {
-                            row.remove()
+                $.ajax({
+                    type: 'GET',
+                    url: url,
+                    data: {},
+                    success: function (data) {
+                        if (data == 'error' || data == '' || data == undefined) {
+                            layer.alert('提交出错，联系管理员！')
                         }
-                )
+                        parent.location.reload();
+                    }
+                });
             }
         });
     });

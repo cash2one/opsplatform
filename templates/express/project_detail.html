@@ -41,6 +41,14 @@
                                         <td>{{ project.name }}</td>
                                     </tr>
                                     <tr>
+                                        <td class="text-navy">项目代码</td>
+                                        <td>{{ project.code }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">开发语言</td>
+                                        <td>{{ project.language_type }}</td>
+                                    </tr>
+                                    <tr>
                                         <td class="text-navy">Git地址</td>
                                         <td>{{ project.git_url }}</td>
                                     </tr>
@@ -53,7 +61,7 @@
                                     <tr>
                                         <td class="text-navy">发布环境</td>
                                         <td>
-                                            {{ project.env|get_env_name }}
+                                            {{ project.env|get_mvnenv_name }}
                                         </td>
                                     </tr>
                                     <tr>
