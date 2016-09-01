@@ -10,7 +10,7 @@
 from express.models import *
 from django.views.decorators.csrf import csrf_exempt
 import json
-from opsplatform.api import JsonResponse
+from opsplatform.api import *
 
 
 @csrf_exempt
@@ -107,4 +107,15 @@ def app_publish_task_create(request):
     return JsonResponse({'msg': 'success', 'code': 1})
 
 
+@csrf_exempt
+def get_projects(request):
+    env = request.GET.get('env', '')
+    projects = []
+    if not env:
+        for i in Project.objects.all():
+            projects.append(i.name)
+    else:
+        for i in Project.objects.filter(env=env):
+            projects.append(i.name)
 
+    return JsonResponse({"msg": "", "projects": projects})

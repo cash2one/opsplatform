@@ -17,7 +17,7 @@ def name_proc(request):
     user_active_num = User.objects.filter(is_active=True).count()
     host_total_num = Asset.objects.all().count()
     host_active_num = Asset.objects.filter(is_active=True).count()
-    request.session.set_expiry(3600)
+    request.session.set_expiry(36000)
 
     info_dic = {
                 'deploy_url': deploy_url,
