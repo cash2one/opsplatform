@@ -311,6 +311,8 @@ def project_deploy(project, git_branch):
         if not os.path.exists(repository_path):
             logger.info("构建代码: %s" % "首次发布克隆代码")
             os.chdir(CODE_DIR + '/' + project.code)
+            project.src = repository_path
+            project.save()
             bash('git clone ' + project.git_url)
         logger.info("构建代码: %s" % "进入代码仓库")
         os.chdir(repository_path)
