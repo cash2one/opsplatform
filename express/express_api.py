@@ -301,13 +301,16 @@ def project_deploy(project, git_branch):
     try:
         # 拉取仓库代码
         logger.info("构建代码: %s" % "切换到代码目录")
-        os.chdir('/code_dir')
+        os.chdir(CODE_DIR)
         print os.getcwd()
         repository = ''.join(project.git_url.split('/')[-1].split('.')[:-1])
         print repository
-        repository_path = '/code_dir/' + repository
+        if not os.path.exists(CODE_DIR + '/' + project.code):
+            os.mkdir(CODE_DIR + '/' + project.code)
+        repository_path = CODE_DIR + '/' + project.code + '/' + repository
         if not os.path.exists(repository_path):
             logger.info("构建代码: %s" % "首次发布克隆代码")
+            os.chdir(CODE_DIR + '/' + project.code)
             bash('git clone ' + project.git_url)
         logger.info("构建代码: %s" % "进入代码仓库")
         os.chdir(repository_path)
@@ -332,9 +335,10 @@ def project_deploy(project, git_branch):
             exclude_from = ANSIBLE_DIR + "/exclude_from"
             with open(exclude_from, 'w') as f:
                 f.write(project.ignore_setup)
+            src = os.getcwd() + '/'
             deploy_cmd = """ansible-playbook -e """ + \
                          """ "Host=%s IsFull=%s Src=%s Dest=%s Product_Name=%s Backup_Dir=%s Exclude_from=%s" """ % \
-                         (project.host, project.is_full, os.getcwd(), project.dest, project.code, project.backup_dir, exclude_from) +\
+                         (project.host, project.is_full, src, project.dest, project.code, project.backup_dir, exclude_from) +\
                          ANSIBLE_DIR + """/deploy_php.yaml"""
             print deploy_cmd
             bash(deploy_cmd)
@@ -361,5 +365,5 @@ def publish_task_deploy_run(task_id, deploy_type):
             logger.debug("发布进度: %s" % e)
             return False
 
-    return True
+    return False
 

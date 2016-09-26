@@ -93,6 +93,10 @@ APK_PASSWORD = config.get('apk', 'password')
 APK_APK_PATH = config.get('apk', 'apk_path')
 APK_MONI_PATH = config.get('apk', 'moni_path')
 
+
+# code dir
+CODE_DIR = config.get('base', 'code_dir')
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.9/howto/deployment/checklist/
 

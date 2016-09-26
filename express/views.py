@@ -314,9 +314,9 @@ def publish_task_deploy_auto(request):
         return HttpResponse('sim')
 
     # 只做php的自动发布
-    project = Project.objects.filter(name=publish_task.project, env=publish_task.env)[0]
-    print project.language_type
-    if project.language_type != 'PHP':
+    projects = Project.objects.filter(name=publish_task.project, env=publish_task.env)
+    print projects[0].language_type
+    if projects[0].language_type != 'PHP':
         return HttpResponse('php')
 
     # 执行发布业务
@@ -344,6 +344,16 @@ def publish_task_deploy_auto(request):
         error = u'无法打开目标网址,请联系系统开发人员!'
         print error
         return HttpResponse('error')
+
+    # 更新项目信息
+    if deploy_type == u'全网更新':
+        projects = Project.objects.filter(name=publish_task.project, env=publish_task.env)
+    else:
+        projects = Project.objects.filter(name=publish_task.project, env=publish_task.env, idc=deploy_type)
+    print projects
+    for project in projects:
+        project.git_branch = publish_task.code_tag
+        project.save()
 
     return HttpResponseRedirect(reverse('publish_task_list'))
 
