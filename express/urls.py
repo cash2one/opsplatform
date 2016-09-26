@@ -22,6 +22,7 @@ urlpatterns = [
     url(r'^publish_task_detail/$', publish_task_detail, name='publish_task_detail'),
     url(r'^publish_task_trash/$', publish_task_trash, name='publish_task_trash'),
     url(r'^publish_task_deploy/$', publish_task_deploy, name='publish_task_deploy'),
+    url(r'^publish_task_deploy_auto/$', publish_task_deploy_auto, name='publish_task_deploy_auto'),
     url(r'^publish_task_rollback/$', publish_task_rollback, name='publish_task_rollback'),
 
     url(r'^app_publish_task_list/$', app_publish_task_list, name='app_publish_task_list'),

@@ -119,3 +119,37 @@ def get_projects(request):
             projects.append(i.name)
 
     return JsonResponse({"msg": "", "projects": projects})
+
+
+@csrf_exempt
+def get_project_giturl(request):
+    """
+    获取branch
+    :param request:
+    :return:
+    """
+    name = request.GET.get('project')
+    env = request.GET.get('env')
+    print name, env
+    project = Project.objects.filter(name=name, env=env)
+    print project
+    if project:
+        return JsonResponse({"msg": "", "git_url": project[0].git_url})
+    else:
+        return JsonResponse({"msg": "", "git_url": ''})
+
+
+@csrf_exempt
+def get_deploy_host(request):
+    deploy_type = request.GET.get('deploy_type', '')
+    task_id = request.GET.get('task_id', '')
+    publish_task = PublishTask.objects.get(id=task_id)
+    if deploy_type == u'全网更新':
+        projects = Project.objects.filter(name=publish_task.project, env=publish_task.env)
+    else:
+        projects = Project.objects.filter(name=publish_task.project, env=publish_task.env, idc=deploy_type)
+    host_list = []
+    for pro in projects:
+        host_list.append(pro.host)
+    return JsonResponse({"msg": "", "host_list": host_list})
+

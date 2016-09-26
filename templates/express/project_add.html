@@ -40,14 +40,14 @@
                             </div>
                             <div class="hr-line-dashed"></div>
                             <div class="form-group">
-                                <label for="code" class="col-sm-2 control-label">开发语言</label>
+                                <label for="code" class="col-sm-2 control-label">产品代码</label>
                                 <div class="col-sm-8">
                                     <input id="code" name="code" placeholder="产品代码" type="text" class="form-control" value="{{ code }}">
                                 </div>
                             </div>
                             <div class="hr-line-dashed"></div>
                             <div class="form-group">
-                                <label for="language_type" class="col-sm-2 control-label">产品代码</label>
+                                <label for="language_type" class="col-sm-2 control-label">开发语言</label>
                                 <div class="col-sm-8">
                                     <select class="form-control " id="language_type" name="language_type">
                                         {% for p in languagetype_list %}
@@ -64,13 +64,13 @@
                                     <input id="git_url" name="git_url" placeholder="Git地址" type="text" class="form-control" value="{{ git_url }}">
                                 </div>
                             </div>
-                            <div class="hr-line-dashed"></div>
-                            <div class="form-group">
-                                <label for="git_branch" class="col-sm-2 control-label">Git Branch</label>
-                                <div class="col-sm-8">
-                                    <input id="git_branch" name="git_branch" placeholder="Git Branch" type="text" class="form-control" value="{{ git_branch }}">
-                                </div>
-                            </div>
+{#                            <div class="hr-line-dashed"></div>#}
+{#                            <div class="form-group">#}
+{#                                <label for="git_branch" class="col-sm-2 control-label">Git Branch</label>#}
+{#                                <div class="col-sm-8">#}
+{#                                    <input id="git_branch" name="git_branch" placeholder="Git Branch" type="text" class="form-control" value="{{ git_branch }}">#}
+{#                                </div>#}
+{#                            </div>#}
 
                             <div class="hr-line-dashed"></div>
                             <div class="form-group">
@@ -98,19 +98,31 @@
 
                             <div class="hr-line-dashed"></div>
                             <div class="form-group">
-                                <label for="host" class="col-sm-2 control-label">服务器IP</label>
+                                <label for="idc" class="col-sm-2 control-label">机房</label>
                                 <div class="col-sm-8">
-                                    <input id="host" name="host" placeholder="服务器IP" type="text" class="form-control" value="{{ host }}">
+                                    <select class="form-control" id="idc" name="idc">
+                                        {% for p in idc_list %}
+                                            <option value="{{ p }}">{{ p }}</option>
+                                        {% endfor %}
+                                    </select>
                                 </div>
                             </div>
 
                             <div class="hr-line-dashed"></div>
                             <div class="form-group">
-                                <label for="src" class="col-sm-2 control-label">源地址</label>
+                                <label for="host" class="col-sm-2 control-label">服务器IP</label>
                                 <div class="col-sm-8">
-                                    <input id="srv" name="src" class="form-control" placeholder="源地址" value="{{ src }}">
+                                    <input id="host" name="host" placeholder="服务器IP" type="text" class="form-control" >
                                 </div>
                             </div>
+
+{#                            <div class="hr-line-dashed"></div>#}
+{#                            <div class="form-group">#}
+{#                                <label for="src" class="col-sm-2 control-label">源地址</label>#}
+{#                                <div class="col-sm-8">#}
+{#                                    <input id="srv" name="src" class="form-control" placeholder="源地址" value="{{ src }}">#}
+{#                                </div>#}
+{#                            </div>#}
                             <div class="hr-line-dashed"></div>
                             <div class="form-group">
                                 <label for="dest" class="col-sm-2 control-label">部署路径</label>
@@ -132,6 +144,14 @@
                                 <label for="backup_dir" class="col-sm-2 control-label">备份路径</label>
                                 <div class="col-sm-8">
                                     <input id="backup_dir" name="backup_dir" class="form-control" placeholder="备份路径" value="{{ backup_dir }}">
+                                </div>
+                            </div>
+
+                            <div class="hr-line-dashed"></div>
+                            <div class="form-group">
+                                <label for="ignore_setup" class="col-sm-2 control-label">忽略同步文件</label>
+                                <div class="col-sm-8">
+                                    <textarea id="ignore_setup" name="ignore_setup" class="form-control" placeholder="忽略同步文件" cols="6">{{ ignore_setup }}</textarea>
                                 </div>
                             </div>
                             <div class="hr-line-dashed"></div>

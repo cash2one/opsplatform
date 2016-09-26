@@ -1,0 +1,6 @@
+- hosts: "{{ Host }}"
+  tasks:
+    - name: 备份原文件
+      shell: chdir={{ Dest }} tar -zcvf {{ Product_Name }}.`date +%m%d%H%M`.tar.gz * ; mv {{ Product_Name }}.`date +%m%d%H%M`.tar.gz {{Backup_Dir}}
+    - name: 同步文件
+      synchronize: src={{ Src }} dest={{ Dest }} delete={{ IsFull }} rsync_opts=--exclude-from={{ Exclude_from }}

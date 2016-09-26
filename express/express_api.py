@@ -16,6 +16,8 @@ from opsplatform.settings import RRKDINTERFACE_HOST, RRKDINTERFACE_PORT, RRKDINT
     RRKDINTERFACE_MONI_PORT, RRKDINTERFACE_MONI_USERNAME, RRKDINTERFACE_MONI_PASSWORD, RRKDINTERFACE_MONI_CLIENT_PATH, \
     RRKDINTERFACE_MONI_COURIER_PATH, APK_HOST, APK_PORT, APK_USERNAME, APK_PASSWORD, APK_APK_PATH, APK_MONI_PATH
 
+from perm.ansible_api import *
+
 default_encoding = 'utf-8'
 if sys.getdefaultencoding() != default_encoding:
     reload(sys)
@@ -73,7 +75,8 @@ def upload_config(env, localpath, remotepath):
         s = paramiko.SSHClient()
         s.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         s.connect(hostname=host, port=port, username=username, password=password)
-        stdin, stdout, stderr = s.exec_command('unison fr-web3;unison web2;unison web3')
+        stdin, stdout, stderr = s.exec_command('/usr/bin/unison fr-web3;/usr/bin/unison web2;/usr/bin/unison web3')
+        logger.info("发布同步命令: %s" % stdout)
         print stdin
         s.close()
 
@@ -286,3 +289,77 @@ def app_publish_task_rollback_config(task_id):
         elif app_publish_task.env == '2':
             upload_config(app_publish_task.env, localpath + "/backup/system.php", RRKDINTERFACE_MONI_COURIER_PATH + 'system.php')
             upload_config(app_publish_task.env, localpath + "/backup/config.php", RRKDINTERFACE_MONI_COURIER_PATH + 'config.php')
+
+
+def project_deploy(project, git_branch):
+    """
+    分别发布每一个机器
+    发布完成后更新branch到最新
+    :param project_id:
+    :return:
+    """
+    try:
+        # 拉取仓库代码
+        logger.info("构建代码: %s" % "切换到代码目录")
+        os.chdir('/code_dir')
+        print os.getcwd()
+        repository = ''.join(project.git_url.split('/')[-1].split('.')[:-1])
+        print repository
+        repository_path = '/code_dir/' + repository
+        if not os.path.exists(repository_path):
+            logger.info("构建代码: %s" % "首次发布克隆代码")
+            bash('git clone ' + project.git_url)
+        logger.info("构建代码: %s" % "进入代码仓库")
+        os.chdir(repository_path)
+        print os.getcwd()
+        logger.info("构建代码: %s %s" % ("执行checkout分支 ", git_branch))
+        print 'git checkout ' + git_branch
+        bash('git checkout ' + git_branch)
+        print 'git pull origin ' + git_branch
+        bash('git pull origin ' + git_branch)
+        # JAVA语言MVN构建代码
+        if project.language_type == 'Java':
+            logger.info("构建代码: %s", "Java mvn 构建中....")
+            print 'mvn clean install -Dmaven.test.skip=true -P%s' % [i[1] for i in MVN_ENV if i[0] == project.env][0]
+            # bash('mvn clean install -Dmaven.test.skip=true -P%s' % [i[1] for i in MVN_ENV if i[0] == project.env][0])
+            #调用 ansible 完成服务器代码部署和服务重启
+            # deploy_cmd = """ansible-playbook -e""" + \
+            #              """ "Host=%s IsFull=%s Tomcat_Num=%s Src=%s Dest=%s Product_Name=%s Backup_Dir=%s " """ % \
+            #              (project.host, project.is_full, project.tomcat_num, os.getcwd(), project.dest, project.code, project.backup_dir) +\
+            #              ANSIBLE_DIR + """/deploy_java.yaml"""
+            # bash(deploy_cmd)
+        elif project.language_type == 'PHP':
+            exclude_from = ANSIBLE_DIR + "/exclude_from"
+            with open(exclude_from, 'w') as f:
+                f.write(project.ignore_setup)
+            deploy_cmd = """ansible-playbook -e """ + \
+                         """ "Host=%s IsFull=%s Src=%s Dest=%s Product_Name=%s Backup_Dir=%s Exclude_from=%s" """ % \
+                         (project.host, project.is_full, os.getcwd(), project.dest, project.code, project.backup_dir, exclude_from) +\
+                         ANSIBLE_DIR + """/deploy_php.yaml"""
+            print deploy_cmd
+            bash(deploy_cmd)
+    except Exception as e:
+        print e
+        logger.debug("发布进度: %s" % '发布过程出错')
+        raise ServerError('发布过程出错')
+
+
+def publish_task_deploy_run(task_id, deploy_type):
+    publish_task = get_object(PublishTask, id=task_id)
+
+    if deploy_type == u'全网更新':
+        projects = Project.objects.filter(name=publish_task.project, env=publish_task.env)
+    else:
+        projects = Project.objects.filter(name=publish_task.project, env=publish_task.env, idc=deploy_type)
+    print projects
+    print task_id
+    for project in projects:
+        try:
+            project_deploy(project, publish_task.code_tag)
+        except Exception as e:
+            print e
+            logger.debug("发布进度: %s" % e)
+            return False
+
+    return True
+

@@ -1,0 +1,4 @@
+- hosts: 172.16.60.24
+  tasks:
+    - name: ls
+      shell: "ls"

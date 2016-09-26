@@ -101,9 +101,25 @@
                                     <select class="form-control " id="is_full" name="is_full">
                                         {% for p in yesno_list %}
                                             {% if p|list_0 == project.is_full %}
-                                            <option value="{{ p|list_0 }}" selected="selected">{{ p|list_1 }}</option>
+                                                <option value="{{ p|list_0 }}" selected="selected">{{ p|list_1 }}</option>
                                             {% else %}
                                                 <option value="{{ p|list_0 }}">{{ p|list_1 }}</option>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="hr-line-dashed"></div>
+                            <div class="form-group">
+                                <label for="idc" class="col-sm-2 control-label">机房</label>
+                                <div class="col-sm-8">
+                                    <select class="form-control" id="idc" name="idc">
+                                        {% for p in idc_list %}
+                                            {% if p == project.idc %}
+                                                <option value="{{ p }}" selected="selected">{{ p }}</option>
+                                            {% else %}
+                                                <option value="{{ p }}">{{ p }}</option>
                                             {% endif %}
                                         {% endfor %}
                                     </select>
@@ -146,6 +162,14 @@
                                 <label for="backup_dir" class="col-sm-2 control-label">备份路径</label>
                                 <div class="col-sm-8">
                                     <input id="backup_dir" name="backup_dir" class="form-control" placeholder="备份路径" value="{{ project.backup_dir }}">
+                                </div>
+                            </div>
+
+                            <div class="hr-line-dashed"></div>
+                            <div class="form-group">
+                                <label for="ignore_setup" class="col-sm-2 control-label">忽略同步文件</label>
+                                <div class="col-sm-8">
+                                    <textarea id="ignore_setup" name="ignore_setup" class="form-control" placeholder="忽略同步文件" cols="6">{{ project.ignore_setup }}</textarea>
                                 </div>
                             </div>
                             <div class="hr-line-dashed"></div>

@@ -71,6 +71,11 @@
                                         </td>
                                     </tr>
                                     <tr>
+                                        <td class="text-navy">机房</td>
+                                        <td>{{ project.idc }}
+                                        </td>
+                                    </tr>
+                                    <tr>
                                         <td class="text-navy">服务器IP</td>
                                         <td>{{ project.host }}
                                         </td>
@@ -91,6 +96,10 @@
                                     <tr>
                                         <td class="text-navy">备份路径</td>
                                         <td>{{ project.backup_dir }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">忽略同步文件</td>
+                                        <td><pre>{{ project.ignore_setup }}</pre></td>
                                     </tr>
                                 </table>
                             </div>

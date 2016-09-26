@@ -116,7 +116,7 @@
                                         <a value="{{ task.id }}" class="btn btn-xs btn-warning btn-trash {% if task.status != '3' %} disabled {% endif %}">驳回</a>
                                         {% endif %}
                                         {% if perms.account.perm_can_deploy_publish_task %}
-                                        <a value="{{ task.id }}" class="btn btn-xs btn-success btn-deploy {% if task.status != '3' %} disabled {% endif %}">发布</a>
+                                            <a href="{% url 'publish_task_deploy' %}?id={{ task.id }}" class="btn btn-xs btn-danger">发布</a>
                                         {% endif %}
                                         {% if perms.account.perm_can_rollback_publish_task %}
                                         <a value="{{ task.id }}" class="btn btn-xs btn-danger btn-rollback {% if task.status != '4' %} disabled {% endif %}">回滚</a>

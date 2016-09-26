@@ -1,0 +1,12 @@
+- hosts: "{{ Host }}"
+  tasks:
+    - name: 停止tomcat{{ Tomcat_Num }}
+      shell: "ps -ef |grep -w /usr/local/tomcat{{ Tomcat_Num }} |grep -v grep |awk '{print $2}' |xargs kill -9"
+    - name: 备份原文件
+      shell: chdir={{ Dest }} tar -zcvf {{ Product_Name }}.`date +%m%d%H%M`.tar.gz * ; mv {{ Product_Name }}.`date +%m%d%H%M`.tar.gz {{back_dir}}
+    - name: 删除旧文件
+      file: dest={{ Dest }}ROOT state=absent
+    - name: 同步文件
+      synchronize: src={{ Src }} dest={{ Dest }} delete={{ IsFull }} rsync_opts=--exclude=.git
+    - name: 启动tomcat{{ Tomcat_Num }}
+      shell: chdir=/usr/local/tomcat{{ Tomcat_Num }}/bin nohup ./startup.sh &

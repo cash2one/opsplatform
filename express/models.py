@@ -24,6 +24,8 @@ LINE = (
     (11, '推送系统'),
     (12, '财务系统(Java)'),
     (13, '财务系统(PHP)'),
+    (14, '帮买（精品购）java接口'),
+    (15, '商家管理店铺商品-java'),
     (-1, '综合发布')
 )
 
@@ -61,6 +63,7 @@ class PublishTask(models.Model):
     approval_time = models.DateTimeField(u'审核时间', null=True)
     approval_by = models.CharField(u'审核人', max_length=100, null=True)
     publish_time = models.CharField(u'计划发版时间', max_length=50, null=True)
+    is_auto_deploy = models.CharField(u'是否自动发布', max_length=100, null=True)
     deploy_time = models.DateTimeField(u'发布时间', null=True)
     deploy_by = models.CharField(u'发布人', max_length=100, null=True)
     status = models.CharField(u'状态', max_length=100)
@@ -142,8 +145,8 @@ YES_NO = (
 
 
 MVN_ENV = (
-    ('pro', '线上环境'),
-    ('sim', '模拟环境'),
+    ('1', 'pro'),
+    ('2', 'sim'),
 )
 
 
@@ -162,11 +165,13 @@ class Project(models.Model):
     git_branch = models.CharField(u'Git Branch', max_length=100)
     env = models.CharField(u'发布环境', max_length=100)
     is_full = models.CharField(u'是否全量更新', max_length=100)
+    idc = models.CharField(u'机房', max_length=100)
     host = models.CharField(u'服务器IP', max_length=100)
     src = models.CharField(u'源地址', max_length=200)
     dest = models.CharField(u'部署路径', max_length=200)
     tomcat_num = models.CharField(u'Tomcat编号', max_length=10)
     backup_dir = models.CharField(u'备份路径', max_length=200)
+    ignore_setup = models.TextField(u'忽略上传文件')
 
     def __unicode__(self):
         return self.name

@@ -48,15 +48,8 @@
                                     <th class="text-center">项目名称</th>
                                     <th class="text-center">项目代码</th>
                                     <th class="text-center">开发语言</th>
-                                    <th class="text-center">Git地址</th>
-                                    <th class="text-center">Git Branch</th>
                                     <th class="text-center">发布环境</th>
                                     <th class="text-center">是否全量更新</th>
-                                    <th class="text-center">服务器IP</th>
-                                    <th class="text-center">源地址</th>
-                                    <th class="text-center">部署路径</th>
-                                    <th class="text-center">Tomcat编号</th>
-                                    <th class="text-center">备份路径</th>
                                     <th class="text-center">操作</th>
                                 </tr>
                             </thead>
@@ -73,31 +66,10 @@
                                         {{ project.language_type|get_language_type_name }}
                                     </td>
                                     <td class="text-center">
-                                        {{ project.git_url }}
-                                    </td>
-                                    <td class="text-center">
-                                        {{ project.git_branch }}
-                                    </td>
-                                    <td class="text-center">
                                         {{ project.env|get_mvnenv_name }}
                                     </td>
                                     <td class="text-center">
                                         {{ project.is_full|get_is_full_name }}
-                                    </td>
-                                    <td class="text-center">
-                                        {{ project.host }}
-                                    </td>
-                                    <td class="text-center">
-                                        {{ project.src }}
-                                    </td>
-                                    <td class="text-center">
-                                        {{ project.dest }}
-                                    </td>
-                                    <td class="text-center">
-                                        {{ project.tomcat_num }}
-                                    </td>
-                                    <td class="text-center">
-                                        {{ project.backup_dir }}
                                     </td>
 
                                     <td class="text-center">
