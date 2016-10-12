@@ -316,6 +316,7 @@ def project_deploy(project, git_branch):
         logger.info("构建代码: %s" % "进入代码仓库")
         os.chdir(repository_path)
         logger.debug("构建代码: %s %s" % ("执行checkout分支 ", git_branch))
+        logger.info("构建代码： %s" % os.getcwd())
         bash('git checkout ' + git_branch)
         bash('git pull origin ' + git_branch)
         # JAVA语言MVN构建代码
