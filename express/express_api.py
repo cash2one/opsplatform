@@ -321,13 +321,16 @@ def project_deploy(project, git_branch):
         # JAVA语言MVN构建代码
         if project.language_type == 'Java':
             # 本地构建JAVA 代码
+            # 根据不同运行环境选择相应脚本执行
             logger.info("构建代码: %s", "Java mvn 构建中....")
-            print 'mvn clean install -Dmaven.test.skip=true -P%s' % [i[1] for i in MVN_ENV if i[0] == project.env][0]
-            # bash('mvn clean install -Dmaven.test.skip=true -P%s' % [i[1] for i in MVN_ENV if i[0] == project.env][0])
+            if project.env == 'sim':
+                print '. build_simulate.sh'
+                bash('. build_simulate.sh')
+            elif project.env == 'pro':
+                print '. build_product.sh'
+                bash('. build_product.sh')
 
         elif project.language_type == 'PHP':
-            project.host = '172.16.60.24'
-
             exclude_from = ANSIBLE_DIR + "/exclude_from"
             with open(exclude_from, 'w') as f:
                 f.write(project.ignore_setup)
