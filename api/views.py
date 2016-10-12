@@ -129,9 +129,12 @@ def get_project_giturl(request):
     :return:
     """
     name = request.GET.get('project')
-    env = request.GET.get('env')
+    env = request.GET.get('env', '')
     print name, env
-    project = Project.objects.filter(name=name, env=env)
+    if env:
+        project = Project.objects.filter(name=name, env=env)
+    else:
+        project = Project.objects.filter(name=name)
     print project
     if project:
         return JsonResponse({"msg": "", "git_url": project[0].git_url})

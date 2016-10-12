@@ -253,7 +253,9 @@ def publish_task_deploy(request):
         publish_task = get_object(PublishTask, id=task_id)
         if not publish_task:
             return HttpResponseRedirect(reverse('publish_task_list'))
+        deploy_type = request.GET.get('deploy_type', '')
         publish_task.is_auto_deploy = 0
+        publish_task.idc = deploy_type
         publish_task.status = 4
         publish_task.deploy_time = timezone.now()
         publish_task.deploy_by = request.user.username
@@ -326,6 +328,7 @@ def publish_task_deploy_auto(request):
 
     # 更新任务状态
     publish_task.is_auto_deploy = 1
+    publish_task.idc = deploy_type
     publish_task.status = 4
     publish_task.deploy_time = timezone.now()
     publish_task.deploy_by = request.user.username
@@ -368,6 +371,15 @@ def publish_task_rollback(request):
         return HttpResponseRedirect(reverse('publish_task_list'))
     publish_task.status = 5
     publish_task.save()
+
+    # 回滚线上备份代码
+    # 判断是否是自动发布
+    print publish_task.is_auto_deploy
+    if publish_task.is_auto_deploy == '1':
+        print 'here'
+        if not publish_task_rollback_run(publish_task):
+            return HttpResponse('error')
+
     # 调用接口
     data = api_call('%s%s' % (settings.PUBLISH_CENTER_URL, settings.PUBLISH_TASK_STATUS_UPDATE),
                     json.dumps({"seq_no": publish_task.seq_no, "status": publish_task.status,

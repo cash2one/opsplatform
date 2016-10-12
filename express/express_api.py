@@ -16,7 +16,8 @@ from opsplatform.settings import RRKDINTERFACE_HOST, RRKDINTERFACE_PORT, RRKDINT
     RRKDINTERFACE_MONI_PORT, RRKDINTERFACE_MONI_USERNAME, RRKDINTERFACE_MONI_PASSWORD, RRKDINTERFACE_MONI_CLIENT_PATH, \
     RRKDINTERFACE_MONI_COURIER_PATH, APK_HOST, APK_PORT, APK_USERNAME, APK_PASSWORD, APK_APK_PATH, APK_MONI_PATH
 
-from perm.ansible_api import *
+from ansible_api import *
+from perm.ansible_api import ANSIBLE_DIR
 
 default_encoding = 'utf-8'
 if sys.getdefaultencoding() != default_encoding:
@@ -300,54 +301,80 @@ def project_deploy(project, git_branch):
     """
     try:
         # 拉取仓库代码
-        logger.info("构建代码: %s" % "切换到代码目录")
+        logger.debug("构建代码: %s" % "切换到代码目录")
         os.chdir(CODE_DIR)
-        print os.getcwd()
         repository = ''.join(project.git_url.split('/')[-1].split('.')[:-1])
-        print repository
         if not os.path.exists(CODE_DIR + '/' + project.code):
             os.mkdir(CODE_DIR + '/' + project.code)
         repository_path = CODE_DIR + '/' + project.code + '/' + repository
         if not os.path.exists(repository_path):
-            logger.info("构建代码: %s" % "首次发布克隆代码")
+            logger.debug("构建代码: %s" % "首次发布克隆代码")
             os.chdir(CODE_DIR + '/' + project.code)
             project.src = repository_path
             project.save()
             bash('git clone ' + project.git_url)
         logger.info("构建代码: %s" % "进入代码仓库")
         os.chdir(repository_path)
-        print os.getcwd()
-        logger.info("构建代码: %s %s" % ("执行checkout分支 ", git_branch))
-        print 'git checkout ' + git_branch
+        logger.debug("构建代码: %s %s" % ("执行checkout分支 ", git_branch))
         bash('git checkout ' + git_branch)
-        print 'git pull origin ' + git_branch
         bash('git pull origin ' + git_branch)
         # JAVA语言MVN构建代码
         if project.language_type == 'Java':
+            # 本地构建JAVA 代码
             logger.info("构建代码: %s", "Java mvn 构建中....")
             print 'mvn clean install -Dmaven.test.skip=true -P%s' % [i[1] for i in MVN_ENV if i[0] == project.env][0]
             # bash('mvn clean install -Dmaven.test.skip=true -P%s' % [i[1] for i in MVN_ENV if i[0] == project.env][0])
-            #调用 ansible 完成服务器代码部署和服务重启
-            # deploy_cmd = """ansible-playbook -e""" + \
-            #              """ "Host=%s IsFull=%s Tomcat_Num=%s Src=%s Dest=%s Product_Name=%s Backup_Dir=%s " """ % \
-            #              (project.host, project.is_full, project.tomcat_num, os.getcwd(), project.dest, project.code, project.backup_dir) +\
-            #              ANSIBLE_DIR + """/deploy_java.yaml"""
-            # bash(deploy_cmd)
+
         elif project.language_type == 'PHP':
+            project.host = '172.16.60.24'
+
             exclude_from = ANSIBLE_DIR + "/exclude_from"
             with open(exclude_from, 'w') as f:
                 f.write(project.ignore_setup)
             src = os.getcwd() + '/'
-            deploy_cmd = """ansible-playbook -e """ + \
-                         """ "Host=%s IsFull=%s Src=%s Dest=%s Product_Name=%s Backup_Dir=%s Exclude_from=%s" """ % \
-                         (project.host, project.is_full, src, project.dest, project.code, project.backup_dir, exclude_from) +\
-                         ANSIBLE_DIR + """/deploy_php.yaml"""
-            print deploy_cmd
-            bash(deploy_cmd)
+
+            # 备份原文件
+            module_args = 'chdir=' + project.dest + ' tar -zcvf ' + project.code + '.`date +%m%d%H%M`.tar.gz * ; mv ' + project.code + '.`date +%m%d%H%M`.tar.gz ' + project.backup_dir
+            cmd = Command(module_name='shell', module_args=module_args, pattern=project.host)
+            cmd.run()
+            ret = cmd.result.get(project.host).get('dark', '')
+            if ret:
+                logger.info("发布进度: %s" % ret)
+                raise ServerError(ret)
+            result = cmd.state
+            print result
+            if not result.get('ok').get(project.host):
+                logger.info("发布进度: %s" % result.get('err').get(project.host).get('stderr'))
+                raise ServerError(result.get('err').get(project.host).get('stderr'))
+            # 同步文件
+            module_args = 'src=' + src + ' dest=' + project.dest + ' delete=' + project.is_full + ' rsync_opts=--exclude-from=' + exclude_from
+            cmd = Command(module_name='synchronize', module_args=module_args, pattern=project.host)
+            cmd.run()
+            ret = cmd.result.get(project.host).get('dark', '')
+            if ret:
+                logger.info("发布进度: %s" % ret)
+                raise ServerError(ret)
+            result = cmd.state
+            if not result.get('ok').get(project.host) and result.get('err'):
+                logger.info("发布进度: %s" % result.get('err').get(project.host).get('stderr'))
+                raise ServerError(result.get('err').get(project.host).get('stderr'))
+
+
+            # exclude_from = ANSIBLE_DIR + "/exclude_from"
+            # with open(exclude_from, 'w') as f:
+            #     f.write(project.ignore_setup)
+            # src = os.getcwd() + '/'
+            # deploy_cmd = """ansible-playbook -e """ + \
+            #              """ "Host=%s IsFull=%s Src=%s Dest=%s Product_Name=%s Backup_Dir=%s Exclude_from=%s" """ % \
+            #              (project.host, project.is_full, src, project.dest, project.code, project.backup_dir, exclude_from) +\
+            #              ANSIBLE_DIR + """/deploy_php.yaml"""
+            # print deploy_cmd
+            # bash(deploy_cmd)
     except Exception as e:
         print e
-        logger.debug("发布进度: %s" % '发布过程出错')
-        raise ServerError('发布过程出错')
+        logger.info("发布进度: %s" % '发布过程出错')
+        return False
+    return True
 
 
 def publish_task_deploy_run(task_id, deploy_type):
@@ -361,11 +388,35 @@ def publish_task_deploy_run(task_id, deploy_type):
     print task_id
     for project in projects:
         try:
-            project_deploy(project, publish_task.code_tag)
+            if not project_deploy(project, publish_task.code_tag):
+                return False
         except Exception as e:
-            print e
-            logger.debug("发布进度: %s" % e)
+            logger.info("发布进度: %s" % e)
             return False
 
-    return False
+    return True
 
+
+def publish_task_rollback_run(publish_task):
+    # 自动化发布过的代码从备份里恢复最新的备份
+    if publish_task.idc == u'全网更新':
+        projects = Project.objects.filter(name=publish_task.project, env=publish_task.env)
+    else:
+        projects = Project.objects.filter(name=publish_task.project, env=publish_task.env, idc=publish_task.idc)
+    print projects
+
+    # 回滚备份文件
+    for project in projects:
+        module_args = 'chdir=' + project.backup_dir + ' tar -zxvf  `ls -t|grep ' + project.code + '|head -n1` -C ' + project.dest
+        cmd = Command(module_name='shell', module_args=module_args, pattern=project.host)
+        cmd.run()
+        ret = cmd.result.get(project.host).get('dark', '')
+        if ret:
+            logger.info("发布进度: %s" % ret)
+            return False
+        result = cmd.state
+        print result
+        if not result.get('ok').get(project.host):
+            logger.info("发布进度: %s" % result.get('err').get(project.host).get('stderr'))
+            return False
+    return True

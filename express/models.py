@@ -64,6 +64,7 @@ class PublishTask(models.Model):
     approval_by = models.CharField(u'审核人', max_length=100, null=True)
     publish_time = models.CharField(u'计划发版时间', max_length=50, null=True)
     is_auto_deploy = models.CharField(u'是否自动发布', max_length=100, null=True)
+    idc = models.CharField(u'发布类型', max_length=1000, null=True)
     deploy_time = models.DateTimeField(u'发布时间', null=True)
     deploy_by = models.CharField(u'发布人', max_length=100, null=True)
     status = models.CharField(u'状态', max_length=100)

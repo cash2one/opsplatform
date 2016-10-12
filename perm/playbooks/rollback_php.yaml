@@ -1,0 +1,4 @@
+- hosts: "{{ Host }}"
+  tasks:
+    - name: 备份原文件
+      shell: chdir={{ Dest }} tar -zcvf {{ Product_Name }}.`date +%m%d%H%M`.tar.gz * ; mv {{ Product_Name }}.`date +%m%d%H%M`.tar.gz {{Backup_Dir}}
