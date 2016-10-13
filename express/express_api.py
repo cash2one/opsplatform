@@ -324,12 +324,55 @@ def project_deploy(project, git_branch):
             # 本地构建JAVA 代码
             # 根据不同运行环境选择相应脚本执行
             logger.info("构建代码: %s", "Java mvn 构建中....")
-            if project.env == 'sim':
+            if project.env == '2':
                 print '. build_simulate.sh'
                 bash('. build_simulate.sh')
-            elif project.env == 'pro':
+            elif project.env == '1':
                 print '. build_product.sh'
                 bash('. build_product.sh')
+
+            # 停止tomcat
+            module_args = "ps -ef |grep -w /usr/local/" + project.tomcat_num + " |grep -v grep |awk '{print $2}' |xargs kill -9"
+            print module_args
+            cmd = Command(module_name='shell', module_args=module_args, pattern=project.host)
+            cmd.run()
+            ret = cmd.result.get(project.host).get('dark', '')
+            if ret:
+                logger.info("发布进度: %s" % ret)
+                raise ServerError(ret)
+            result = cmd.state
+            print result
+            if not result.get('ok').get(project.host):
+                logger.info("发布进度: %s" % result.get('err').get(project.host).get('stderr'))
+                raise ServerError(result.get('err').get(project.host).get('stderr'))
+
+            # 备份原文件
+            module_args = 'chdir=' + project.dest + ' tar -zcvf ' + project.code + '.`date +%m%d%H%M`.tar.gz * ; mv ' + project.code + '.`date +%m%d%H%M`.tar.gz ' + project.backup_dir
+            cmd = Command(module_name='shell', module_args=module_args, pattern=project.host)
+            cmd.run()
+            ret = cmd.result.get(project.host).get('dark', '')
+            if ret:
+                logger.info("发布进度: %s" % ret)
+                raise ServerError(ret)
+            result = cmd.state
+            print result
+            if not result.get('ok').get(project.host):
+                logger.info("发布进度: %s" % result.get('err').get(project.host).get('stderr'))
+                raise ServerError(result.get('err').get(project.host).get('stderr'))
+
+            # 删除旧文件
+            module_args = 'dest=' + project.dest + '/ROOT' + ' state=absent'
+            cmd = Command(module_name='file', module_args=module_args, pattern=project.host)
+            cmd.run()
+            ret = cmd.result.get(project.host).get('dark', '')
+            if ret:
+                logger.info("发布进度: %s" % ret)
+                raise ServerError(ret)
+            result = cmd.state
+            print result
+            if not result.get('ok').get(project.host):
+                logger.info("发布进度: %s" % result.get('err').get(project.host).get('stderr'))
+                raise ServerError(result.get('err').get(project.host).get('stderr'))
 
         elif project.language_type == 'PHP':
             exclude_from = ANSIBLE_DIR + "/exclude_from"
@@ -410,17 +453,24 @@ def publish_task_rollback_run(publish_task):
     print projects
 
     # 回滚备份文件
-    for project in projects:
-        module_args = 'chdir=' + project.backup_dir + ' tar -zxvf  `ls -t|grep ' + project.code + '|head -n1` -C ' + project.dest
-        cmd = Command(module_name='shell', module_args=module_args, pattern=project.host)
-        cmd.run()
-        ret = cmd.result.get(project.host).get('dark', '')
-        if ret:
-            logger.info("发布进度: %s" % ret)
-            return False
-        result = cmd.state
-        print result
-        if not result.get('ok').get(project.host):
-            logger.info("发布进度: %s" % result.get('err').get(project.host).get('stderr'))
-            return False
+    try:
+        for project in projects:
+            module_args = 'chdir=' + project.backup_dir + ' tar -zxvf  `ls -t|grep ' + project.code + '|head -n1` -C ' + project.dest
+            print module_args
+            cmd = Command(module_name='shell', module_args=module_args, pattern=project.host)
+            cmd.run()
+            ret = cmd.result.get(project.host).get('dark', '')
+            if ret:
+                logger.info("发布进度: %s" % ret)
+                return False
+            result = cmd.state
+            print result
+            if not result.get('ok').get(project.host):
+                logger.info("发布进度: %s" % result.get('err').get(project.host).get('stderr'))
+                return False
+    except Exception as e:
+        print e
+        logger.info("发布进度: %s" % e)
+        return False
     return True
+
