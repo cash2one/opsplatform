@@ -390,3 +390,11 @@ def get_url(path):
         return PUBLISH_CENTER_DATA_URL + '/' + path
     except:
         return ''
+
+
+@register.filter(name='get_code_dir')
+def get_code_dir(project):
+    try:
+        return Project.objects.filter(name=project)[0].git_url
+    except:
+        return ''

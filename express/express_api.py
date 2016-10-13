@@ -319,7 +319,11 @@ def project_deploy(project, git_branch):
         logger.info("构建代码： %s" % os.getcwd())
         bash('git checkout ' + git_branch)
         bash('git pull origin ' + git_branch)
-        # JAVA语言MVN构建代码
+
+        exclude_from = ANSIBLE_DIR + "/exclude_from"
+        with open(exclude_from, 'w') as f:
+                f.write(project.ignore_setup)
+        src = os.getcwd() + '/'
         if project.language_type == 'Java':
             # 本地构建JAVA 代码
             # 根据不同运行环境选择相应脚本执行
@@ -361,8 +365,8 @@ def project_deploy(project, git_branch):
                 raise ServerError(result.get('err').get(project.host).get('stderr'))
 
             # 删除旧文件
-            module_args = 'dest=' + project.dest + '/ROOT' + ' state=absent'
-            cmd = Command(module_name='file', module_args=module_args, pattern=project.host)
+            module_args = 'rm -rf ' + project.dest + '/*'
+            cmd = Command(module_name='shell', module_args=module_args, pattern=project.host)
             cmd.run()
             ret = cmd.result.get(project.host).get('dark', '')
             if ret:
@@ -374,14 +378,48 @@ def project_deploy(project, git_branch):
                 logger.info("发布进度: %s" % result.get('err').get(project.host).get('stderr'))
                 raise ServerError(result.get('err').get(project.host).get('stderr'))
 
-        elif project.language_type == 'PHP':
-            exclude_from = ANSIBLE_DIR + "/exclude_from"
-            with open(exclude_from, 'w') as f:
-                f.write(project.ignore_setup)
-            src = os.getcwd() + '/'
+            # 同步文件
+            module_args = 'src=' + src + ' dest=' + project.dest + ' delete=' + project.is_full + ' rsync_opts=--exclude-from=' + exclude_from
+            cmd = Command(module_name='synchronize', module_args=module_args, pattern=project.host)
+            cmd.run()
+            ret = cmd.result.get(project.host).get('dark', '')
+            if ret:
+                logger.info("发布进度: %s" % ret)
+                raise ServerError(ret)
+            result = cmd.state
+            if not result.get('ok').get(project.host) and result.get('err'):
+                logger.info("发布进度: %s" % result.get('err').get(project.host).get('stderr'))
+                raise ServerError(result.get('err').get(project.host).get('stderr'))
 
+            # 修改文件权限
+            module_args = 'chown -R www:www ' + project.dest
+            cmd = Command(module_name='shell', module_args=module_args, pattern=project.host)
+            cmd.run()
+            ret = cmd.result.get(project.host).get('dark', '')
+            if ret:
+                logger.info("发布进度: %s" % ret)
+                raise ServerError(ret)
+            result = cmd.state
+            if not result.get('ok').get(project.host) and result.get('err'):
+                logger.info("发布进度: %s" % result.get('err').get(project.host).get('stderr'))
+                raise ServerError(result.get('err').get(project.host).get('stderr'))
+
+            # 启动tomcat
+            module_args = 'chdir=/usr/local/' + project.tomcat_num + '/bin nohup ./startup.sh &'
+            cmd = Command(module_name='shell', module_args=module_args, pattern=project.host)
+            cmd.run()
+            ret = cmd.result.get(project.host).get('dark', '')
+            if ret:
+                logger.info("发布进度: %s" % ret)
+                raise ServerError(ret)
+            result = cmd.state
+            if not result.get('ok').get(project.host) and result.get('err'):
+                logger.info("发布进度: %s" % result.get('err').get(project.host).get('stderr'))
+                raise ServerError(result.get('err').get(project.host).get('stderr'))
+
+        elif project.language_type == 'PHP':
             # 备份原文件
-            module_args = 'chdir=' + project.dest + ' tar -zcvf ' + project.code + '.`date +%m%d%H%M`.tar.gz * ; mv ' + project.code + '.`date +%m%d%H%M`.tar.gz ' + project.backup_dir
+            module_args = 'chdir=' + project.dest + ' tar -zcvf ' + project.code + '.`date +%m%d%H`.tar.gz * ; mv ' + project.code + '.`date +%m%d%H`.tar.gz ' + project.backup_dir
             cmd = Command(module_name='shell', module_args=module_args, pattern=project.host)
             cmd.run()
             ret = cmd.result.get(project.host).get('dark', '')
@@ -406,17 +444,23 @@ def project_deploy(project, git_branch):
                 logger.info("发布进度: %s" % result.get('err').get(project.host).get('stderr'))
                 raise ServerError(result.get('err').get(project.host).get('stderr'))
 
-
-            # exclude_from = ANSIBLE_DIR + "/exclude_from"
-            # with open(exclude_from, 'w') as f:
-            #     f.write(project.ignore_setup)
-            # src = os.getcwd() + '/'
-            # deploy_cmd = """ansible-playbook -e """ + \
-            #              """ "Host=%s IsFull=%s Src=%s Dest=%s Product_Name=%s Backup_Dir=%s Exclude_from=%s" """ % \
-            #              (project.host, project.is_full, src, project.dest, project.code, project.backup_dir, exclude_from) +\
-            #              ANSIBLE_DIR + """/deploy_php.yaml"""
-            # print deploy_cmd
-            # bash(deploy_cmd)
+            # 修改文件权限
+            module_args = 'chown -R www:www ' + project.dest
+            cmd = Command(module_name='shell', module_args=module_args, pattern=project.host)
+            cmd.run()
+            print cmd.result
+            print cmd.state
+            ret = cmd.result.get(project.host).get('dark', '')
+            print ret, ret == ''
+            if ret:
+                print ret, 'here'
+                logger.info("发布进度: %s" % ret)
+                raise ServerError(ret)
+            result = cmd.state
+            if not result.get('ok').get(project.host) and result.get('err'):
+                print result.get('err').get(project.host).get('stderr')
+                logger.info("发布进度: %s" % result.get('err').get(project.host).get('stderr'))
+                raise ServerError(result.get('err').get(project.host).get('stderr'))
     except Exception as e:
         print e
         logger.info("发布进度: %s" % '发布过程出错')
@@ -438,6 +482,7 @@ def publish_task_deploy_run(task_id, deploy_type):
             if not project_deploy(project, publish_task.code_tag):
                 return False
         except Exception as e:
+            print e
             logger.info("发布进度: %s" % e)
             return False
 
