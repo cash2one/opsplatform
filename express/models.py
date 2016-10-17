@@ -57,6 +57,7 @@ class PublishTask(models.Model):
     upload_sql = models.CharField(u'更新SQL文件', max_length=1000, null=True)
     settings = models.TextField(u'环境设置', null=True)
     update_note = models.TextField(u'更新说明', null=True)
+    qa_note = models.TextField(u'测试评估建议', null=True)
     owner = models.CharField(u'项目负责人', max_length=100)
     submit_time = models.DateTimeField(u'提交时间', null=True)
     submit_by = models.CharField(u'提交人', max_length=100, null=True)

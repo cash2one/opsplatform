@@ -316,10 +316,10 @@ def publish_task_deploy_auto(request):
         return HttpResponse('sim')
 
     # 只做php的自动发布
-    projects = Project.objects.filter(name=publish_task.project, env=publish_task.env)
-    print projects[0].language_type
-    if projects[0].language_type != 'PHP':
-        return HttpResponse('php')
+    # projects = Project.objects.filter(name=publish_task.project, env=publish_task.env)
+    # print projects[0].language_type
+    # if projects[0].language_type != 'PHP':
+    #     return HttpResponse('php')
 
     # 执行发布业务
     is_ok = publish_task_deploy_run(task_id, deploy_type)
@@ -376,7 +376,6 @@ def publish_task_rollback(request):
     # 判断是否是自动发布
     print publish_task.is_auto_deploy
     if publish_task.is_auto_deploy == '1':
-        print 'here'
         if not publish_task_rollback_run(publish_task):
             return HttpResponse('error')
 

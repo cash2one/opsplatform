@@ -32,6 +32,7 @@ def publish_task_create(request):
                                                                  'upload_sql': data.get('upload_sql'),
                                                                  'settings': data.get('settings'),
                                                                  'update_note': data.get('update_note'),
+                                                                 'qa_note': data.get('qa_note'),
                                                                  'owner': data.get('owner'),
                                                                  'submit_time': data.get('submit_time'),
                                                                  'submit_by': data.get('submit_by'),

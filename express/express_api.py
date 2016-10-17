@@ -73,13 +73,24 @@ def upload_config(env, localpath, remotepath):
     sftp.put(localpath, remotepath)
     t.close()
     if env == '1':
-        s = paramiko.SSHClient()
-        s.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        s.connect(hostname=host, port=port, username=username, password=password)
-        stdin, stdout, stderr = s.exec_command('/usr/bin/unison fr-web3;/usr/bin/unison web2;/usr/bin/unison web3')
-        logger.info("发布同步命令: %s" % stdout)
-        print stdin
-        s.close()
+        module_args = '/usr/bin/unison fr-web3;/usr/bin/unison web2;/usr/bin/unison web3'
+        cmd = Command(module_name='shell', module_args=module_args, pattern=host)
+        cmd.run()
+        ret = cmd.result.get(host).get('dark', '')
+        if ret:
+            logger.info("发布进度: %s" % ret)
+            raise ServerError(ret)
+        result = cmd.state
+        if not result.get('ok').get(host) and result.get('err'):
+            logger.info("发布进度: %s" % result.get('err').get(host).get('stderr'))
+            raise ServerError(result.get('err').get(host).get('stderr'))
+        # s = paramiko.SSHClient()
+        # s.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        # s.connect(hostname=host, port=port, username=username, password=password)
+        # stdin, stdout, stderr = s.exec_command('/usr/bin/unison fr-web3;/usr/bin/unison web2;/usr/bin/unison web3')
+        # logger.info("发布同步命令: %s" % stdout)
+        # print stdin
+        # s.close()
 
 
 def update_file(file_path, param={}):
@@ -329,11 +340,11 @@ def project_deploy(project, git_branch):
             # 根据不同运行环境选择相应脚本执行
             logger.info("构建代码: %s", "Java mvn 构建中....")
             if project.env == '2':
-                print '. build_simulate.sh'
-                bash('. build_simulate.sh')
+                print './build_simulate.sh'
+                bash('./build_simulate.sh')
             elif project.env == '1':
-                print '. build_product.sh'
-                bash('. build_product.sh')
+                print './build_product.sh'
+                bash('./build_product.sh')
 
             # 停止tomcat
             module_args = "ps -ef |grep -w /usr/local/" + project.tomcat_num + " |grep -v grep |awk '{print $2}' |xargs kill -9"
@@ -417,6 +428,20 @@ def project_deploy(project, git_branch):
                 logger.info("发布进度: %s" % result.get('err').get(project.host).get('stderr'))
                 raise ServerError(result.get('err').get(project.host).get('stderr'))
 
+            # 判断tomcat 是否启动成功
+            module_args = 'ps -aux | grep ' + project.tomcat_num
+            cmd = Command(module_name='shell', module_args=module_args, pattern=project.host)
+            cmd.run()
+            ret = cmd.result.get(project.host).get('dark', '')
+            if ret:
+                logger.info("发布进度: %s" % ret)
+                raise ServerError(ret)
+            result = cmd.state
+            if not result.get('ok').get(project.host) and result.get('err'):
+                logger.info("发布进度: %s" % result.get('err').get(project.host).get('stderr'))
+                raise ServerError(result.get('err').get(project.host).get('stderr'))
+            return False
+
         elif project.language_type == 'PHP':
             # 备份原文件
             module_args = 'chdir=' + project.dest + ' tar -zcvf ' + project.code + '.`date +%m%d%H`.tar.gz * ; mv ' + project.code + '.`date +%m%d%H`.tar.gz ' + project.backup_dir
@@ -457,7 +482,7 @@ def project_deploy(project, git_branch):
                 logger.info("发布进度: %s" % ret)
                 raise ServerError(ret)
             result = cmd.state
-            if not result.get('ok').get(project.host) and result.get('err'):
+            if not result.get('ok').get(project.host) and result.get('err').get(project.host).get('stderr'):
                 print result.get('err').get(project.host).get('stderr')
                 logger.info("发布进度: %s" % result.get('err').get(project.host).get('stderr'))
                 raise ServerError(result.get('err').get(project.host).get('stderr'))
