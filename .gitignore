@@ -5,3 +5,4 @@ logs/
 keys/
 opsplatform.conf
 data/
+perm/playbooks/exclude_form

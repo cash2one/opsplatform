@@ -8,6 +8,7 @@
 """
 import os
 import sys
+from subprocess import Popen, PIPE
 import paramiko
 from opsplatform.api import *
 from models import *
@@ -331,10 +332,6 @@ def project_deploy(project, git_branch):
         bash('git checkout ' + git_branch)
         bash('git pull origin ' + git_branch)
 
-        exclude_from = ANSIBLE_DIR + "/exclude_from"
-        with open(exclude_from, 'w') as f:
-                f.write(project.ignore_setup)
-        src = os.getcwd() + '/'
         if project.language_type == 'Java':
             # 本地构建JAVA 代码
             # 根据不同运行环境选择相应脚本执行
@@ -357,12 +354,12 @@ def project_deploy(project, git_branch):
                 raise ServerError(ret)
             result = cmd.state
             print result
-            if not result.get('ok').get(project.host):
+            if not result.get('ok').get(project.host) and result.get('err') and result.get('err').get(project.host).get('stderr'):
                 logger.info("发布进度: %s" % result.get('err').get(project.host).get('stderr'))
                 raise ServerError(result.get('err').get(project.host).get('stderr'))
 
             # 备份原文件
-            module_args = 'chdir=' + project.dest + ' tar -zcvf ' + project.code + '.`date +%m%d%H%M`.tar.gz * ; mv ' + project.code + '.`date +%m%d%H%M`.tar.gz ' + project.backup_dir
+            module_args = 'chdir=' + project.dest + ' tar -zcvf ' + project.code + '.`date +%m%d%H`.tar.gz * ; mv ' + project.code + '.`date +%m%d%H`.tar.gz ' + project.backup_dir
             cmd = Command(module_name='shell', module_args=module_args, pattern=project.host)
             cmd.run()
             ret = cmd.result.get(project.host).get('dark', '')
@@ -371,7 +368,7 @@ def project_deploy(project, git_branch):
                 raise ServerError(ret)
             result = cmd.state
             print result
-            if not result.get('ok').get(project.host):
+            if not result.get('ok').get(project.host) and result.get('err') and result.get('err').get(project.host).get('stderr'):
                 logger.info("发布进度: %s" % result.get('err').get(project.host).get('stderr'))
                 raise ServerError(result.get('err').get(project.host).get('stderr'))
 
@@ -385,12 +382,25 @@ def project_deploy(project, git_branch):
                 raise ServerError(ret)
             result = cmd.state
             print result
-            if not result.get('ok').get(project.host):
+            if not result.get('ok').get(project.host) and result.get('err') and result.get('err').get(project.host).get('stderr'):
                 logger.info("发布进度: %s" % result.get('err').get(project.host).get('stderr'))
                 raise ServerError(result.get('err').get(project.host).get('stderr'))
 
             # 同步文件
-            module_args = 'src=' + src + ' dest=' + project.dest + ' delete=' + project.is_full + ' rsync_opts=--exclude-from=' + exclude_from
+            war_file = ''
+            core_file = ''
+            p = Popen('find * -name "*.war"', shell=True, stdout=PIPE, stderr=PIPE).stdout.readlines()
+            if p:
+                war_file = p[0].strip()
+                print war_file
+            if not war_file:
+                p = Popen('find * -name "*.tar.gz"', shell=True, stdout=PIPE, stderr=PIPE).stdout.readlines()
+                if p:
+                    core_file = p[0].strip()
+
+            src = war_file if war_file else core_file
+            print 'WAR/GZ :   ' + src
+            module_args = 'src=' + src + ' dest=' + project.dest + ' delete=' + project.is_full
             cmd = Command(module_name='synchronize', module_args=module_args, pattern=project.host)
             cmd.run()
             ret = cmd.result.get(project.host).get('dark', '')
@@ -398,9 +408,26 @@ def project_deploy(project, git_branch):
                 logger.info("发布进度: %s" % ret)
                 raise ServerError(ret)
             result = cmd.state
-            if not result.get('ok').get(project.host) and result.get('err'):
+            if not result.get('ok').get(project.host) and result.get('err') and result.get('err').get(project.host).get('stderr'):
                 logger.info("发布进度: %s" % result.get('err').get(project.host).get('stderr'))
                 raise ServerError(result.get('err').get(project.host).get('stderr'))
+
+            # 解压部署的压缩包
+            if core_file:
+                file_name = os.path.basename(core_file)
+                print file_name
+                module_args = 'tar -zxvf ' + project.dest + '/' + file_name + ' -C ' + project.dest
+                print module_args
+                cmd = Command(module_name='shell', module_args=module_args, pattern=project.host)
+                cmd.run()
+                ret = cmd.result.get(project.host).get('dark', '')
+                if ret:
+                    logger.info("发布进度: %s" % ret)
+                    raise ServerError(ret)
+                result = cmd.state
+                if not result.get('ok').get(project.host) and result.get('err') and result.get('err').get(project.host).get('stderr'):
+                    logger.info("发布进度: %s" % result.get('err').get(project.host).get('stderr'))
+                    raise ServerError(result.get('err').get(project.host).get('stderr'))
 
             # 修改文件权限
             module_args = 'chown -R www:www ' + project.dest
@@ -411,7 +438,7 @@ def project_deploy(project, git_branch):
                 logger.info("发布进度: %s" % ret)
                 raise ServerError(ret)
             result = cmd.state
-            if not result.get('ok').get(project.host) and result.get('err'):
+            if not result.get('ok').get(project.host) and result.get('err') and result.get('err').get(project.host).get('stderr'):
                 logger.info("发布进度: %s" % result.get('err').get(project.host).get('stderr'))
                 raise ServerError(result.get('err').get(project.host).get('stderr'))
 
@@ -424,12 +451,12 @@ def project_deploy(project, git_branch):
                 logger.info("发布进度: %s" % ret)
                 raise ServerError(ret)
             result = cmd.state
-            if not result.get('ok').get(project.host) and result.get('err'):
+            if not result.get('ok').get(project.host) and result.get('err') and result.get('err').get(project.host).get('stderr'):
                 logger.info("发布进度: %s" % result.get('err').get(project.host).get('stderr'))
                 raise ServerError(result.get('err').get(project.host).get('stderr'))
 
             # 判断tomcat 是否启动成功
-            module_args = 'ps -aux | grep ' + project.tomcat_num
+            module_args = 'ps -ef |grep -w /usr/local/' + project.tomcat_num + "|grep -v grep |awk '{print $2}'"
             cmd = Command(module_name='shell', module_args=module_args, pattern=project.host)
             cmd.run()
             ret = cmd.result.get(project.host).get('dark', '')
@@ -437,12 +464,19 @@ def project_deploy(project, git_branch):
                 logger.info("发布进度: %s" % ret)
                 raise ServerError(ret)
             result = cmd.state
-            if not result.get('ok').get(project.host) and result.get('err'):
+            if not result.get('ok').get(project.host) and result.get('err') and result.get('err').get(project.host).get('stderr'):
                 logger.info("发布进度: %s" % result.get('err').get(project.host).get('stderr'))
                 raise ServerError(result.get('err').get(project.host).get('stderr'))
-            return False
+            print cmd.result
+            if not cmd.result.get(project.host).get('stdout'):
+                logger.info("发布出错: %s" % '启动Tomcat失败')
+                raise ServerError('启动Tomcat失败')
 
         elif project.language_type == 'PHP':
+            exclude_from = ANSIBLE_DIR + "/exclude_from"
+            with open(exclude_from, 'w') as f:
+                    f.write(project.ignore_setup)
+            src = os.getcwd() + '/'
             # 备份原文件
             module_args = 'chdir=' + project.dest + ' tar -zcvf ' + project.code + '.`date +%m%d%H`.tar.gz * ; mv ' + project.code + '.`date +%m%d%H`.tar.gz ' + project.backup_dir
             cmd = Command(module_name='shell', module_args=module_args, pattern=project.host)
@@ -453,7 +487,7 @@ def project_deploy(project, git_branch):
                 raise ServerError(ret)
             result = cmd.state
             print result
-            if not result.get('ok').get(project.host):
+            if not result.get('ok').get(project.host) and result.get('err') and result.get('err').get(project.host).get('stderr'):
                 logger.info("发布进度: %s" % result.get('err').get(project.host).get('stderr'))
                 raise ServerError(result.get('err').get(project.host).get('stderr'))
             # 同步文件
@@ -465,7 +499,7 @@ def project_deploy(project, git_branch):
                 logger.info("发布进度: %s" % ret)
                 raise ServerError(ret)
             result = cmd.state
-            if not result.get('ok').get(project.host) and result.get('err'):
+            if not result.get('ok').get(project.host) and result.get('err') and result.get('err').get(project.host).get('stderr'):
                 logger.info("发布进度: %s" % result.get('err').get(project.host).get('stderr'))
                 raise ServerError(result.get('err').get(project.host).get('stderr'))
 
@@ -482,7 +516,7 @@ def project_deploy(project, git_branch):
                 logger.info("发布进度: %s" % ret)
                 raise ServerError(ret)
             result = cmd.state
-            if not result.get('ok').get(project.host) and result.get('err').get(project.host).get('stderr'):
+            if not result.get('ok').get(project.host) and result.get('err') and result.get('err').get(project.host).get('stderr'):
                 print result.get('err').get(project.host).get('stderr')
                 logger.info("发布进度: %s" % result.get('err').get(project.host).get('stderr'))
                 raise ServerError(result.get('err').get(project.host).get('stderr'))
