@@ -313,29 +313,23 @@ def project_deploy(project, git_branch):
     """
     try:
         # 拉取仓库代码
-        logger.debug("构建代码: %s" % "切换到代码目录")
         os.chdir(CODE_DIR)
         repository = ''.join(project.git_url.split('/')[-1].split('.')[:-1])
         if not os.path.exists(CODE_DIR + '/' + project.code):
             os.mkdir(CODE_DIR + '/' + project.code)
         repository_path = CODE_DIR + '/' + project.code + '/' + repository
         if not os.path.exists(repository_path):
-            logger.debug("构建代码: %s" % "首次发布克隆代码")
             os.chdir(CODE_DIR + '/' + project.code)
             project.src = repository_path
             project.save()
             bash('git clone ' + project.git_url)
-        logger.info("构建代码: %s" % "进入代码仓库")
         os.chdir(repository_path)
-        logger.debug("构建代码: %s %s" % ("执行checkout分支 ", git_branch))
-        logger.info("构建代码： %s" % os.getcwd())
         bash('git checkout ' + git_branch)
         bash('git pull origin ' + git_branch)
 
         if project.language_type == 'Java':
             # 本地构建JAVA 代码
             # 根据不同运行环境选择相应脚本执行
-            logger.info("构建代码: %s", "Java mvn 构建中....")
             if project.env == '2':
                 print './build_simulate.sh'
                 bash('./build_simulate.sh')
@@ -350,12 +344,12 @@ def project_deploy(project, git_branch):
             cmd.run()
             ret = cmd.result.get(project.host).get('dark', '')
             if ret:
-                logger.info("发布进度: %s" % ret)
+                logger.info("[停止tomcat] 发布出错: %s" % ret)
                 raise ServerError(ret)
             result = cmd.state
             print result
             if not result.get('ok').get(project.host) and result.get('err') and result.get('err').get(project.host).get('stderr'):
-                logger.info("发布进度: %s" % result.get('err').get(project.host).get('stderr'))
+                logger.info("[停止tomcat] 发布出错: %s" % result.get('err').get(project.host).get('stderr'))
                 raise ServerError(result.get('err').get(project.host).get('stderr'))
 
             # 备份原文件
@@ -364,12 +358,12 @@ def project_deploy(project, git_branch):
             cmd.run()
             ret = cmd.result.get(project.host).get('dark', '')
             if ret:
-                logger.info("发布进度: %s" % ret)
+                logger.info("[备份原文件] 发布出错: %s" % ret)
                 raise ServerError(ret)
             result = cmd.state
             print result
             if not result.get('ok').get(project.host) and result.get('err') and result.get('err').get(project.host).get('stderr'):
-                logger.info("发布进度: %s" % result.get('err').get(project.host).get('stderr'))
+                logger.info("[备份原文件] 发布出错: %s" % result.get('err').get(project.host).get('stderr'))
                 raise ServerError(result.get('err').get(project.host).get('stderr'))
 
             # 删除旧文件
@@ -378,12 +372,12 @@ def project_deploy(project, git_branch):
             cmd.run()
             ret = cmd.result.get(project.host).get('dark', '')
             if ret:
-                logger.info("发布进度: %s" % ret)
+                logger.info("[删除旧文件] 发布出错: %s" % ret)
                 raise ServerError(ret)
             result = cmd.state
             print result
             if not result.get('ok').get(project.host) and result.get('err') and result.get('err').get(project.host).get('stderr'):
-                logger.info("发布进度: %s" % result.get('err').get(project.host).get('stderr'))
+                logger.info("[删除旧文件] 发布出错: %s" % result.get('err').get(project.host).get('stderr'))
                 raise ServerError(result.get('err').get(project.host).get('stderr'))
 
             # 同步文件
@@ -405,11 +399,11 @@ def project_deploy(project, git_branch):
             cmd.run()
             ret = cmd.result.get(project.host).get('dark', '')
             if ret:
-                logger.info("发布进度: %s" % ret)
+                logger.info("[同步文件] 发布出错: %s" % ret)
                 raise ServerError(ret)
             result = cmd.state
             if not result.get('ok').get(project.host) and result.get('err') and result.get('err').get(project.host).get('stderr'):
-                logger.info("发布进度: %s" % result.get('err').get(project.host).get('stderr'))
+                logger.info("[同步文件] 发布出错: %s" % result.get('err').get(project.host).get('stderr'))
                 raise ServerError(result.get('err').get(project.host).get('stderr'))
 
             # 解压部署的压缩包
@@ -422,11 +416,11 @@ def project_deploy(project, git_branch):
                 cmd.run()
                 ret = cmd.result.get(project.host).get('dark', '')
                 if ret:
-                    logger.info("发布进度: %s" % ret)
+                    logger.info("[解压压缩包] 发布出错: %s" % ret)
                     raise ServerError(ret)
                 result = cmd.state
                 if not result.get('ok').get(project.host) and result.get('err') and result.get('err').get(project.host).get('stderr'):
-                    logger.info("发布进度: %s" % result.get('err').get(project.host).get('stderr'))
+                    logger.info("[解压压缩包] 发布出错: %s" % result.get('err').get(project.host).get('stderr'))
                     raise ServerError(result.get('err').get(project.host).get('stderr'))
 
             # 修改文件权限
@@ -435,11 +429,11 @@ def project_deploy(project, git_branch):
             cmd.run()
             ret = cmd.result.get(project.host).get('dark', '')
             if ret:
-                logger.info("发布进度: %s" % ret)
+                logger.info("[修改文件权限] 发布出错: %s" % ret)
                 raise ServerError(ret)
             result = cmd.state
             if not result.get('ok').get(project.host) and result.get('err') and result.get('err').get(project.host).get('stderr'):
-                logger.info("发布进度: %s" % result.get('err').get(project.host).get('stderr'))
+                logger.info("[修改文件权限] 发布出错: %s" % result.get('err').get(project.host).get('stderr'))
                 raise ServerError(result.get('err').get(project.host).get('stderr'))
 
             # 启动tomcat
@@ -448,11 +442,11 @@ def project_deploy(project, git_branch):
             cmd.run()
             ret = cmd.result.get(project.host).get('dark', '')
             if ret:
-                logger.info("发布进度: %s" % ret)
+                logger.info("[启动tomcat] 发布出错: %s" % ret)
                 raise ServerError(ret)
             result = cmd.state
             if not result.get('ok').get(project.host) and result.get('err') and result.get('err').get(project.host).get('stderr'):
-                logger.info("发布进度: %s" % result.get('err').get(project.host).get('stderr'))
+                logger.info("[启动tomcat] 发布出错: %s" % result.get('err').get(project.host).get('stderr'))
                 raise ServerError(result.get('err').get(project.host).get('stderr'))
 
             # 判断tomcat 是否启动成功
@@ -461,15 +455,15 @@ def project_deploy(project, git_branch):
             cmd.run()
             ret = cmd.result.get(project.host).get('dark', '')
             if ret:
-                logger.info("发布进度: %s" % ret)
+                logger.info("[判断tomcat是否启动] 发布出错: %s" % ret)
                 raise ServerError(ret)
             result = cmd.state
             if not result.get('ok').get(project.host) and result.get('err') and result.get('err').get(project.host).get('stderr'):
-                logger.info("发布进度: %s" % result.get('err').get(project.host).get('stderr'))
+                logger.info("[判断tomcat是否启动] 发布出错: %s" % result.get('err').get(project.host).get('stderr'))
                 raise ServerError(result.get('err').get(project.host).get('stderr'))
             print cmd.result
             if not cmd.result.get(project.host).get('stdout'):
-                logger.info("发布出错: %s" % '启动Tomcat失败')
+                logger.info("[判断tomcat是否启动] 发布出错: %s" % '启动Tomcat失败')
                 raise ServerError('启动Tomcat失败')
 
         elif project.language_type == 'PHP':
@@ -483,12 +477,12 @@ def project_deploy(project, git_branch):
             cmd.run()
             ret = cmd.result.get(project.host).get('dark', '')
             if ret:
-                logger.info("发布进度: %s" % ret)
+                logger.info("[备份原文件] 发布出错: %s" % ret)
                 raise ServerError(ret)
             result = cmd.state
             print result
             if not result.get('ok').get(project.host) and result.get('err') and result.get('err').get(project.host).get('stderr'):
-                logger.info("发布进度: %s" % result.get('err').get(project.host).get('stderr'))
+                logger.info("[备份原文件] 发布出错: %s" % result.get('err').get(project.host).get('stderr'))
                 raise ServerError(result.get('err').get(project.host).get('stderr'))
             # 同步文件
             module_args = 'src=' + src + ' dest=' + project.dest + ' delete=' + project.is_full + ' rsync_opts=--exclude-from=' + exclude_from
@@ -496,11 +490,11 @@ def project_deploy(project, git_branch):
             cmd.run()
             ret = cmd.result.get(project.host).get('dark', '')
             if ret:
-                logger.info("发布进度: %s" % ret)
+                logger.info("[同步文件] 发布出错: %s" % ret)
                 raise ServerError(ret)
             result = cmd.state
             if not result.get('ok').get(project.host) and result.get('err') and result.get('err').get(project.host).get('stderr'):
-                logger.info("发布进度: %s" % result.get('err').get(project.host).get('stderr'))
+                logger.info("[同步文件] 发布出错: %s" % result.get('err').get(project.host).get('stderr'))
                 raise ServerError(result.get('err').get(project.host).get('stderr'))
 
             # 修改文件权限
@@ -512,17 +506,16 @@ def project_deploy(project, git_branch):
             ret = cmd.result.get(project.host).get('dark', '')
             print ret, ret == ''
             if ret:
-                print ret, 'here'
-                logger.info("发布进度: %s" % ret)
+                logger.info("[修改文件权限] 发布出错: %s" % ret)
                 raise ServerError(ret)
             result = cmd.state
             if not result.get('ok').get(project.host) and result.get('err') and result.get('err').get(project.host).get('stderr'):
                 print result.get('err').get(project.host).get('stderr')
-                logger.info("发布进度: %s" % result.get('err').get(project.host).get('stderr'))
+                logger.info("[修改文件权限] 发布出错: %s" % result.get('err').get(project.host).get('stderr'))
                 raise ServerError(result.get('err').get(project.host).get('stderr'))
     except Exception as e:
         print e
-        logger.info("发布进度: %s" % '发布过程出错')
+        logger.info("发布出错: %s" % '发布过程出错')
         return False
     return True
 

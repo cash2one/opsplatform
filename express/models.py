@@ -156,6 +156,7 @@ LANGUAGE_TYPE = (
     ('Java', 'Java'),
     ('PHP', 'PHP'),
     ('GO', 'GO'),
+    (u'前端', u'前端'),
 )
 
 
