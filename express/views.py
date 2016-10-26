@@ -353,7 +353,6 @@ def publish_task_deploy_auto(request):
         projects = Project.objects.filter(name=publish_task.project, env=publish_task.env)
     else:
         projects = Project.objects.filter(name=publish_task.project, env=publish_task.env, idc=deploy_type)
-    print projects
     for project in projects:
         project.git_branch = publish_task.code_tag
         project.save()

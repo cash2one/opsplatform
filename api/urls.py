@@ -17,4 +17,5 @@ urlpatterns = [
     url(r'^get_projects/$', get_projects, name='get_projects'),
     url(r'^get_project_giturl/$', get_project_giturl, name='get_project_giturl'),
     url(r'^get_deploy_host/$', get_deploy_host, name='get_deploy_host'),
+    url(r'^get_deploy_progress/$', get_deploy_progress, name='get_deploy_progress'),
 ]

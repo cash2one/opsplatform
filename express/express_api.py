@@ -304,7 +304,7 @@ def app_publish_task_rollback_config(task_id):
             upload_config(app_publish_task.env, localpath + "/backup/config.php", RRKDINTERFACE_MONI_COURIER_PATH + 'config.php')
 
 
-def project_deploy(project, git_branch):
+def project_deploy(publish_task, project, git_branch):
     """
     分别发布每一个机器
     发布完成后更新branch到最新
@@ -329,15 +329,18 @@ def project_deploy(project, git_branch):
 
         if project.language_type == 'Java':
             # 本地构建JAVA 代码
-            # 根据不同运行环境选择相应脚本执行
+            # 1.根据不同运行环境选择相应脚本执行
             if project.env == '2':
                 print './build_simulate.sh'
                 bash('./build_simulate.sh')
             elif project.env == '1':
                 print './build_product.sh'
                 bash('./build_product.sh')
+            publish_task.deploy_progress = int(publish_task.deploy_progress) + 1
+            publish_task.deploy_info = publish_task.deploy_info + u'构建JAVA代码...\n构建成功！\n'
+            publish_task.save()
 
-            # 停止tomcat
+            # 2.停止tomcat
             module_args = "ps -ef |grep -w /usr/local/" + project.tomcat_num + " |grep -v grep |awk '{print $2}' |xargs kill -9"
             print module_args
             cmd = Command(module_name='shell', module_args=module_args, pattern=project.host)
@@ -351,8 +354,11 @@ def project_deploy(project, git_branch):
             if not result.get('ok').get(project.host) and result.get('err') and result.get('err').get(project.host).get('stderr'):
                 logger.info("[停止tomcat] 发布出错: %s" % result.get('err').get(project.host).get('stderr'))
                 raise ServerError(result.get('err').get(project.host).get('stderr'))
+            publish_task.deploy_progress = int(publish_task.deploy_progress) + 1
+            publish_task.deploy_info = publish_task.deploy_info + '停止tomcat...\n' + 'tomcat已停止\n'
+            publish_task.save()
 
-            # 备份原文件
+            # 3.备份原文件
             module_args = 'chdir=' + project.dest + ' tar -zcvf ' + project.code + '.`date +%m%d%H`.tar.gz * ; mv ' + project.code + '.`date +%m%d%H`.tar.gz ' + project.backup_dir
             cmd = Command(module_name='shell', module_args=module_args, pattern=project.host)
             cmd.run()
@@ -365,8 +371,11 @@ def project_deploy(project, git_branch):
             if not result.get('ok').get(project.host) and result.get('err') and result.get('err').get(project.host).get('stderr'):
                 logger.info("[备份原文件] 发布出错: %s" % result.get('err').get(project.host).get('stderr'))
                 raise ServerError(result.get('err').get(project.host).get('stderr'))
+            publish_task.deploy_progress = int(publish_task.deploy_progress) + 1
+            publish_task.deploy_info = publish_task.deploy_info + '备份原文件...\n' + '备份完成！\n'
+            publish_task.save()
 
-            # 删除旧文件
+            # 4.删除旧文件
             module_args = 'rm -rf ' + project.dest + '/*'
             cmd = Command(module_name='shell', module_args=module_args, pattern=project.host)
             cmd.run()
@@ -379,8 +388,11 @@ def project_deploy(project, git_branch):
             if not result.get('ok').get(project.host) and result.get('err') and result.get('err').get(project.host).get('stderr'):
                 logger.info("[删除旧文件] 发布出错: %s" % result.get('err').get(project.host).get('stderr'))
                 raise ServerError(result.get('err').get(project.host).get('stderr'))
+            publish_task.deploy_progress = int(publish_task.deploy_progress) + 1
+            publish_task.deploy_info = publish_task.deploy_info + '删除旧文件...\n' + '删除旧文件完成!\n'
+            publish_task.save()
 
-            # 同步文件
+            # 5.同步文件
             war_file = ''
             core_file = ''
             p = Popen('find * -name "*.war"', shell=True, stdout=PIPE, stderr=PIPE).stdout.readlines()
@@ -405,8 +417,11 @@ def project_deploy(project, git_branch):
             if not result.get('ok').get(project.host) and result.get('err') and result.get('err').get(project.host).get('stderr'):
                 logger.info("[同步文件] 发布出错: %s" % result.get('err').get(project.host).get('stderr'))
                 raise ServerError(result.get('err').get(project.host).get('stderr'))
+            publish_task.deploy_progress = int(publish_task.deploy_progress) + 1
+            publish_task.deploy_info = publish_task.deploy_info + '同步文件...\n' + '同步文件完成!\n'
+            publish_task.save()
 
-            # 解压部署的压缩包
+            # 6.解压部署的压缩包
             if core_file:
                 file_name = os.path.basename(core_file)
                 print file_name
@@ -423,7 +438,7 @@ def project_deploy(project, git_branch):
                     logger.info("[解压压缩包] 发布出错: %s" % result.get('err').get(project.host).get('stderr'))
                     raise ServerError(result.get('err').get(project.host).get('stderr'))
 
-            # 修改文件权限
+            # 7.修改文件权限
             module_args = 'chown -R www:www ' + project.dest
             cmd = Command(module_name='shell', module_args=module_args, pattern=project.host)
             cmd.run()
@@ -435,8 +450,10 @@ def project_deploy(project, git_branch):
             if not result.get('ok').get(project.host) and result.get('err') and result.get('err').get(project.host).get('stderr'):
                 logger.info("[修改文件权限] 发布出错: %s" % result.get('err').get(project.host).get('stderr'))
                 raise ServerError(result.get('err').get(project.host).get('stderr'))
-
-            # 启动tomcat
+            publish_task.deploy_progress = int(publish_task.deploy_progress) + 1
+            publish_task.deploy_info = publish_task.deploy_info + '修改文件权限...\n' + '修改文件权限完成!\n'
+            publish_task.save()
+            # 8.启动tomcat
             module_args = 'chdir=/usr/local/' + project.tomcat_num + '/bin nohup ./startup.sh &'
             cmd = Command(module_name='shell', module_args=module_args, pattern=project.host)
             cmd.run()
@@ -448,8 +465,11 @@ def project_deploy(project, git_branch):
             if not result.get('ok').get(project.host) and result.get('err') and result.get('err').get(project.host).get('stderr'):
                 logger.info("[启动tomcat] 发布出错: %s" % result.get('err').get(project.host).get('stderr'))
                 raise ServerError(result.get('err').get(project.host).get('stderr'))
+            publish_task.deploy_progress = int(publish_task.deploy_progress) + 1
+            publish_task.deploy_info = publish_task.deploy_info + '启动tomcat...\n' + '启动tomcat完成!\n'
+            publish_task.save()
 
-            # 判断tomcat 是否启动成功
+            # 9.判断tomcat 是否启动成功
             module_args = 'ps -ef |grep -w /usr/local/' + project.tomcat_num + "|grep -v grep |awk '{print $2}'"
             cmd = Command(module_name='shell', module_args=module_args, pattern=project.host)
             cmd.run()
@@ -465,13 +485,16 @@ def project_deploy(project, git_branch):
             if not cmd.result.get(project.host).get('stdout'):
                 logger.info("[判断tomcat是否启动] 发布出错: %s" % '启动Tomcat失败')
                 raise ServerError('启动Tomcat失败')
-
+            publish_task.deploy_progress = int(publish_task.deploy_progress) + 1
+            publish_task.deploy_info = publish_task.deploy_info + '判断tomcat 是否启动成功...\n' + 'tomcat已启动成功!\n'
+            publish_task.save()
+            print 'over:======' + publish_task.deploy_info
         elif project.language_type == 'PHP':
             exclude_from = ANSIBLE_DIR + "/exclude_from"
             with open(exclude_from, 'w') as f:
                     f.write(project.ignore_setup)
             src = os.getcwd() + '/'
-            # 备份原文件
+            # 1.备份原文件
             module_args = 'chdir=' + project.dest + ' tar -zcvf ' + project.code + '.`date +%m%d%H`.tar.gz * ; mv ' + project.code + '.`date +%m%d%H`.tar.gz ' + project.backup_dir
             cmd = Command(module_name='shell', module_args=module_args, pattern=project.host)
             cmd.run()
@@ -484,7 +507,11 @@ def project_deploy(project, git_branch):
             if not result.get('ok').get(project.host) and result.get('err') and result.get('err').get(project.host).get('stderr'):
                 logger.info("[备份原文件] 发布出错: %s" % result.get('err').get(project.host).get('stderr'))
                 raise ServerError(result.get('err').get(project.host).get('stderr'))
-            # 同步文件
+            publish_task.deploy_progress = int(publish_task.deploy_progress) + 1
+            publish_task.deploy_info = publish_task.deploy_info + '备份原文件...\n' + '备份原文件成功!\n'
+            publish_task.save()
+
+            # 2.同步文件
             module_args = 'src=' + src + ' dest=' + project.dest + ' delete=' + project.is_full + ' rsync_opts=--exclude-from=' + exclude_from
             cmd = Command(module_name='synchronize', module_args=module_args, pattern=project.host)
             cmd.run()
@@ -496,8 +523,11 @@ def project_deploy(project, git_branch):
             if not result.get('ok').get(project.host) and result.get('err') and result.get('err').get(project.host).get('stderr'):
                 logger.info("[同步文件] 发布出错: %s" % result.get('err').get(project.host).get('stderr'))
                 raise ServerError(result.get('err').get(project.host).get('stderr'))
+            publish_task.deploy_progress = int(publish_task.deploy_progress) + 1
+            publish_task.deploy_info = publish_task.deploy_info + '同步文件...\n' + '同步文件成功!\n'
+            publish_task.save()
 
-            # 修改文件权限
+            # 3.修改文件权限
             module_args = 'chown -R www:www ' + project.dest
             cmd = Command(module_name='shell', module_args=module_args, pattern=project.host)
             cmd.run()
@@ -513,9 +543,19 @@ def project_deploy(project, git_branch):
                 print result.get('err').get(project.host).get('stderr')
                 logger.info("[修改文件权限] 发布出错: %s" % result.get('err').get(project.host).get('stderr'))
                 raise ServerError(result.get('err').get(project.host).get('stderr'))
+            publish_task.deploy_progress = int(publish_task.deploy_progress) + 1
+            publish_task.deploy_info = publish_task.deploy_info + '修改文件权限...\n' + '修改文件权限成功!\n'
+            publish_task.save()
+
+        else:
+            logger.info("不支持自动发布！")
+            raise ServerError('不支持自动发布！')
     except Exception as e:
-        print e
+        print '异常输出： ' + str(e)
         logger.info("发布出错: %s" % '发布过程出错')
+        publish_task.deploy_info = publish_task.deploy_info + '\n===============\n发布出错:' + str(e)
+        publish_task.deploy_total = 0
+        publish_task.save()
         return False
     return True
 
@@ -529,9 +569,15 @@ def publish_task_deploy_run(task_id, deploy_type):
         projects = Project.objects.filter(name=publish_task.project, env=publish_task.env, idc=deploy_type)
     print projects
     print task_id
+    # 计算发布需要多少步
+    total = len(projects) * (3 if projects[0].language_type == 'PHP' else 8)
+    publish_task.deploy_total = total
+    publish_task.deploy_progress = 0
+    publish_task.deploy_info = '已启动！\n'
+    publish_task.save()
     for project in projects:
         try:
-            if not project_deploy(project, publish_task.code_tag):
+            if not project_deploy(publish_task, project, publish_task.code_tag):
                 return False
         except Exception as e:
             print e

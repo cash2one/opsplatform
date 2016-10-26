@@ -217,7 +217,11 @@
                                 </div>
                                 <div class="col-sm-8 col-sm-offset-2">
                                     <input id="auto_submit_button" class="btn btn-danger" type="button" onclick="auto_deploy()" value="自动发布">
-
+                                    <div class="progress">
+                                        <div class="outbar"></div>
+                                        <br>
+                                        <div class="output"></div>
+                                     </div>
                                 </div>
                             </div>
                         </form>
@@ -227,13 +231,30 @@
             </div>
         </div>
     </div>
+<style>
+        .progress{
+            display: none;
+            height: 100%;
+            width: 100%;
+            border:1px solid #eee;
+        }
+        .progress .outbar{
+            transition:all 1s ease;
+            -webkit-transition:all 1s ease;
+            text-align: center;
+            color: #fff;
+            height: 30px;
+            width: 30%;
+            background-color: #5cb85c;
+        }
 
+</style>
 <script>
     $(document).ready(function(){
         $('#show').click(function(){
             $('#last').css('display', 'none');
             $('#all').css('display', 'block');
-        })
+        });
     });
 
     function deploy_type_change(){
@@ -255,8 +276,45 @@
             }
         });
     }
+    var per = 0,finish = false;
+    function loading() {
 
+        //初始化
+        per = 0;finish = false;
+        $(".progress .outbar").css('width','0').html('0%');
+        $(".progress .output").css('width','0').html('');
+        $("#auto_submit_button").hide().siblings().show();
+        //set interval
+        var load = setInterval(function () {
+            if(finish){
+{#                $(".progress").hide().siblings().show();#}
+                clearInterval(load);
+            }
+            // 请求接口
+            var task_id = $('#task_id').val();
+            var url = '{% url 'get_deploy_progress' %}?task_id=' + task_id;
+            $.ajax({
+                type: 'GET',
+                url: url,
+                data: { },
+                success: function (data) {
+                    console.log(data);
+                    pre = data.progress;
+                    info = data.info;
+                    console.log(info);
+                    $(".progress .outbar").css('width',pre+'%').html(pre+'%');
+                    $(".progress .output").css('width','100%').html('<pre>' + info + '</pre>');
+                    if (pre > 99){
+                        finish = true
+                    }
+                }
+            });
+        },1000)
+    }
     function auto_deploy(){
+        // 启动定时器轮询发布进度
+
+        loading();
         var task_id = $('#task_id').val();
         var deploy_type = $('#deploy_type').val();
         var url = '{% url 'publish_task_deploy_auto' %}?task_id=' + task_id + '&deploy_type=' + deploy_type;
@@ -266,13 +324,14 @@
             data: { },
             success: function (data) {
                 if(data == 'error'){
-                    alert('发布报错！')
+                    alert('发布报错！');
                 }
                 else if(data == 'php'){
-                    alert('只支持PHP项目！')
+                    alert('只支持PHP项目！');
+
                 }
                 else if(data == 'sim'){
-                    alert('只支持模拟环境！')
+                    alert('只支持模拟环境！');
                 }
                 else {
 
@@ -280,7 +339,6 @@
             }
         });
     }
-
 
 </script>
 
