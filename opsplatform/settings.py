@@ -93,6 +93,9 @@ APK_PASSWORD = config.get('apk', 'password')
 APK_APK_PATH = config.get('apk', 'apk_path')
 APK_MONI_PATH = config.get('apk', 'moni_path')
 
+# qiniu config
+QINIU_ACCESS_KEY = config.get('qiniu', 'access_key')
+QINIU_SECRET_KEY = config.get('qiniu', 'secret_key')
 
 # code dir
 CODE_DIR = config.get('base', 'code_dir')

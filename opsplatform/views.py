@@ -17,6 +17,7 @@ from perm.ansible_api import MyRunner
 from jlog.models import Log, FileLog
 from api import *
 import zipfile
+from qiniu import Auth, put_data, etag
 
 
 def getDaysByNum(num):
@@ -284,3 +285,38 @@ def web_terminal(request):
     if asset:
         hostname = asset.hostname
     return render_to_response('web_terminal.html', locals())
+
+
+@login_required(login_url='/login')
+def qiniu_portal(request):
+    error = ''
+    msg = ''
+    if request.method == 'POST':
+        bucket = request.POST.get('bucket')
+        upload_name = request.POST.get('upload_name')
+        if request.FILES:
+            upload_file = request.FILES['upload_file']
+        else:
+            return HttpResponse('error')
+
+        access_key = QINIU_ACCESS_KEY
+        secret_key = QINIU_SECRET_KEY
+
+        q = Auth(access_key, secret_key)
+
+        bucket_name = 'lrqrun'
+
+        key = upload_name
+
+        token = q.upload_token(bucket_name, key, 3600)
+
+        data = upload_file
+
+        ret, info = put_data(token, key, data)
+
+        print(info)
+
+        assert ret['key'] == key
+        msg = '上传成功'
+        return render_to_response('qiniu_portal.html', locals(), context_instance=RequestContext(request))
+    return render_to_response('qiniu_portal.html', locals(), context_instance=RequestContext(request))

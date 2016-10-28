@@ -28,6 +28,7 @@ urlpatterns = [
     url(r'^terminal/$', views.web_terminal, name='terminal'),
     url(r'^file/upload/$', views.upload, name='file_upload'),
     url(r'^file/download/$', views.download, name='file_download'),
+    url(r'^file/qiniu_portal/$', views.qiniu_portal, name='qiniu_portal'),
     url(r'^account/', include('account.urls')),
     url(r'^asset/', include('asset.urls')),
     url(r'^perm/', include('perm.urls')),

@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% load mytags %}
+{% block self_head_css_js %}
+{% endblock %}
+{% block content %}
+{% include 'nav_cat_bar.html' %}
+
+<div class="wrapper wrapper-content animated fadeIn">
+    <div class="row">
+        <div class="col-sm-10">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>文件管理</h5>
+                <div class="ibox-tools">
+                    <a class="collapse-link">
+                        <i class="fa fa-chevron-up"></i>
+                    </a>
+                    <a class="close-link">
+                        <i class="fa fa-times"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="ibox-content">
+                <div>
+                    <form id="groupForm" enctype="multipart/form-data" method="post" class="form-horizontal" action="">
+                        {% csrf_token %}
+                        {% if error %}
+                            <div class="alert alert-warning text-center">{{ error }}</div>
+                        {% endif %}
+                        {% if msg %}
+                            <div class="alert alert-success text-center">{{ msg }}</div>
+                        {% endif %}
+                        <div class="dropzone-previews">
+                            <div class="form-group">
+                                <label for="bucket" class="col-sm-2 control-label">上传空间</label>
+                                <div class="col-sm-8">
+                                    <select class="form-control" id="bucket" name="上传空间">
+                                        <option value="rrkd-app">rrkd-app</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="hr-line-dashed"></div>
+                            <div class="form-group">
+                                <label for="upload_file" class="col-sm-2 control-label">上传文件</label>
+                                <div class="col-sm-8">
+                                    <input type="file" name="upload_file" id="upload_file" placeholder="上传文件" class="form-control" />
+                                </div>
+                            </div>
+
+                            <div class="hr-line-dashed"></div>
+                            <div class="form-group">
+                                <label for="upload_name" class="col-sm-2 control-label">保存的文件名</label>
+                                <div class="col-sm-8">
+                                    <input id="upload_name" name="upload_name" placeholder="" type="text" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary pull-right">上传</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block self_footer_js %}
+<script>
+    $.ajaxSetup({
+    data: {csrfmiddlewaretoken: '{{ csrf_token }}' },
+    });
+
+</script>
+
+{% endblock %}
