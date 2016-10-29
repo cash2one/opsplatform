@@ -332,9 +332,11 @@ def project_deploy(publish_task, project, git_branch):
             # 1.根据不同运行环境选择相应脚本执行
             if project.env == '2':
                 print './build_simulate.sh'
+                bash('chmod o+x build_simulate.sh')
                 bash('./build_simulate.sh')
             elif project.env == '1':
                 print './build_product.sh'
+                bash('chmod o+x build_product.sh')
                 bash('./build_product.sh')
             publish_task.deploy_progress = int(publish_task.deploy_progress) + 1
             publish_task.deploy_info = publish_task.deploy_info + u'构建JAVA代码...\n构建成功！\n'
