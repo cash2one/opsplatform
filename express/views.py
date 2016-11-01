@@ -510,3 +510,7 @@ def app_publish_task_rollback(request):
         error = u'无法打开目标网址,请联系系统开发人员!'
         return HttpResponse(error)
     return HttpResponseRedirect(reverse('app_publish_task_list'))
+
+
+
+

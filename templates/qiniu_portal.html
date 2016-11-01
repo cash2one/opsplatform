@@ -34,8 +34,10 @@
                             <div class="form-group">
                                 <label for="bucket" class="col-sm-2 control-label">上传空间</label>
                                 <div class="col-sm-8">
-                                    <select class="form-control" id="bucket" name="上传空间">
+                                    <select class="form-control" id="bucket" name="bucket">
                                         <option value="rrkd-app">rrkd-app</option>
+                                        <option value="rrkd">rrkd</option>
+                                        <option value="rrkd-video">rrkd-video</option>
                                     </select>
                                 </div>
                             </div>
@@ -44,7 +46,7 @@
                             <div class="form-group">
                                 <label for="upload_file" class="col-sm-2 control-label">上传文件</label>
                                 <div class="col-sm-8">
-                                    <input type="file" name="upload_file" id="upload_file" placeholder="上传文件" class="form-control" />
+                                    <input type="file" name="upload_file" id="upload_file" placeholder="上传文件" class="form-control" onchange="file_select()" />
                                 </div>
                             </div>
 
@@ -71,6 +73,18 @@
     $.ajaxSetup({
     data: {csrfmiddlewaretoken: '{{ csrf_token }}' },
     });
+
+    function file_select(){
+        var file = $("#upload_file").val();
+        var fileName = getFileName(file);
+
+        function getFileName(o){
+            var pos=o.lastIndexOf("\\");
+            return o.substring(pos+1);
+        }
+        $('#upload_name').val(fileName);
+    }
+
 
 </script>
 

@@ -10,6 +10,7 @@
 from django.db import models
 from datetime import datetime
 from time import strftime
+from base64 import urlsafe_b64encode, urlsafe_b64decode
 
 class UnixTimestampField(models.DateTimeField):
     """UnixTimestampField: creates a DateTimeField that is represented on the
@@ -42,3 +43,31 @@ class UnixTimestampField(models.DateTimeField):
             return None
         # Use '%Y%m%d%H%M%S' for MySQL < 4.1
         return strftime('%Y-%m-%d %H:%M:%S',value.timetuple())
+
+
+def b(data):
+    if isinstance(data, str):
+        return data.encode('utf-8')
+    return data
+
+
+def s(data):
+    if isinstance(data, bytes):
+        data = data.decode('utf-8')
+    return data
+
+
+def urlsafe_base64_encode(data):
+    """urlsafe的base64编码:
+
+    对提供的数据进行urlsafe的base64编码。规格参考：
+    http://developer.qiniu.com/docs/v6/api/overview/appendix.html#urlsafe-base64
+
+    Args:
+        data: 待编码的数据，一般为字符串
+
+    Returns:
+        编码后的字符串
+    """
+    ret = urlsafe_b64encode(b(data))
+    return s(ret)

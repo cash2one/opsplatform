@@ -304,7 +304,7 @@ def app_publish_task_rollback_config(task_id):
             upload_config(app_publish_task.env, localpath + "/backup/config.php", RRKDINTERFACE_MONI_COURIER_PATH + 'config.php')
 
 
-def project_deploy(publish_task, project, git_branch):
+def project_deploy(publish_task_id, project, git_branch):
     """
     分别发布每一个机器
     发布完成后更新branch到最新
@@ -312,6 +312,7 @@ def project_deploy(publish_task, project, git_branch):
     :return:
     """
     try:
+        publish_task = PublishTask.objects.get(id=publish_task_id)
         # 拉取仓库代码
         os.chdir(CODE_DIR)
         repository = ''.join(project.git_url.split('/')[-1].split('.')[:-1])
@@ -453,7 +454,7 @@ def project_deploy(publish_task, project, git_branch):
                 logger.info("[修改文件权限] 发布出错: %s" % result.get('err').get(project.host).get('stderr'))
                 raise ServerError(result.get('err').get(project.host).get('stderr'))
             publish_task.deploy_progress = int(publish_task.deploy_progress) + 1
-            publish_task.deploy_info = publish_task.deploy_info + '修改文件权限...\n' + '修改文件权限完成!\n'
+            publish_task.deploy_info = publish_task.deploy_info + '修改权限...\n' + '修改权限完成!\n'
             publish_task.save()
             # 8.启动tomcat
             module_args = 'chdir=/usr/local/' + project.tomcat_num + '/bin nohup ./startup.sh &'
@@ -488,7 +489,7 @@ def project_deploy(publish_task, project, git_branch):
                 logger.info("[判断tomcat是否启动] 发布出错: %s" % '启动Tomcat失败')
                 raise ServerError('启动Tomcat失败')
             publish_task.deploy_progress = int(publish_task.deploy_progress) + 1
-            publish_task.deploy_info = publish_task.deploy_info + '判断tomcat 是否启动成功...\n' + 'tomcat已启动成功!\n'
+            publish_task.deploy_info = publish_task.deploy_info + '判断tomcat是否启动成功...\n' + 'tomcat已启动成功!\n'
             publish_task.save()
             print 'over:======' + publish_task.deploy_info
         elif project.language_type == 'PHP':
@@ -569,17 +570,14 @@ def publish_task_deploy_run(task_id, deploy_type):
         projects = Project.objects.filter(name=publish_task.project, env=publish_task.env)
     else:
         projects = Project.objects.filter(name=publish_task.project, env=publish_task.env, idc=deploy_type)
-    print projects
-    print task_id
     # 计算发布需要多少步
     total = len(projects) * (3 if projects[0].language_type == 'PHP' else 8)
     publish_task.deploy_total = total
     publish_task.deploy_progress = 0
-    publish_task.deploy_info = '已启动！\n'
     publish_task.save()
     for project in projects:
         try:
-            if not project_deploy(publish_task, project, publish_task.code_tag):
+            if not project_deploy(publish_task.id, project, publish_task.code_tag):
                 return False
         except Exception as e:
             print e
