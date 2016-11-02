@@ -574,6 +574,7 @@ def publish_task_deploy_run(task_id, deploy_type):
     total = len(projects) * (3 if projects[0].language_type == 'PHP' else 8)
     publish_task.deploy_total = total
     publish_task.deploy_progress = 0
+    publish_task.deploy_info = ''
     publish_task.save()
     for project in projects:
         try:
