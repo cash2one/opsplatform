@@ -491,7 +491,7 @@ def project_deploy(publish_task_id, project, git_branch):
             publish_task.deploy_progress = int(publish_task.deploy_progress) + 1
             publish_task.deploy_info = publish_task.deploy_info + '判断tomcat是否启动成功...\n' + 'tomcat已启动成功!\n'
             publish_task.save()
-            print 'over:======' + publish_task.deploy_info
+            print 'over:======\n' + publish_task.deploy_info
         elif project.language_type == 'PHP':
             exclude_from = ANSIBLE_DIR + "/exclude_from"
             with open(exclude_from, 'w') as f:

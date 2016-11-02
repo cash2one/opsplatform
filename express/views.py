@@ -311,9 +311,9 @@ def publish_task_deploy_auto(request):
     if not publish_task:
         return HttpResponse('error')
 
-    # 只发布模拟环境项目
-    if publish_task.env == '1':
-        return HttpResponse('sim')
+    # # 只发布模拟环境项目
+    # if publish_task.env == '1':
+    #     return HttpResponse('sim')
 
     # 只做php的自动发布
     # projects = Project.objects.filter(name=publish_task.project, env=publish_task.env)
