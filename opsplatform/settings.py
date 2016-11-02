@@ -92,6 +92,7 @@ APK_USERNAME = config.get('apk', 'username')
 APK_PASSWORD = config.get('apk', 'password')
 APK_APK_PATH = config.get('apk', 'apk_path')
 APK_MONI_PATH = config.get('apk', 'moni_path')
+IPA_PATH = config.get('apk', 'ipa_path')
 
 # qiniu config
 QINIU_ACCESS_KEY = config.get('qiniu', 'access_key')

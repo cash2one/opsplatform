@@ -103,6 +103,7 @@ class Role(models.Model):
             ("perm_can_add_project", "新增项目信息"),
             ("perm_can_edit_project", "编辑项目信息"),
             ("perm_can_del_project", "删除项目信息"),
+            ("perm_can_ipa_deploy", "部署IAP配置"),
 
             ("perm_can_view_config", "查看配置中心"),
             ("perm_can_view_virtmgr", "查看虚拟化管理平台"),

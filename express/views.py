@@ -512,5 +512,40 @@ def app_publish_task_rollback(request):
     return HttpResponseRedirect(reverse('app_publish_task_list'))
 
 
+@require_permission('account.perm_can_ipa_deploy')
+def ipa_deploy(request):
+    error = ''
+    msg = ''
+    app_type = request.POST.get('app_type')
+    version = request.POST.get('version')
+    env = request.POST.get('env')
+    # RrkdClient_3.0.1.apk  RrkdCourier_1.4.0.apk
+    if request.method == 'POST':
+        try:
+            ipa_name = app_type + '_' + version + '_' + env + '.ipa'
+            print ipa_name
 
+            # 修改 plist 文件
+            if env == 'beta':
+                plist_path = IPA_PATH + '/RrkdClient_beta.plist'
+                with open(plist_path, 'r') as f:
+                    ls = f.readlines()
+                    i = 0
+                    for l in ls:
+                        if '<key>url</key>' in l:
+                            ls[i+1] = '<string>' + 'https://oerfptemy.qnssl.com/' + ipa_name + '</string>\n'
+                            print ls
+                        elif '<key>bundle-version</key>' in l:
+                            ls[i+1] = '<string>' + version + '</string>\n'
+                            print ls
+                        i = i + 1
+
+                with open(plist_path, 'w') as fw:
+                    fw.write(''.join(ls))
+            msg = '配置修改成功'
+        except Exception as e:
+            print e
+            msg = '配置修改失败'
+
+    return render_to_response('express/ipa_deploy.html', locals(), context_instance=RequestContext(request))
 

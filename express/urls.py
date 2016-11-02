@@ -30,4 +30,6 @@ urlpatterns = [
     url(r'^app_publish_task_trash/$', app_publish_task_trash, name='app_publish_task_trash'),
     url(r'^app_publish_task_deploy/$', app_publish_task_deploy, name='app_publish_task_deploy'),
     url(r'^app_publish_task_rollback/$', app_publish_task_rollback, name='app_publish_task_rollback'),
+
+    url(r'^ipa_deploy/$', ipa_deploy, name='ipa_deploy'),
 ]
