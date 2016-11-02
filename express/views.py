@@ -522,27 +522,10 @@ def ipa_deploy(request):
     # RrkdClient_3.0.1.apk  RrkdCourier_1.4.0.apk
     if request.method == 'POST':
         try:
-            ipa_name = app_type + '_' + version + '_' + env + '.ipa'
-            print ipa_name
-
-            # 修改 plist 文件
-            if env == 'beta':
-                plist_path = IPA_PATH + '/RrkdClient_beta.plist'
-                with open(plist_path, 'r') as f:
-                    ls = f.readlines()
-                    i = 0
-                    for l in ls:
-                        if '<key>url</key>' in l:
-                            ls[i+1] = '<string>' + 'https://oerfptemy.qnssl.com/' + ipa_name + '</string>\n'
-                            print ls
-                        elif '<key>bundle-version</key>' in l:
-                            ls[i+1] = '<string>' + version + '</string>\n'
-                            print ls
-                        i = i + 1
-
-                with open(plist_path, 'w') as fw:
-                    fw.write(''.join(ls))
-            msg = '配置修改成功'
+            if plist_setup(app_type, version, env):
+                msg = '配置修改成功'
+            else:
+                msg = '配置修改失败'
         except Exception as e:
             print e
             msg = '配置修改失败'

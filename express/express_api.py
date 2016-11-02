@@ -617,3 +617,44 @@ def publish_task_rollback_run(publish_task):
         return False
     return True
 
+
+def plist_setup(app_type, version, env):
+    try:
+        ipa_name = app_type + '_' + version + '_' + env + '.ipa'
+        print ipa_name
+        # 修改 plist 文件
+        plist_path = (CLIENT_IPA_PATH if app_type == 'RrkdClient' else COURIER_IPA_PATH) + '/' + app_type + '_' + env + '.plist'
+        with open(plist_path, 'r') as f:
+            ls = f.readlines()
+            i = 0
+            for l in ls:
+                if '<key>url</key>' in l:
+                    ls[i+1] = '<string>' + 'https://oerfptemy.qnssl.com/' + ipa_name + '</string>\n'
+                    print ls
+                elif '<key>bundle-version</key>' in l:
+                    ls[i+1] = '<string>' + version + '</string>\n'
+                    print ls
+                i = i + 1
+
+        with open(plist_path, 'w') as fw:
+            fw.write(''.join(ls))
+
+        # 同步到远程服务器
+        host = IPA_REMOTE_HOST
+        plist_remote_path = (CLIENT_IPA_REMOTE_PATH if app_type == 'RrkdClient' else COURIER_IPA_REMOTE_PATH) + '/' + app_type + '_' + env + '.plist'
+        module_args = 'src=' + plist_path + ' dest=' + plist_remote_path
+        cmd = Command(module_name='synchronize', module_args=module_args, pattern=host)
+        cmd.run()
+        ret = cmd.result.get(host).get('dark', '')
+        if ret:
+            logger.info("[同步文件] 配置IPA出错: %s" % ret)
+            raise ServerError(ret)
+        result = cmd.state
+        if not result.get('ok').get(host) and result.get('err') and result.get('err').get(host).get('stderr'):
+            logger.info("[同步文件] 配置IPA出错: %s" % result.get('err').get(host).get('stderr'))
+            raise ServerError(result.get('err').get(host).get('stderr'))
+    except Exception as e:
+        print e
+        return False
+    return True
+

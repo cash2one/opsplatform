@@ -92,7 +92,13 @@ APK_USERNAME = config.get('apk', 'username')
 APK_PASSWORD = config.get('apk', 'password')
 APK_APK_PATH = config.get('apk', 'apk_path')
 APK_MONI_PATH = config.get('apk', 'moni_path')
-IPA_PATH = config.get('apk', 'ipa_path')
+
+# ipa config
+IPA_REMOTE_HOST = config.get('ipa', 'host')
+CLIENT_IPA_PATH = config.get('ipa', 'client_ipa_path')
+COURIER_IPA_PATH = config.get('ipa', 'courier_ipa_path')
+CLIENT_IPA_REMOTE_PATH = config.get('ipa', 'client_ipa_remote_path')
+COURIER_IPA_REMOTE_PATH = config.get('ipa', 'courier_ipa_remote_path')
 
 # qiniu config
 QINIU_ACCESS_KEY = config.get('qiniu', 'access_key')
