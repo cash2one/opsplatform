@@ -446,21 +446,6 @@ def project_deploy(publish_task, project, git_branch):
                     logger.info("[解压压缩包] 发布出错: %s" % result.get('err').get(project.host).get('stderr'))
                     raise ServerError(result.get('err').get(project.host).get('stderr'))
 
-            # 7.修改文件权限
-            module_args = 'chown -R www:www ' + project.dest
-            cmd = Command(module_name='shell', module_args=module_args, pattern=project.host)
-            cmd.run()
-            ret = cmd.result.get(project.host).get('dark', '')
-            if ret:
-                logger.info("[修改文件权限] 发布出错: %s" % ret)
-                raise ServerError(ret)
-            result = cmd.state
-            if not result.get('ok').get(project.host) and result.get('err') and result.get('err').get(project.host).get('stderr'):
-                logger.info("[修改文件权限] 发布出错: %s" % result.get('err').get(project.host).get('stderr'))
-                raise ServerError(result.get('err').get(project.host).get('stderr'))
-            publish_task.deploy_progress = int(publish_task.deploy_progress) + 1
-            publish_task.deploy_info = publish_task.deploy_info + '修改权限...\n' + '修改权限完成!\n'
-            publish_task.save()
             # 8.启动tomcat
             module_args = 'chdir=/usr/local/' + project.tomcat_num + '/bin nohup ./startup.sh &'
             cmd = Command(module_name='shell', module_args=module_args, pattern=project.host)
