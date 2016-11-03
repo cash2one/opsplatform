@@ -523,7 +523,22 @@ def ipa_deploy(request):
     if request.method == 'POST':
         try:
             if plist_setup(app_type, version, env):
-                msg = '配置修改成功'
+                bucket = 'rrkd-app'
+                upload_name = app_type + '_' + version + '_' + env + '.ipa'
+                if request.FILES:
+                    upload_file = request.FILES['upload_file']
+                else:
+                    return HttpResponse('error')
+                if env == 'beta':
+                    rel = qiniu_upload(bucket, upload_name, upload_file)
+                    if rel == 0:
+                        msg = '上传失败'
+                    elif rel == 1:
+                        msg = '配置修改成功'
+                    elif rel == 2:
+                        msg = '上传成功，刷新CDN失败'
+                else:
+                    pass
             else:
                 msg = '配置修改失败'
         except Exception as e:

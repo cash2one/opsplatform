@@ -304,7 +304,7 @@ def app_publish_task_rollback_config(task_id):
             upload_config(app_publish_task.env, localpath + "/backup/config.php", RRKDINTERFACE_MONI_COURIER_PATH + 'config.php')
 
 
-def project_deploy(publish_task_id, project, git_branch):
+def project_deploy(publish_task, project, git_branch):
     """
     分别发布每一个机器
     发布完成后更新branch到最新
@@ -312,7 +312,6 @@ def project_deploy(publish_task_id, project, git_branch):
     :return:
     """
     try:
-        publish_task = PublishTask.objects.get(id=publish_task_id)
         # 拉取仓库代码
         os.chdir(CODE_DIR)
         repository = ''.join(project.git_url.split('/')[-1].split('.')[:-1])
@@ -325,8 +324,14 @@ def project_deploy(publish_task_id, project, git_branch):
             project.save()
             bash('git clone ' + project.git_url)
         os.chdir(repository_path)
-        bash('git checkout ' + git_branch)
-        bash('git pull origin ' + git_branch)
+
+        # 切换分支或者TAG
+        _, ttag, tag = git_branch.split('/')
+        if ttag == 'heads':
+            bash('git checkout -b ' + tag + ' origin/' + tag)
+            bash('git pull origin ' + tag)
+        else:
+            bash('git checkout ' + tag)
 
         if project.language_type == 'Java':
             # 本地构建JAVA 代码
@@ -578,7 +583,7 @@ def publish_task_deploy_run(task_id, deploy_type):
     publish_task.save()
     for project in projects:
         try:
-            if not project_deploy(publish_task.id, project, publish_task.code_tag):
+            if not project_deploy(publish_task, project, publish_task.code_tag):
                 return False
         except Exception as e:
             print e

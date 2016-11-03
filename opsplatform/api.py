@@ -22,6 +22,9 @@ import logging
 import urllib
 import urllib2
 
+from qiniu import Auth, put_data, etag
+import requests
+
 from settings import *
 from django.core.serializers.json import DjangoJSONEncoder
 from django.http import HttpResponseRedirect
@@ -345,3 +348,46 @@ def api_call(url, param={}, method='GET', headers={}):
 
 CRYPTOR = PyCrypt(KEY)
 logger = set_log(LOG_LEVEL)
+
+
+def qiniu_upload(bucket, upload_name, upload_file):
+    access_key = QINIU_ACCESS_KEY
+    secret_key = QINIU_SECRET_KEY
+    try:
+        q = Auth(access_key, secret_key)
+
+        bucket_name = bucket
+        print bucket_name
+
+        key = upload_name
+
+        token = q.upload_token(bucket_name, key, 3600)
+
+        data = upload_file
+
+        ret, info = put_data(token, key, data)
+
+        print(info)
+
+        assert ret['key'] == key
+
+        # 刷新缓存
+        refresh_url = '/v2/tune/refresh'
+        base_url = "https://oerfptemy.qnssl.com/" + str(key)
+        accessToken = q.token_of_request(refresh_url)
+        print accessToken, type(accessToken)
+        headers = {"Authorization": 'QBox {0}'.format(accessToken), "Content-Type": "application/json"}
+        data = {"urls": ["https://oerfptemy.qnssl.com/" + key]}
+        print dict(urls=[base_url])
+        print headers
+        r = requests.post('http://fusion.qiniuapi.com/v2/tune/refresh', data=json.dumps(data), headers=headers)
+        print 'code: ' + str(r.status_code)
+        print 'text: ' + r.text
+        code = json.loads(r.text).get('code')
+        print code
+        if r.status_code != 200 and code != '200':
+            return 2
+    except Exception as e:
+        print e
+        return 0
+    return 1

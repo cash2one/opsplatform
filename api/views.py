@@ -170,5 +170,6 @@ def get_deploy_progress(request):
     else:
         progress = int((int(publish_task.deploy_progress) / (int(publish_task.deploy_total) * 1.0)) * 100)
     info = publish_task.deploy_info
+    print progress, info
     return JsonResponse({'progress': progress, 'info': info})
 

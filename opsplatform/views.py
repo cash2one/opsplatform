@@ -23,7 +23,7 @@ from perm.ansible_api import MyRunner
 from jlog.models import Log, FileLog
 from api import *
 import zipfile
-from qiniu import Auth, put_data, etag
+
 
 
 def getDaysByNum(num):
@@ -305,44 +305,13 @@ def qiniu_portal(request):
                 upload_file = request.FILES['upload_file']
             else:
                 return HttpResponse('error')
-
-            access_key = QINIU_ACCESS_KEY
-            secret_key = QINIU_SECRET_KEY
-
-            q = Auth(access_key, secret_key)
-
-            bucket_name = bucket
-            print bucket_name
-
-            key = upload_name
-
-            token = q.upload_token(bucket_name, key, 3600)
-
-            data = upload_file
-
-            ret, info = put_data(token, key, data)
-
-            print(info)
-
-            assert ret['key'] == key
-            msg = '上传成功'
-
-            # 刷新缓存
-            refresh_url = '/v2/tune/refresh'
-            base_url = "https://oerfptemy.qnssl.com/" + str(key)
-            accessToken = q.token_of_request(refresh_url)
-            print accessToken, type(accessToken)
-            headers = {"Authorization": 'QBox {0}'.format(accessToken), "Content-Type": "application/json"}
-            data = {"urls": ["https://oerfptemy.qnssl.com/" + key]}
-            print dict(urls=[base_url])
-            print headers
-            r = requests.post('http://fusion.qiniuapi.com/v2/tune/refresh', data=json.dumps(data), headers=headers)
-            print 'code: ' + str(r.status_code)
-            print 'text: ' + r.text
-            code = json.loads(r.text).get('code')
-            print code
-            if r.status_code != 200 and code != '200':
-                msg = msg + ' 刷新CDN失败！'
+            rel = qiniu_upload(bucket, upload_name, upload_file)
+            if rel == 0:
+                msg = '上传失败'
+            elif rel == 1:
+                msg = '上传成功'
+            elif rel == 2:
+                msg = '上传成功，刷新CDN失败'
         except Exception as e:
             print e
             msg = '上传失败'

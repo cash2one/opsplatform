@@ -307,6 +307,9 @@
                     if (pre > 99){
                         finish = true
                     }
+                },
+                error: function(e) {
+                    finish = true
                 }
             });
         },1000)
