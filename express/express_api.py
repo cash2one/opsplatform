@@ -326,6 +326,7 @@ def project_deploy(publish_task, project, git_branch):
         os.chdir(repository_path)
 
         # 切换分支或者TAG
+        logger.info("[拉取代码]: %s" % project.name)
         _, ttag, tag = git_branch.split('/')
         if ttag == 'heads':
             bash('git checkout -b ' + tag + ' origin/' + tag)
@@ -336,6 +337,7 @@ def project_deploy(publish_task, project, git_branch):
         if project.language_type == 'Java':
             # 本地构建JAVA 代码
             # 1.根据不同运行环境选择相应脚本执行
+            logger.info("[编译代码]: %s" % project.name)
             if project.env == '2':
                 print './build_simulate.sh'
                 bash('chmod o+x build_simulate.sh')
@@ -349,6 +351,7 @@ def project_deploy(publish_task, project, git_branch):
             publish_task.save()
 
             # 2.停止tomcat
+            logger.info("[停止tomcat]: %s" % project.name)
             module_args = "ps -ef |grep -w /usr/local/" + project.tomcat_num + " |grep -v grep |awk '{print $2}' |xargs kill -9"
             print module_args
             cmd = Command(module_name='shell', module_args=module_args, pattern=project.host)
@@ -367,6 +370,7 @@ def project_deploy(publish_task, project, git_branch):
             publish_task.save()
 
             # 3.备份原文件
+            logger.info("[备份原文件]: %s" % project.name)
             module_args = 'chdir=' + project.dest + ' tar -zcvf ' + project.code + '.`date +%m%d%H`.tar.gz * ; mv ' + project.code + '.`date +%m%d%H`.tar.gz ' + project.backup_dir
             cmd = Command(module_name='shell', module_args=module_args, pattern=project.host)
             cmd.run()
@@ -384,6 +388,7 @@ def project_deploy(publish_task, project, git_branch):
             publish_task.save()
 
             # 4.删除旧文件
+            logger.info("[删除旧文件]: %s" % project.name)
             module_args = 'rm -rf ' + project.dest + '/*'
             cmd = Command(module_name='shell', module_args=module_args, pattern=project.host)
             cmd.run()
@@ -401,6 +406,7 @@ def project_deploy(publish_task, project, git_branch):
             publish_task.save()
 
             # 5.同步文件
+            logger.info("[同步文件]: %s" % project.name)
             war_file = ''
             core_file = ''
             p = Popen('find * -name "*.war"', shell=True, stdout=PIPE, stderr=PIPE).stdout.readlines()
@@ -430,6 +436,7 @@ def project_deploy(publish_task, project, git_branch):
             publish_task.save()
 
             # 6.解压部署的压缩包
+            logger.info("[解压部署的压缩包]: %s" % project.name)
             if core_file:
                 file_name = os.path.basename(core_file)
                 print file_name
@@ -446,7 +453,8 @@ def project_deploy(publish_task, project, git_branch):
                     logger.info("[解压压缩包] 发布出错: %s" % result.get('err').get(project.host).get('stderr'))
                     raise ServerError(result.get('err').get(project.host).get('stderr'))
 
-            # 8.启动tomcat
+            # 7.启动tomcat
+            logger.info("[启动tomcat]: %s" % project.name)
             module_args = 'chdir=/usr/local/' + project.tomcat_num + '/bin nohup ./startup.sh &'
             cmd = Command(module_name='shell', module_args=module_args, pattern=project.host)
             cmd.run()
@@ -462,7 +470,8 @@ def project_deploy(publish_task, project, git_branch):
             publish_task.deploy_info = publish_task.deploy_info + '启动tomcat...\n' + '启动tomcat完成!\n'
             publish_task.save()
 
-            # 9.判断tomcat 是否启动成功
+            # 8.判断tomcat 是否启动成功
+            logger.info("[判断tomcat 是否启动成功]: %s" % project.name)
             module_args = 'ps -ef |grep -w /usr/local/' + project.tomcat_num + "|grep -v grep |awk '{print $2}'"
             cmd = Command(module_name='shell', module_args=module_args, pattern=project.host)
             cmd.run()
@@ -488,6 +497,7 @@ def project_deploy(publish_task, project, git_branch):
                     f.write(project.ignore_setup)
             src = os.getcwd() + '/'
             # 1.备份原文件
+            logger.info("[备份原文件]: %s" % project.name)
             module_args = 'chdir=' + project.dest + ' tar -zcvf ' + project.code + '.`date +%m%d%H`.tar.gz * ; mv ' + project.code + '.`date +%m%d%H`.tar.gz ' + project.backup_dir
             cmd = Command(module_name='shell', module_args=module_args, pattern=project.host)
             cmd.run()
@@ -505,6 +515,7 @@ def project_deploy(publish_task, project, git_branch):
             publish_task.save()
 
             # 2.同步文件
+            logger.info("[同步文件]: %s" % project.name)
             module_args = 'src=' + src + ' dest=' + project.dest + ' delete=' + project.is_full + ' rsync_opts=--exclude-from=' + exclude_from
             cmd = Command(module_name='synchronize', module_args=module_args, pattern=project.host)
             cmd.run()
@@ -521,6 +532,7 @@ def project_deploy(publish_task, project, git_branch):
             publish_task.save()
 
             # 3.修改文件权限
+            logger.info("[修改文件权限]: %s" % project.name)
             module_args = 'chown -R www:www ' + project.dest
             cmd = Command(module_name='shell', module_args=module_args, pattern=project.host)
             cmd.run()
