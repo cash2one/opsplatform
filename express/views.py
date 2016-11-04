@@ -538,7 +538,22 @@ def ipa_deploy(request):
                     elif rel == 2:
                         msg = '上传成功，刷新CDN失败'
                 else:
-                    pass
+                    file_name = handle_uploaded_file(IPA_PACKAGE_PATH, upload_file)
+                    # 同步到远程服务器
+                    host = IPA_REMOTE_HOST
+                    ipa_remote_path = (CLIENT_IPA_PACKAGE_REMOTE_PATH if app_type == 'RrkdClient' else COURIER_IPA_PACKAGE_REMOTE_PATH) + '/' + upload_name
+                    module_args = 'src=' + file_name + ' dest=' + ipa_remote_path
+                    cmd = Command(module_name='synchronize', module_args=module_args, pattern=host)
+                    cmd.run()
+                    ret = cmd.result.get(host).get('dark', '')
+                    if ret:
+                        logger.info("[同步IPA] 配置IPA出错: %s" % ret)
+                        raise ServerError(ret)
+                    result = cmd.state
+                    if not result.get('ok').get(host) and result.get('err') and result.get('err').get(host).get('stderr'):
+                        logger.info("[同步IPA] 配置IPA出错: %s" % result.get('err').get(host).get('stderr'))
+                        raise ServerError(result.get('err').get(host).get('stderr'))
+                    msg = '配置修改成功'
             else:
                 msg = '配置修改失败'
         except Exception as e:

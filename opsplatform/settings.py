@@ -99,6 +99,9 @@ CLIENT_IPA_PATH = config.get('ipa', 'client_ipa_path')
 COURIER_IPA_PATH = config.get('ipa', 'courier_ipa_path')
 CLIENT_IPA_REMOTE_PATH = config.get('ipa', 'client_ipa_remote_path')
 COURIER_IPA_REMOTE_PATH = config.get('ipa', 'courier_ipa_remote_path')
+IPA_PACKAGE_PATH = config.get('ipa', 'ipa_package_path')
+CLIENT_IPA_PACKAGE_REMOTE_PATH = config.get('ipa', 'client_ipa_package_remote_path')
+COURIER_IPA_PACKAGE_REMOTE_PATH = config.get('ipa', 'courier_ipa_package_remote_path')
 
 # qiniu config
 QINIU_ACCESS_KEY = config.get('qiniu', 'access_key')

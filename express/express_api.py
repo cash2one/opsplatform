@@ -668,6 +668,7 @@ def handle_uploaded_file(path, f):
     file_name = ""
 
     try:
+        path = path + time.strftime('/%Y/%m/%d/%H/%M/%S/')
         if not os.path.exists(path):
             os.makedirs(path)
             file_name = path + f.name
