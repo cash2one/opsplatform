@@ -326,8 +326,10 @@ def project_deploy(publish_task, project, git_branch):
         os.chdir(repository_path)
 
         # 切换分支或者TAG
+
         logger.info("[拉取代码]: %s" % project.name)
         _, ttag, tag = git_branch.split('/')
+        bash('git pull')
         if ttag == 'heads':
             bash('git checkout -b ' + tag + ' origin/' + tag)
             bash('git pull origin ' + tag)
@@ -661,3 +663,19 @@ def plist_setup(app_type, version, env):
         return False
     return True
 
+
+def handle_uploaded_file(path, f):
+    file_name = ""
+
+    try:
+        if not os.path.exists(path):
+            os.makedirs(path)
+            file_name = path + f.name
+            destination = open(file_name, 'wb+')
+            for chunk in f.chunks():
+                destination.write(chunk)
+            destination.close()
+    except Exception, e:
+        print e
+
+    return file_name
