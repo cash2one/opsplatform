@@ -31,9 +31,9 @@
                                     <option value="">环境类型</option>
                                     {% for env in env_all %}
                                         {% if env|list_0|int2str == env_value|int2str %}
-                                            <option value="{{ env|list_0 }}" selected> {{ env|list_1|slice:":20" }}</option>
+                                            <option value="{{ env|list_0 }}" selected> {{ env|list_1|slice:":100" }}</option>
                                         {% else %}
-                                            <option value="{{ env|list_0 }}"> {{ env|list_1|slice:":20" }}</option>
+                                            <option value="{{ env|list_0 }}"> {{ env|list_1|slice:":100" }}</option>
                                         {% endif %}
                                     {% endfor %}
                                 </select>
