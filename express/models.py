@@ -66,9 +66,6 @@ class PublishTask(models.Model):
     approval_by = models.CharField(u'审核人', max_length=100, null=True)
     publish_time = models.CharField(u'计划发版时间', max_length=50, null=True)
     is_auto_deploy = models.CharField(u'是否自动发布', max_length=100, null=True)
-    deploy_progress = models.CharField(u'发布进度', max_length=100, null=True)
-    deploy_total = models.CharField(u'发布所需步骤', max_length=100, null=True)
-    deploy_info = models.TextField(u'发布过程输出', null=True)
     idc = models.CharField(u'发布类型', max_length=1000, null=True)
     deploy_time = models.DateTimeField(u'发布时间', null=True)
     deploy_by = models.CharField(u'发布人', max_length=100, null=True)
@@ -78,6 +75,13 @@ class PublishTask(models.Model):
 
     def __unicode__(self):
         return self.seq_no
+
+
+class PublishTaskDeploy(models.Model):
+    publish_task = models.ForeignKey(PublishTask)
+    deploy_progress = models.CharField(u'发布进度', max_length=100, null=True)
+    deploy_total = models.CharField(u'发布所需步骤', max_length=100, null=True)
+    deploy_info = models.TextField(u'发布过程输出', null=True)
 
 
 STYLE = (

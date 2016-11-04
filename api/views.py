@@ -164,12 +164,12 @@ def get_deploy_progress(request):
     轮询获取发布进度
     """
     task_id = request.GET.get('task_id', '')
-    publish_task = PublishTask.objects.get(id=task_id)
-    if publish_task.deploy_total == '0':
+    publish_task_deploy = PublishTaskDeploy.objects.get(publish_task=task_id)
+    if publish_task_deploy.deploy_total == '0':
         progress = 100
     else:
-        progress = int((int(publish_task.deploy_progress) / (int(publish_task.deploy_total) * 1.0)) * 100)
-    info = publish_task.deploy_info
+        progress = int((int(publish_task_deploy.deploy_progress) / (int(publish_task_deploy.deploy_total) * 1.0)) * 100)
+    info = publish_task_deploy.deploy_info
     print progress, info
     return JsonResponse({'progress': progress, 'info': info})
 

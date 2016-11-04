@@ -312,6 +312,7 @@ def project_deploy(publish_task, project, git_branch):
     :return:
     """
     try:
+        publish_task_deploy = PublishTaskDeploy.objects.get(publish_task=publish_task)
         # 拉取仓库代码
         os.chdir(CODE_DIR)
         repository = ''.join(project.git_url.split('/')[-1].split('.')[:-1])
@@ -335,6 +336,9 @@ def project_deploy(publish_task, project, git_branch):
             bash('git pull origin ' + tag)
         else:
             bash('git checkout ' + tag)
+        publish_task_deploy.deploy_progress = int(publish_task_deploy.deploy_progress) + 1
+        publish_task_deploy.deploy_info = publish_task_deploy.deploy_info + u'拉取代码...\n更新代码成功！\n'
+        publish_task_deploy.save()
 
         if project.language_type == 'Java':
             # 本地构建JAVA 代码
@@ -348,9 +352,9 @@ def project_deploy(publish_task, project, git_branch):
                 print './build_product.sh'
                 bash('chmod o+x build_product.sh')
                 bash('./build_product.sh')
-            publish_task.deploy_progress = int(publish_task.deploy_progress) + 1
-            publish_task.deploy_info = publish_task.deploy_info + u'构建JAVA代码...\n构建成功！\n'
-            publish_task.save()
+            publish_task_deploy.deploy_progress = int(publish_task_deploy.deploy_progress) + 1
+            publish_task_deploy.deploy_info = publish_task_deploy.deploy_info + u'构建JAVA代码...\n构建成功！\n'
+            publish_task_deploy.save()
 
             # 2.停止tomcat
             logger.info("[停止tomcat]: %s" % project.name)
@@ -367,9 +371,9 @@ def project_deploy(publish_task, project, git_branch):
             if not result.get('ok').get(project.host) and result.get('err') and result.get('err').get(project.host).get('stderr'):
                 logger.info("[停止tomcat] 发布出错: %s" % result.get('err').get(project.host).get('stderr'))
                 raise ServerError(result.get('err').get(project.host).get('stderr'))
-            publish_task.deploy_progress = int(publish_task.deploy_progress) + 1
-            publish_task.deploy_info = publish_task.deploy_info + '停止tomcat...\n' + 'tomcat已停止\n'
-            publish_task.save()
+            publish_task_deploy.deploy_progress = int(publish_task_deploy.deploy_progress) + 1
+            publish_task_deploy.deploy_info = publish_task_deploy.deploy_info + '停止tomcat...\n' + 'tomcat已停止\n'
+            publish_task_deploy.save()
 
             # 3.备份原文件
             logger.info("[备份原文件]: %s" % project.name)
@@ -385,9 +389,9 @@ def project_deploy(publish_task, project, git_branch):
             if not result.get('ok').get(project.host) and result.get('err') and result.get('err').get(project.host).get('stderr'):
                 logger.info("[备份原文件] 发布出错: %s" % result.get('err').get(project.host).get('stderr'))
                 raise ServerError(result.get('err').get(project.host).get('stderr'))
-            publish_task.deploy_progress = int(publish_task.deploy_progress) + 1
-            publish_task.deploy_info = publish_task.deploy_info + '备份原文件...\n' + '备份完成！\n'
-            publish_task.save()
+            publish_task_deploy.deploy_progress = int(publish_task_deploy.deploy_progress) + 1
+            publish_task_deploy.deploy_info = publish_task_deploy.deploy_info + '备份原文件...\n' + '备份完成！\n'
+            publish_task_deploy.save()
 
             # 4.删除旧文件
             logger.info("[删除旧文件]: %s" % project.name)
@@ -403,9 +407,9 @@ def project_deploy(publish_task, project, git_branch):
             if not result.get('ok').get(project.host) and result.get('err') and result.get('err').get(project.host).get('stderr'):
                 logger.info("[删除旧文件] 发布出错: %s" % result.get('err').get(project.host).get('stderr'))
                 raise ServerError(result.get('err').get(project.host).get('stderr'))
-            publish_task.deploy_progress = int(publish_task.deploy_progress) + 1
-            publish_task.deploy_info = publish_task.deploy_info + '删除旧文件...\n' + '删除旧文件完成!\n'
-            publish_task.save()
+            publish_task_deploy.deploy_progress = int(publish_task_deploy.deploy_progress) + 1
+            publish_task_deploy.deploy_info = publish_task_deploy.deploy_info + '删除旧文件...\n' + '删除旧文件完成!\n'
+            publish_task_deploy.save()
 
             # 5.同步文件
             logger.info("[同步文件]: %s" % project.name)
@@ -433,9 +437,9 @@ def project_deploy(publish_task, project, git_branch):
             if not result.get('ok').get(project.host) and result.get('err') and result.get('err').get(project.host).get('stderr'):
                 logger.info("[同步文件] 发布出错: %s" % result.get('err').get(project.host).get('stderr'))
                 raise ServerError(result.get('err').get(project.host).get('stderr'))
-            publish_task.deploy_progress = int(publish_task.deploy_progress) + 1
-            publish_task.deploy_info = publish_task.deploy_info + '同步文件...\n' + '同步文件完成!\n'
-            publish_task.save()
+            publish_task_deploy.deploy_progress = int(publish_task_deploy.deploy_progress) + 1
+            publish_task_deploy.deploy_info = publish_task_deploy.deploy_info + '同步文件...\n' + '同步文件完成!\n'
+            publish_task_deploy.save()
 
             # 6.解压部署的压缩包
             logger.info("[解压部署的压缩包]: %s" % project.name)
@@ -468,9 +472,9 @@ def project_deploy(publish_task, project, git_branch):
             if not result.get('ok').get(project.host) and result.get('err') and result.get('err').get(project.host).get('stderr'):
                 logger.info("[启动tomcat] 发布出错: %s" % result.get('err').get(project.host).get('stderr'))
                 raise ServerError(result.get('err').get(project.host).get('stderr'))
-            publish_task.deploy_progress = int(publish_task.deploy_progress) + 1
-            publish_task.deploy_info = publish_task.deploy_info + '启动tomcat...\n' + '启动tomcat完成!\n'
-            publish_task.save()
+            publish_task_deploy.deploy_progress = int(publish_task_deploy.deploy_progress) + 1
+            publish_task_deploy.deploy_info = publish_task_deploy.deploy_info + '启动tomcat...\n' + '启动tomcat完成!\n'
+            publish_task_deploy.save()
 
             # 8.判断tomcat 是否启动成功
             logger.info("[判断tomcat 是否启动成功]: %s" % project.name)
@@ -489,10 +493,10 @@ def project_deploy(publish_task, project, git_branch):
             if not cmd.result.get(project.host).get('stdout'):
                 logger.info("[判断tomcat是否启动] 发布出错: %s" % '启动Tomcat失败')
                 raise ServerError('启动Tomcat失败')
-            publish_task.deploy_progress = int(publish_task.deploy_progress) + 1
-            publish_task.deploy_info = publish_task.deploy_info + '判断tomcat是否启动成功...\n' + 'tomcat已启动成功!\n'
-            publish_task.save()
-            print 'over:======\n' + publish_task.deploy_info
+            publish_task_deploy.deploy_progress = int(publish_task_deploy.deploy_progress) + 1
+            publish_task_deploy.deploy_info = publish_task_deploy.deploy_info + '判断tomcat是否启动成功...\n' + 'tomcat已启动成功!\n发布完成，请返回!'
+            publish_task_deploy.save()
+            print 'over:======\n' + publish_task_deploy.deploy_info
         elif project.language_type == 'PHP':
             exclude_from = ANSIBLE_DIR + "/exclude_from"
             with open(exclude_from, 'w') as f:
@@ -512,9 +516,9 @@ def project_deploy(publish_task, project, git_branch):
             if not result.get('ok').get(project.host) and result.get('err') and result.get('err').get(project.host).get('stderr'):
                 logger.info("[备份原文件] 发布出错: %s" % result.get('err').get(project.host).get('stderr'))
                 raise ServerError(result.get('err').get(project.host).get('stderr'))
-            publish_task.deploy_progress = int(publish_task.deploy_progress) + 1
-            publish_task.deploy_info = publish_task.deploy_info + '备份原文件...\n' + '备份原文件成功!\n'
-            publish_task.save()
+            publish_task_deploy.deploy_progress = int(publish_task_deploy.deploy_progress) + 1
+            publish_task_deploy.deploy_info = publish_task_deploy.deploy_info + '备份原文件...\n' + '备份原文件成功!\n'
+            publish_task_deploy.save()
 
             # 2.同步文件
             logger.info("[同步文件]: %s" % project.name)
@@ -529,9 +533,9 @@ def project_deploy(publish_task, project, git_branch):
             if not result.get('ok').get(project.host) and result.get('err') and result.get('err').get(project.host).get('stderr'):
                 logger.info("[同步文件] 发布出错: %s" % result.get('err').get(project.host).get('stderr'))
                 raise ServerError(result.get('err').get(project.host).get('stderr'))
-            publish_task.deploy_progress = int(publish_task.deploy_progress) + 1
-            publish_task.deploy_info = publish_task.deploy_info + '同步文件...\n' + '同步文件成功!\n'
-            publish_task.save()
+            publish_task_deploy.deploy_progress = int(publish_task_deploy.deploy_progress) + 1
+            publish_task_deploy.deploy_info = publish_task_deploy.deploy_info + '同步文件...\n' + '同步文件成功!\n'
+            publish_task_deploy.save()
 
             # 3.修改文件权限
             logger.info("[修改文件权限]: %s" % project.name)
@@ -550,9 +554,9 @@ def project_deploy(publish_task, project, git_branch):
                 print result.get('err').get(project.host).get('stderr')
                 logger.info("[修改文件权限] 发布出错: %s" % result.get('err').get(project.host).get('stderr'))
                 raise ServerError(result.get('err').get(project.host).get('stderr'))
-            publish_task.deploy_progress = int(publish_task.deploy_progress) + 1
-            publish_task.deploy_info = publish_task.deploy_info + '修改文件权限...\n' + '修改文件权限成功!\n'
-            publish_task.save()
+            publish_task_deploy.deploy_progress = int(publish_task_deploy.deploy_progress) + 1
+            publish_task_deploy.deploy_info = publish_task_deploy.deploy_info + '修改文件权限...\n' + '修改文件权限成功!\n发布完成，请返回!'
+            publish_task_deploy.save()
 
         else:
             logger.info("不支持自动发布！")
@@ -560,9 +564,9 @@ def project_deploy(publish_task, project, git_branch):
     except Exception as e:
         print '异常输出： ' + str(e)
         logger.info("发布出错: %s" % '发布过程出错')
-        publish_task.deploy_info = publish_task.deploy_info + '\n===============\n发布出错:' + str(e)
-        publish_task.deploy_total = 0
-        publish_task.save()
+        publish_task_deploy.deploy_info = publish_task_deploy.deploy_info + '\n===============\n发布出错:' + str(e)
+        publish_task_deploy.deploy_total = 0
+        publish_task_deploy.save()
         return False
     return True
 
@@ -575,11 +579,12 @@ def publish_task_deploy_run(task_id, deploy_type):
     else:
         projects = Project.objects.filter(name=publish_task.project, env=publish_task.env, idc=deploy_type)
     # 计算发布需要多少步
-    total = len(projects) * (3 if projects[0].language_type == 'PHP' else 8)
-    publish_task.deploy_total = total
-    publish_task.deploy_progress = 0
-    publish_task.deploy_info = ''
-    publish_task.save()
+    total = len(projects) * (4 if projects[0].language_type == 'PHP' else 8)
+    obj, created = PublishTaskDeploy.objects.get_or_create(publish_task=publish_task)
+    obj.deploy_total = total
+    obj.deploy_progress = 0
+    obj.deploy_info = ''
+    obj.save()
     for project in projects:
         try:
             if not project_deploy(publish_task, project, publish_task.code_tag):
