@@ -405,7 +405,15 @@ def app_publish_task_list(request):
     keyword = request.GET.get('search', '')
     app_publish_task_list = AppPublishTask.objects.all().order_by('-seq_no')
     task_id = request.GET.get('id', '')
+    status_all = list(STATUS)
+    env_all = list(ENV)
+    env_value = request.GET.get('env', '')
+    status_value = request.GET.get('status', '3')
 
+    if env_value:
+        app_publish_task_list = app_publish_task_list.filter(env=env_value)
+    if status_value:
+        app_publish_task_list = app_publish_task_list.filter(status=status_value)
     if keyword:
         app_publish_task_list = app_publish_task_list.filter(name__icontains=keyword)
 
