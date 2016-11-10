@@ -244,6 +244,56 @@ def publish_task_trash(request):
     return HttpResponseRedirect(reverse('publish_task_list'))
 
 
+@require_permission('account.perm_can_trash_publish_task')
+def publish_task_reapply(request):
+    task_id = request.GET.get('id', '')
+    if not task_id:
+        return HttpResponseRedirect(reverse('publish_task_list'))
+    publish_task = get_object(PublishTask, id=task_id)
+    if not publish_task:
+        return HttpResponseRedirect(reverse('publish_task_list'))
+    publish_task.status = 2
+    publish_task.save()
+    # 调用接口
+    data = api_call('%s%s' % (settings.PUBLISH_CENTER_URL, settings.PUBLISH_TASK_STATUS_UPDATE),
+                    json.dumps({"seq_no": publish_task.seq_no, "status": publish_task.status,
+                                "deploy_time": publish_task.deploy_time.strftime("%Y-%m-%d %H:%M:%S") if publish_task.deploy_time else '',
+                                "deploy_by": publish_task.deploy_by}), 'POST',
+                    {'Content-Type': 'application/json'})
+    if data and data.get('code') == -1:
+        error = data.get('msg')
+        return HttpResponse(error)
+    if not data:
+        error = u'无法打开目标网址,请联系系统开发人员!'
+        return HttpResponse(error)
+    return HttpResponseRedirect(reverse('publish_task_list'))
+
+
+@require_permission('account.perm_can_trash_publish_task')
+def publish_task_resubmit(request):
+    task_id = request.GET.get('id', '')
+    if not task_id:
+        return HttpResponseRedirect(reverse('publish_task_list'))
+    publish_task = get_object(PublishTask, id=task_id)
+    if not publish_task:
+        return HttpResponseRedirect(reverse('publish_task_list'))
+    publish_task.status = 1
+    publish_task.save()
+    # 调用接口
+    data = api_call('%s%s' % (settings.PUBLISH_CENTER_URL, settings.PUBLISH_TASK_STATUS_UPDATE),
+                    json.dumps({"seq_no": publish_task.seq_no, "status": publish_task.status,
+                                "deploy_time": publish_task.deploy_time.strftime("%Y-%m-%d %H:%M:%S") if publish_task.deploy_time else '',
+                                "deploy_by": publish_task.deploy_by}), 'POST',
+                    {'Content-Type': 'application/json'})
+    if data and data.get('code') == -1:
+        error = data.get('msg')
+        return HttpResponse(error)
+    if not data:
+        error = u'无法打开目标网址,请联系系统开发人员!'
+        return HttpResponse(error)
+    return HttpResponseRedirect(reverse('publish_task_list'))
+
+
 @require_permission('account.perm_can_deploy_publish_task')
 def publish_task_deploy(request):
     if request.method == 'POST':

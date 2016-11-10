@@ -43,6 +43,30 @@ def publish_task_create(request):
                                                                  'create_time': data.get('create_time'),
                                                                  'create_by': data.get('create_by'),
                                                              })
+
+            print obj, created
+            if not created:
+                PublishTask.objects.filter(id=obj.id).update(product=data.get('product'),
+                                                             project=data.get('project'),
+                                                             env=data.get('env'),
+                                                             version=data.get('version'),
+                                                             update_remark=data.get('update_remark'),
+                                                             code_dir=data.get('code_dir'),
+                                                             code_tag=data.get('code_tag'),
+                                                             database_update=data.get('database_update'),
+                                                             upload_sql=data.get('upload_sql'),
+                                                             settings=data.get('settings'),
+                                                             update_note=data.get('update_note'),
+                                                             qa_note=data.get('qa_note'),
+                                                             owner=data.get('owner'),
+                                                             submit_time=data.get('submit_time'),
+                                                             submit_by=data.get('submit_by'),
+                                                             approval_time=data.get('approval_time'),
+                                                             approval_by=data.get('approval_by'),
+                                                             publish_time=data.get('publish_time'),
+                                                             status=data.get('status'),
+                                                             create_time=data.get('create_time'),
+                                                             create_by=data.get('create_by'),)
         except Exception, e:
             print e
             return JsonResponse({'msg': "parameter format invalid.", 'code': 0})
