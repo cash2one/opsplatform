@@ -44,7 +44,6 @@ def publish_task_create(request):
                                                                  'create_by': data.get('create_by'),
                                                              })
 
-            print obj, created
             if not created:
                 PublishTask.objects.filter(id=obj.id).update(product=data.get('product'),
                                                              project=data.get('project'),
@@ -124,6 +123,47 @@ def app_publish_task_create(request):
                                                                     'create_time': data.get('create_time'),
                                                                     'create_by': data.get('create_by'),
                                                              })
+            if not created:
+                AppPublishTask.objects.filter(id=obj.id).update(env=data.get('env'),
+                                                                style=data.get('style'),
+                                                                platform=data.get('platform'),
+                                                                version=data.get('version'),
+                                                                owner=data.get('owner'),
+                                                                update_remark=data.get('update_remark'),
+                                                                client_apk_path=data.get('client_apk_path'),
+                                                                client_sys_AndroidPublishVersion=data.get('client_sys_AndroidPublishVersion'),
+                                                                client_sys_IOSPublishVersion=data.get('client_sys_IOSPublishVersion'),
+                                                                client_sys_Androidisforcedupdate=data.get('client_sys_Androidisforcedupdate'),
+                                                                client_sys_IOSisforcedupdate=data.get('client_sys_IOSisforcedupdate'),
+                                                                client_config_iossjversion=data.get('client_config_iossjversion'),
+                                                                client_config_iosUpdateRemark=data.get('client_config_iosUpdateRemark'),
+                                                                client_config_iosverremark=data.get('client_config_iosverremark'),
+                                                                client_config_androidversion=data.get('client_config_androidversion'),
+                                                                client_config_androidsjversion=data.get('client_config_androidsjversion'),
+                                                                client_config_downloadandroidpath=data.get('client_config_downloadandroidpath'),
+                                                                client_config_androidverremark=data.get('client_config_androidverremark'),
+                                                                client_config_androidsUpdateRemark=data.get('client_config_androidsUpdateRemark'),
+                                                                courier_apk_path=data.get('courier_apk_path'),
+                                                                courier_sys_AndroidPublishVersion=data.get('courier_sys_AndroidPublishVersion'),
+                                                                courier_sys_IOSPublishVersion=data.get('courier_sys_IOSPublishVersion'),
+                                                                courier_sys_Androidisforcedupdate=data.get('courier_sys_Androidisforcedupdate'),
+                                                                courier_sys_IOSisforcedupdate=data.get('courier_sys_IOSisforcedupdate'),
+                                                                courier_config_iossjversion=data.get('courier_config_iossjversion'),
+                                                                courier_config_iosUpdateRemark=data.get('courier_config_iosUpdateRemark'),
+                                                                courier_config_iosverremark=data.get('courier_config_iosverremark'),
+                                                                courier_config_androidversion=data.get('courier_config_androidversion'),
+                                                                courier_config_androidsjversion=data.get('courier_config_androidsjversion'),
+                                                                courier_config_downloadandroidpath=data.get('courier_config_downloadandroidpath'),
+                                                                courier_config_androidverremark=data.get('courier_config_androidverremark'),
+                                                                courier_config_androidsUpdateRemark=data.get('courier_config_androidsUpdateRemark'),
+                                                                approval_time=data.get('approval_time'),
+                                                                approval_by=data.get('approval_by'),
+                                                                publish_time=data.get('publish_time'),
+                                                                submit_time=data.get('submit_time'),
+                                                                submit_by=data.get('submit_by'),
+                                                                status=data.get('status'),
+                                                                create_time=data.get('create_time'),
+                                                                create_by=data.get('create_by'),)
         except Exception, e:
             print e
             return JsonResponse({'msg': "parameter format invalid.", 'code': 0})
