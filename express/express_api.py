@@ -344,6 +344,8 @@ def project_deploy(publish_task, project, git_branch):
             # 本地构建JAVA 代码
             # 1.根据不同运行环境选择相应脚本执行
             logger.info("[编译代码]: %s" % project.name)
+            path = os.environ['PATH']
+            os.environ['PATH'] = path + ':/usr/local/maven/bin'
             if project.env == '2':
                 print './build_simulate.sh'
                 bash('chmod o+x build_simulate.sh')
