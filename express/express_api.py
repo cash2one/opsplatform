@@ -104,19 +104,19 @@ def update_file(file_path, param={}):
     mkdir(os.path.dirname(file_path) + '/backup')
     bash('cp ' + file_path + ' ' + os.path.dirname(file_path) + '/backup')
 
-    print param
     for key, value in param.items():
         with open(file_path, 'r') as f:
             ls = f.readlines()
             i = 0
             for l in ls:
                 if "'" + key + "'=>" in l:
-                    print ls
+                    if key == 'androidverremark' or \
+                       key == 'androidsUpdateRemark' or \
+                       key == 'iosUpdateRemark':
+                        value = r"\r\n".join(value.split('\r\n'))
                     last = l.split('=>')[1]
                     lr = l.replace(last, "'" + value + "'" + ',\n')
                     ls[i] = lr
-                    print lr
-                    print ls
                     break
                 i = i + 1
 
