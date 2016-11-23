@@ -27,7 +27,7 @@ start() {
              echo
         else
             daemon $opsplatform_dir/venv/bin/python $opsplatform_dir/manage.py crontab add &>> /var/log/opsplatform.log 2>&1
-            daemon $opsplatform_dir/venv/bin/python $opsplatform_dir/run_server.py &> $opsplatform_dir/runtime.log 2>&1 &
+            daemon $opsplatform_dir/venv/bin/python $opsplatform_dir/run_server.py &> /dev/null 2>&1 &
             sleep 1
             echo -n "$ops_start"
             ps axu | grep 'run_server' | grep -v 'grep' &> /dev/null

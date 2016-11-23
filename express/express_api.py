@@ -360,7 +360,7 @@ def project_deploy(publish_task, project, git_branch):
 
             # 2.停止tomcat
             logger.info("[停止tomcat]: %s" % project.name)
-            module_args = "ps -ef |grep -w /usr/local/" + project.tomcat_num + " |grep -v grep |awk '{print $2}' |xargs kill -9"
+            module_args = "ps -ef |grep -w " + project.tomcat_num + " |grep -v grep |awk '{print $2}' |xargs kill -9"
             print module_args
             cmd = Command(module_name='shell', module_args=module_args, pattern=project.host)
             cmd.run()
@@ -480,7 +480,7 @@ def project_deploy(publish_task, project, git_branch):
 
             # 8.判断tomcat 是否启动成功
             logger.info("[判断tomcat 是否启动成功]: %s" % project.name)
-            module_args = 'ps -ef |grep -w /usr/local/' + project.tomcat_num + "|grep -v grep |awk '{print $2}'"
+            module_args = 'ps -ef |grep -w ' + project.tomcat_num + "|grep -v grep |awk '{print $2}'"
             cmd = Command(module_name='shell', module_args=module_args, pattern=project.host)
             cmd.run()
             ret = cmd.result.get(project.host).get('dark', '')
