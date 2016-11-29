@@ -121,6 +121,14 @@
                                         <td>{{ publish_task.publish_time|none2null }}</td>
                                     </tr>
                                     <tr>
+                                        <td class="text-navy">是否自动发布</td>
+                                        <td>{{ publish_task.is_auto_deploy|bool2str }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-navy">发布类型</td>
+                                        <td>{{ publish_task.idc|none2null }}</td>
+                                    </tr>
+                                    <tr>
                                         <td class="text-navy">发布时间</td>
                                         <td>{{ publish_task.deploy_time|none2null }}</td>
                                     </tr>
